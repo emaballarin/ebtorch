@@ -145,3 +145,7 @@ venv/
 *.ipynb_checkpoints/
 *data/
 oldmodels/
+
+# EXTRA
+install.sh
+format.sh
