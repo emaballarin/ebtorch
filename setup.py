@@ -1,7 +1,7 @@
 # ==============================================================================
 #
 # Copyright 2019-* Yana Hasson <yana.hasson.inria@gmail.com>
-# Copyright 2019-*‪Linxi (Jim) Fan <jimfanspire@gmail.com>
+# Copyright 2019-* Linxi (Jim) Fan <jimfanspire@gmail.com>
 #
 # ==============================================================================
 #
@@ -57,7 +57,7 @@ setup(
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",
-    description="Collection of PyTorch additions, extensions, utilities, uses and abuses.",
+    description="Collection of PyTorch additions, extensions, utilities, uses and abuses... for personal use.",
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
     keywords=["Deep Learning", "Machine Learning"],
