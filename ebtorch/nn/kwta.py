@@ -13,39 +13,40 @@
 
 
 # For type-annotation
-from typing import Optional, Callable, Union, Any
+from typing import Optional, Callable, Union, Any, List
 
 # For neural network layers and tensor functions
-import torch
-from torch import nn
+from torch import Tensor, abs
+from torch.nn import Module
+import torch.nn.functional as F
 
 
 # Custom type-annotation types
-realnumeric = Union[float, int]
+realnum = Union[float, int]
 
 
 # Trivial reduction functions
-def onlyratiok(ratiok: realnumeric, k: int) -> int:
+def onlyratiok(ratiok: realnum, k: int) -> int:
     _: int = k  # discarded
     return int(ratiok)
 
 
-def onlyk(ratiok: realnumeric, k: int) -> int:
-    _: realnumeric = ratiok  # discarded
+def onlyk(ratiok: realnum, k: int) -> int:
+    _: realnum = ratiok  # discarded
     return k
 
 
-def intmax(ratiok: realnumeric, k: int) -> int:
+def intmax(ratiok: realnum, k: int) -> int:
     return int(max(ratiok, k))
 
 
 # Trivial 'absolute transformation' functions
-def noabs(x: torch.Tensor) -> torch.Tensor:
+def noabs(x: Tensor) -> Tensor:
     return x
 
 
-def doabs(x: torch.Tensor) -> torch.Tensor:
-    return torch.abs(x)
+def doabs(x: Tensor) -> Tensor:
+    return abs(x)
 
 
 # Flippable comparison operator
@@ -63,14 +64,17 @@ red_none_but: str = str(
 )
 
 
-class KWTA1d(nn.Module):
+class KWTA1d(Module):
+    __constants__: List[str] = ["largest"]
+    largest: bool
+
     def __init__(
         self,
         largest: bool = True,
         absolute: bool = False,
-        ratio: Optional[realnumeric] = None,
+        ratio: Optional[realnum] = None,
         k: Optional[int] = None,
-        reduction: Callable[[realnumeric, realnumeric], realnumeric] = None,
+        reduction: Callable[[realnum, realnum], realnum] = None,
     ) -> None:
         super(KWTA1d, self).__init__()
 
@@ -78,64 +82,68 @@ class KWTA1d(nn.Module):
 
         # Build the 'absolute transformation' function
         if not absolute:
-            self.abstransf: Callable[[torch.Tensor], torch.Tensor] = noabs
+            self.abstransf: Callable[[Tensor], Tensor] = noabs
         else:
-            self.abstransf: Callable[[torch.Tensor], torch.Tensor] = doabs
+            self.abstransf: Callable[[Tensor], Tensor] = doabs
 
         # Define usage logic and value-check arguments
         if ratio is None and k is None:
             # Follow default behaviour (50% but not < 1)
             if reduction is not None:
                 raise ValueError(red_not_none)
-            self.ratio: realnumeric = 0.5
+            self.ratio: realnum = 0.5
             self.k: int = 1
-            self.reduction: Callable[[realnumeric, realnumeric], realnumeric] = intmax
+            self.reduction: Callable[[realnum, realnum], realnum] = intmax
 
         elif ratio is not None and k is None:
             # Use user-defined 'ratio' and check 'reduction' is None
             if reduction is not None:
                 raise ValueError(red_not_none)
-            self.ratio: realnumeric = ratio
+            self.ratio: realnum = ratio
             self.k: int = 0
-            self.reduction: Callable[
-                [realnumeric, realnumeric], realnumeric
-            ] = onlyratiok
+            self.reduction: Callable[[realnum, realnum], realnum] = onlyratiok
 
         elif ratio is None and k is not None:
             # Use user-defined 'k' and check 'reduction' is None
             if reduction is not None:
                 raise ValueError(red_not_none)
-            self.ratio: realnumeric = 0
+            self.ratio: realnum = 0
             self.k: int = k
-            self.reduction: Callable[[realnumeric, realnumeric], realnumeric] = onlyk
+            self.reduction: Callable[[realnum, realnum], realnum] = onlyk
 
         else:
             # Use user-defined 'ratio', 'k' and 'reduction' (must be not None)
             if reduction is None:
                 raise ValueError(red_none_but)
-            self.ratio: realnumeric = ratio
+            self.ratio: realnum = ratio
             self.k: int = k
-            self.reduction: Callable[
-                [realnumeric, realnumeric], realnumeric
-            ] = reduction
+            self.reduction: Callable[[realnum, realnum], realnum] = reduction
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: Tensor) -> Tensor:
         k: int = int(self.reduction(self.ratio * x.shape[1], self.k))
-        transfx: torch.Tensor = self.abstransf(x)
+        transfx: Tensor = self.abstransf(x)
         topval = transfx.topk(k, dim=1, largest=self.largest)[0][:, -1]
         topval = topval.expand(transfx.shape[1], transfx.shape[0]).permute(1, 0)
         comp = (flipcmp(transfx, topval, self.largest)).to(x)  # acceptable
         return comp * x
 
+    def extra_repr(self) -> str:
+        return "largest={}, abstransf={}, ratio={}, k={}, reduction={}".format(
+            self.largest, self.abstransf, self.ratio, self.k, self.reduction
+        )
 
-class KWTA2d(nn.Module):
+
+class KWTA2d(Module):
+    __constants__: List[str] = ["largest"]
+    largest: bool
+
     def __init__(
         self,
         largest: bool = True,
         absolute: bool = False,
-        ratio: Optional[realnumeric] = None,
+        ratio: Optional[realnum] = None,
         k: Optional[int] = None,
-        reduction: Callable[[realnumeric, realnumeric], realnumeric] = None,
+        reduction: Callable[[realnum, realnum], realnum] = None,
         xchan: bool = False,
     ) -> None:
         super(KWTA2d, self).__init__()
@@ -144,63 +152,59 @@ class KWTA2d(nn.Module):
 
         # Build the 'absolute transformation' function
         if not absolute:
-            self.abstransf: Callable[[torch.Tensor], torch.Tensor] = noabs
+            self.abstransf: Callable[[Tensor], Tensor] = noabs
         else:
-            self.abstransf: Callable[[torch.Tensor], torch.Tensor] = doabs
+            self.abstransf: Callable[[Tensor], Tensor] = doabs
 
         # Define usage logic and value-check arguments
         if ratio is None and k is None:
             # Follow default behaviour (50% but not < 1)
             if reduction is not None:
                 raise ValueError(red_not_none)
-            self.ratio: realnumeric = 0.5
+            self.ratio: realnum = 0.5
             self.k: int = 1
-            self.reduction: Callable[[realnumeric, realnumeric], realnumeric] = intmax
+            self.reduction: Callable[[realnum, realnum], realnum] = intmax
 
         elif ratio is not None and k is None:
             # Use user-defined 'ratio' and check 'reduction' is None
             if reduction is not None:
                 raise ValueError(red_not_none)
-            self.ratio: realnumeric = ratio
+            self.ratio: realnum = ratio
             self.k: int = 0
-            self.reduction: Callable[
-                [realnumeric, realnumeric], realnumeric
-            ] = onlyratiok
+            self.reduction: Callable[[realnum, realnum], realnum] = onlyratiok
 
         elif ratio is None and k is not None:
             # Use user-defined 'k' and check 'reduction' is None
             if reduction is not None:
                 raise ValueError(red_not_none)
-            self.ratio: realnumeric = 0
+            self.ratio: realnum = 0
             self.k: int = k
-            self.reduction: Callable[[realnumeric, realnumeric], realnumeric] = onlyk
+            self.reduction: Callable[[realnum, realnum], realnum] = onlyk
 
         else:
             # Use user-defined 'ratio', 'k' and 'reduction' (must be not None)
             if reduction is None:
                 raise ValueError(red_none_but)
-            self.ratio: realnumeric = ratio
+            self.ratio: realnum = ratio
             self.k: int = k
-            self.reduction: Callable[
-                [realnumeric, realnumeric], realnumeric
-            ] = reduction
+            self.reduction: Callable[[realnum, realnum], realnum] = reduction
 
         if not xchan:
             self.actual_forward: Callable[
-                [torch.Tensor],
-                torch.Tensor,
+                [Tensor],
+                Tensor,
             ] = self.channelwise_forward
         else:
             self.actual_forward: Callable[
-                [torch.Tensor],
-                torch.Tensor,
+                [Tensor],
+                Tensor,
             ] = self.crosschannel_forward
 
     # Define methods corresponding to channelwise or crosschannel forward
-    def channelwise_forward(self, x: torch.Tensor) -> torch.Tensor:
-        size: realnumeric = x.shape[2] * x.shape[3]
+    def channelwise_forward(self, x: Tensor) -> Tensor:
+        size: realnum = x.shape[2] * x.shape[3]
         k: int = int(self.reduction(self.ratio * size, self.k))
-        transfx: torch.Tensor = self.abstransf(x)
+        transfx: Tensor = self.abstransf(x)
         tmpx = transfx.view(transfx.shape[0], transfx.shape[1], -1)
         topval = tmpx.topk(k, dim=2, largest=self.largest)[0][:, :, -1]
         topval = topval.expand(
@@ -209,25 +213,43 @@ class KWTA2d(nn.Module):
         comp = (flipcmp(transfx, topval, self.largest)).to(x)  # acceptable
         return comp * x
 
-    def crosschannel_forward(self, x: torch.Tensor) -> torch.Tensor:
-        size: realnumeric = x.shape[1] * x.shape[2] * x.shape[3]
+    def crosschannel_forward(self, x: Tensor) -> Tensor:
+        size: realnum = x.shape[1] * x.shape[2] * x.shape[3]
         k: int = int(self.reduction(self.ratio * size, self.k))
-        transfx: torch.Tensor = self.abstransf(x)
+        transfx: Tensor = self.abstransf(x)
         tmpx = transfx.view(transfx.shape[0], -1)
         topval = tmpx.topk(k, dim=1, largest=self.largest)[0][:, -1]
         topval = topval.repeat(tmpx.shape[1], 1).permute(1, 0).view_as(transfx)
         comp = (flipcmp(transfx, topval, self.largest)).to(x)  # acceptable
         return comp * x
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: Tensor) -> Tensor:
         return self.actual_forward(x)
 
+    def extra_repr(self) -> str:
+        return "largest={}, abstransf={}, ratio={}, k={}, reduction={}, actual_forward={}".format(
+            self.largest,
+            self.abstransf,
+            self.ratio,
+            self.k,
+            self.reduction,
+            self.actual_forward,
+        )
 
-class BrokenReLU(nn.Module):
-    # 'Broken ReLU' activation function
+
+class BrokenReLU(Module):
+    __constants__: List[str] = ["plateau", "inplace"]
+    plateau: float
+    inplace: bool
+
     def __init__(self, plateau: float = -5.0, inplace: bool = False) -> None:
         super(BrokenReLU, self).__init__()
-        self.brokenrelu = nn.Threshold(0.0, plateau, inplace)
+        self.plateau: float = plateau
+        self.inplace: bool = inplace
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.brokenrelu(x)
+    def forward(self, x: Tensor) -> Tensor:
+        return F.threshold(x, 0.0, self.plateau, self.inplace)
+
+    def extra_repr(self) -> str:
+        inplace_str: str = ", inplace=True" if self.inplace else ""
+        return "plateau={}{}".format(self.plateau, inplace_str)
