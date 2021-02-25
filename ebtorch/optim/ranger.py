@@ -112,9 +112,9 @@ class Ranger(Optimizer):
         print(
             f"Ranger optimizer loaded. \nGradient Centralization usage = {self.use_gc}"
         )
-        if self.use_gc and self.gc_conv_only == False:
+        if self.use_gc and not self.gc_conv_only:
             print(f"GC applied to both conv and fc layers")
-        elif self.use_gc and self.gc_conv_only == True:
+        elif self.use_gc and self.gc_conv_only:
             print(f"GC applied to conv layers only")
 
     def __setstate__(self, state):
@@ -222,7 +222,7 @@ class Ranger(Optimizer):
                 if group["weight_decay"] != 0:
                     G_grad.add_(p_data_fp32, alpha=group["weight_decay"])
                 # GC operation
-                if self.gc_loc == False:
+                if not self.gc_loc:
                     G_grad = centralized_gradient(
                         G_grad, use_gc=self.use_gc, gc_conv_only=self.gc_conv_only
                     )
