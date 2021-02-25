@@ -66,11 +66,11 @@ class Ranger(Optimizer):
         # parameter checks
         if not 0.0 <= alpha <= 1.0:
             raise ValueError(f"Invalid slow update rate: {alpha}")
-        if not 1 <= k:
+        if 1 > k:
             raise ValueError(f"Invalid lookahead steps: {k}")
-        if not lr > 0:
+        if lr <= 0:
             raise ValueError(f"Invalid Learning Rate: {lr}")
-        if not eps > 0:
+        if eps <= 0:
             raise ValueError(f"Invalid eps: {eps}")
 
         # parameter comments:

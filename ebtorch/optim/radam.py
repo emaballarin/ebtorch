@@ -47,9 +47,9 @@ class RAdam(Optimizer):
         weight_decay=0,
         degenerated_to_sgd=True,
     ):
-        if not 0.0 <= lr:
+        if 0.0 > lr:
             raise ValueError("Invalid learning rate: {}".format(lr))
-        if not 0.0 <= eps:
+        if 0.0 > eps:
             raise ValueError("Invalid epsilon value: {}".format(eps))
         if not 0.0 <= betas[0] < 1.0:
             raise ValueError("Invalid beta parameter at index 0: {}".format(betas[0]))
@@ -170,9 +170,9 @@ class PlainRAdam(Optimizer):
         weight_decay=0,
         degenerated_to_sgd=True,
     ):
-        if not 0.0 <= lr:
+        if 0.0 > lr:
             raise ValueError("Invalid learning rate: {}".format(lr))
-        if not 0.0 <= eps:
+        if 0.0 > eps:
             raise ValueError("Invalid epsilon value: {}".format(eps))
         if not 0.0 <= betas[0] < 1.0:
             raise ValueError("Invalid beta parameter at index 0: {}".format(betas[0]))
@@ -263,9 +263,9 @@ class WarmAdamW(Optimizer):
     def __init__(
         self, params, lr=1e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0, warmup=0
     ):
-        if not 0.0 <= lr:
+        if 0.0 > lr:
             raise ValueError("Invalid learning rate: {}".format(lr))
-        if not 0.0 <= eps:
+        if 0.0 > eps:
             raise ValueError("Invalid epsilon value: {}".format(eps))
         if not 0.0 <= betas[0] < 1.0:
             raise ValueError("Invalid beta parameter at index 0: {}".format(betas[0]))
