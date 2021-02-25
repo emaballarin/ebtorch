@@ -66,13 +66,13 @@ class RAdam(Optimizer):
                 if "betas" in param and (
                     param["betas"][0] != betas[0] or param["betas"][1] != betas[1]
                 ):
-                    param["buffer"] = [[None, None, None] for _ in range(10)]
+                    param["buffer"] = [[None, None, None] for _42 in range(10)]
         defaults = dict(
             lr=lr,
             betas=betas,
             eps=eps,
             weight_decay=weight_decay,
-            buffer=[[None, None, None] for _ in range(10)],
+            buffer=[[None, None, None] for _42 in range(10)],
         )
         super(RAdam, self).__init__(params, defaults)
 
