@@ -25,7 +25,9 @@
 # Imports
 from .lookahead import Lookahead
 from .radam import RAdam, PlainRAdam, WarmAdamW
+from .ranger import Ranger
 
 # Deletions
 del lookahead
 del radam
+del ranger
