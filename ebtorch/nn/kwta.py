@@ -19,7 +19,8 @@
 from typing import Optional, Callable, Union, Any, List
 
 # For neural network layers and tensor functions
-from torch import Tensor, abs
+import torch
+from torch import Tensor
 from torch.nn import Module
 import torch.nn.functional as F
 
@@ -49,7 +50,7 @@ def noabs(x: Tensor) -> Tensor:
 
 
 def doabs(x: Tensor) -> Tensor:
-    return abs(x)
+    return torch.abs(x)
 
 
 # Flippable comparison operator

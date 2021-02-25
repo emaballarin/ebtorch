@@ -113,9 +113,9 @@ class Ranger(Optimizer):
             f"Ranger optimizer loaded. \nGradient Centralization usage = {self.use_gc}"
         )
         if self.use_gc and not self.gc_conv_only:
-            print(f"GC applied to both conv and fc layers")
+            print("GC applied to both conv and fc layers")
         elif self.use_gc and self.gc_conv_only:
-            print(f"GC applied to conv layers only")
+            print("GC applied to conv layers only")
 
     def __setstate__(self, state):
         print("set state called")
