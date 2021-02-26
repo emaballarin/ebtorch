@@ -31,12 +31,12 @@ realnum = Union[float, int]
 
 # Trivial reduction functions
 def onlyratiok(ratiok: realnum, k: int) -> int:
-    _42: int = k  # discarded
+    _: int = k  # discarded
     return int(ratiok)
 
 
 def onlyk(ratiok: realnum, k: int) -> int:
-    _42: realnum = ratiok  # discarded
+    _: realnum = ratiok  # discarded
     return k
 
 
