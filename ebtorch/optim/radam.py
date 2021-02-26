@@ -57,11 +57,7 @@ class RAdam(Optimizer):
             raise ValueError("Invalid beta parameter at index 1: {}".format(betas[1]))
 
         self.degenerated_to_sgd = degenerated_to_sgd
-        if (
-            isinstance(params, (list, tuple))
-            and len(params) > 0
-            and isinstance(params[0], dict)
-        ):
+        if isinstance(params, (list, tuple)) and params and isinstance(params[0], dict):
             for param in params:
                 if "betas" in param and (
                     param["betas"][0] != betas[0] or param["betas"][1] != betas[1]
@@ -98,7 +94,7 @@ class RAdam(Optimizer):
 
                 state = self.state[p]
 
-                if len(state) == 0:
+                if not state:
                     state["step"] = 0
                     state["exp_avg"] = torch.zeros_like(p_data_fp32)
                     state["exp_avg_sq"] = torch.zeros_like(p_data_fp32)

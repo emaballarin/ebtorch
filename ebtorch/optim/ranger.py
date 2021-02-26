@@ -147,7 +147,7 @@ class Ranger(Optimizer):
                 state = self.state[p]  # get state dict for this param
 
                 if (
-                    len(state) == 0
+                    not state
                 ):  # if first time to run...init dictionary with our desired entries
                     # if self.first_run_check==0:
                     # self.first_run_check=1
