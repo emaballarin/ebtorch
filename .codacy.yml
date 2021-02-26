@@ -1,0 +1,11 @@
+---
+pylint:
+  enabled: true
+  python_version: 3
+
+exclude_paths:
+  - ".git/**"
+  - ".idea/**"
+  - ".deepsource.toml"
+  - "README.md"
+  - "**/__init__.py"
