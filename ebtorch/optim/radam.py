@@ -202,7 +202,7 @@ class PlainRAdam(Optimizer):
 
                 state = self.state[p]
 
-                if len(state) == 0:
+                if not state:
                     state["step"] = 0
                     state["exp_avg"] = torch.zeros_like(p_data_fp32)
                     state["exp_avg_sq"] = torch.zeros_like(p_data_fp32)
@@ -296,7 +296,7 @@ class WarmAdamW(Optimizer):
 
                 state = self.state[p]
 
-                if len(state) == 0:
+                if not state:
                     state["step"] = 0
                     state["exp_avg"] = torch.zeros_like(p_data_fp32)
                     state["exp_avg_sq"] = torch.zeros_like(p_data_fp32)
