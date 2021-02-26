@@ -21,3 +21,23 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
+
+# IMPORTS:
+
+from .nn import *
+from .optim import *
+
+
+# DELETIONS:
+
+# (from .nn)
+del KWTA1d
+del KWTA2d
+del BrokenReLU
+
+# (from .optim)
+del Lookahead
+del RAdam
+del PlainRAdam
+del WarmAdamW
+del Ranger
