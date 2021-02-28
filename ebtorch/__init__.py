@@ -24,8 +24,8 @@
 
 # IMPORTS:
 
-from .nn import *
-from .optim import *
+from .nn import *  # lgtm [py/polluting-import]
+from .optim import *  # lgtm [py/polluting-import]
 
 
 # DELETIONS:

@@ -19,7 +19,7 @@
 from typing import Optional, Callable, Union, Any, List
 
 # For neural network layers and tensor functions
-import torch
+import torch  # lgtm [py/import-and-import-from]
 from torch import Tensor
 from torch.nn import Module
 import torch.nn.functional as F
