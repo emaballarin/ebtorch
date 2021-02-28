@@ -58,5 +58,5 @@ class AutoClipper:
     def reset(self) -> None:
         self.queue_list = []
 
-    def resize(self, queue_size: Optional[int] = None):
+    def resize(self, queue_size: Optional[int] = None) -> None:
         self.queue_size = queue_size
