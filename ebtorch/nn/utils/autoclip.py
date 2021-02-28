@@ -37,9 +37,6 @@ def _get_grad_norm(model) -> realnum:
 
 
 class AutoClipper:
-    __constants__: List[str] = ["queue_size"]
-    queue_size: Optional[int]
-
     def __init__(self, queue_size: Optional[realnum] = None) -> None:
         if queue_size is not None:
             queue_size: int = int(queue_size)
