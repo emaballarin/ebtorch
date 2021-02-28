@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 # ==============================================================================
 #
 # Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -19,6 +22,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-# LIST OF REQUIREMENTS:
-torch
-numpy
+# Imports
+from .autoclip import AutoClipper
+
+# Deletions
+del autoclip

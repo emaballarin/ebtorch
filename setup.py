@@ -49,7 +49,7 @@ def check_dependencies():
         warnings.warn("Missing dependencies: {}.".format(missing_dependencies))
 
 
-DEPENDENCY_PACKAGE_NAMES = ["torch"]
+DEPENDENCY_PACKAGE_NAMES = ["torch", "numpy"]
 
 check_dependencies()
 

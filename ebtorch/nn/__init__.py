@@ -24,6 +24,8 @@
 
 # Imports
 from .kwta import KWTA1d, KWTA2d, BrokenReLU
+from .utils import *  # lgtm [py/polluting-import]
 
 # Deletions
 del kwta
+del AutoClipper
