@@ -40,8 +40,10 @@ class AutoClipper:
     __constants__: List[str] = ["queue_size"]
     queue_size: Optional[int]
 
-    def __init__(self, queue_size: Optional[int] = None) -> None:
-        self.queue_size: Optional[int] = int(queue_size)
+    def __init__(self, queue_size: Optional[realnum] = None) -> None:
+        if queue_size is not None:
+            queue_size: int = int(queue_size)
+        self.queue_size: Optional[int] = queue_size
         self.queue_list: List[float] = []
 
     def grad_consider(self, model) -> None:
@@ -58,5 +60,7 @@ class AutoClipper:
     def reset(self) -> None:
         self.queue_list = []
 
-    def resize(self, queue_size: Optional[int] = None) -> None:
+    def resize(self, queue_size: Optional[realnum] = None) -> None:
+        if queue_size is not None:
+            queue_size: int = int(queue_size)
         self.queue_size = queue_size
