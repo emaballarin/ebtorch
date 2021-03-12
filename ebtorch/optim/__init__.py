@@ -26,8 +26,10 @@
 from .lookahead import Lookahead
 from .radam import RAdam, PlainRAdam, WarmAdamW
 from .ranger import Ranger
+from .sam import SAM
 
 # Deletions
 del lookahead
 del radam
 del ranger
+del sam
