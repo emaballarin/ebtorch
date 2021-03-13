@@ -22,28 +22,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-# IMPORTS:
+# Imports
+from .csvlog import LogCSV
 
-from .nn import *  # lgtm [py/polluting-import]
-from .optim import *  # lgtm [py/polluting-import]
-from .logging import *  # lgtm [py/polluting-import]
-
-
-# DELETIONS:
-
-# (from .nn)
-del KWTA1d
-del KWTA2d
-del BrokenReLU
-
-# (from .optim)
-del Lookahead
-del RAdam
-del PlainRAdam
-del WarmAdamW
-del Ranger
-del utils
-del SAM
-
-# (from .utils)
-del LogCSV
+# Deletions
+del csvlog
