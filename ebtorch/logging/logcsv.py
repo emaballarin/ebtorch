@@ -28,12 +28,26 @@ import csv
 
 
 class LogCSV:
-    def __init__(self, file_path: Union[str, Path]) -> None:
-        self.filepath: Union[str, Path] = file_path
-        self.file = None
-        self.isopen: bool = False
-        self.writer = None
+    def __init__(
+        self,
+        file_path: Union[str, Path],
+        open_now: bool = False,
+        clear_now: bool = False,
+    ) -> None:
         self.buffer: list = []
+        self.filepath: Union[str, Path] = file_path
+
+        if clear_now:
+            open(self.filepath, "w").close()  # clear
+
+        if open_now:
+            self.file = open(self.filepath, "a+", newline="")
+            self.isopen: bool = True
+            self.writer = csv.writer(self.file, quoting=csv.QUOTE_MINIMAL)
+        else:
+            self.file = None
+            self.isopen: bool = False
+            self.writer = None
 
     def clear_buffer(self) -> None:
         self.buffer: list = []
@@ -57,7 +71,7 @@ class LogCSV:
         if reopen:
             self.open()
 
-    def clear_all(self):
+    def clear_all(self) -> None:
         self.clear_buffer()
         self.clear_file(preserve_status=True)
 
@@ -66,10 +80,12 @@ class LogCSV:
             raise RuntimeError("Cannot flush to a closed file. Open it first!")
         self.file.flush()
 
-    def accum_buffer(self, element):
-        self.buffer.append(element)
+    def accum_buffer(self, *elements) -> None:
+        self.buffer.extend(list(elements))
 
-    def write_buffer(self, flush_now: bool = False, preserve_status: bool = False):
+    def write_buffer(
+        self, flush_now: bool = False, preserve_status: bool = True
+    ) -> None:
         reclose: bool = preserve_status and not self.isopen
         self.open()
         self.writer.writerow(self.buffer)
@@ -80,8 +96,8 @@ class LogCSV:
             self.close()
 
     def write_list(
-        self, input_list: list, flush_now: bool = False, preserve_status: bool = False
-    ):
+        self, input_list: list, flush_now: bool = False, preserve_status: bool = True
+    ) -> None:
         reclose: bool = preserve_status and not self.isopen
         self.open()
         self.writer.writerow(input_list)

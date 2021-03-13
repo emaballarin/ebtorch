@@ -23,7 +23,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Imports
-from .csvlog import LogCSV
+from .logcsv import LogCSV
 
 # Deletions
-del csvlog
+del logcsv
