@@ -34,6 +34,7 @@ class LogCSV:
         open_now: bool = False,
         clear_now: bool = False,
     ) -> None:
+        self.constants: list = []
         self.buffer: list = []
         self.filepath: Union[str, Path] = file_path
 
@@ -51,6 +52,12 @@ class LogCSV:
 
     def clear_buffer(self) -> None:
         self.buffer: list = []
+
+    def reset_constants(self) -> None:
+        self.constants: list = []
+
+    def set_constants(self, *elements) -> None:
+        self.buffer: list = list(elements)
 
     def open(self) -> None:
         if not self.isopen:
@@ -72,23 +79,31 @@ class LogCSV:
             self.open()
 
     def clear_all(self) -> None:
+        self.reset_constants()
         self.clear_buffer()
         self.clear_file(preserve_status=True)
 
     def flush(self) -> None:
         if not self.isopen:
             raise RuntimeError("Cannot flush to a closed file. Open it first!")
-        self.file.flush()
+        else:
+            self.file.flush()
 
     def accum_buffer(self, *elements) -> None:
         self.buffer.extend(list(elements))
 
     def write_buffer(
-        self, flush_now: bool = False, preserve_status: bool = True
+        self,
+        skip_constants: bool = False,
+        flush_now: bool = False,
+        preserve_status: bool = True,
     ) -> None:
         reclose: bool = preserve_status and not self.isopen
         self.open()
-        self.writer.writerow(self.buffer)
+        if skip_constants:
+            self.writer.writerow(self.buffer)
+        else:
+            self.writer.writerow(self.constants + self.buffer)
         if flush_now:
             self.flush()
         self.clear_buffer()
@@ -96,11 +111,18 @@ class LogCSV:
             self.close()
 
     def write_list(
-        self, input_list: list, flush_now: bool = False, preserve_status: bool = True
+        self,
+        input_list: list,
+        skip_constants: bool = False,
+        flush_now: bool = False,
+        preserve_status: bool = True,
     ) -> None:
         reclose: bool = preserve_status and not self.isopen
         self.open()
-        self.writer.writerow(input_list)
+        if skip_constants:
+            self.writer.writerow(input_list)
+        else:
+            self.writer.writerow(self.constants + input_list)
         if flush_now:
             self.flush()
         if reclose:
