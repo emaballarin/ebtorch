@@ -86,8 +86,7 @@ class LogCSV:
     def flush(self) -> None:
         if not self.isopen:
             raise RuntimeError("Cannot flush to a closed file. Open it first!")
-        else:
-            self.file.flush()
+        self.file.flush()
 
     def accum_buffer(self, *elements) -> None:
         self.buffer.extend(list(elements))
