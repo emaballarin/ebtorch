@@ -35,6 +35,7 @@ from .logging import *  # lgtm [py/polluting-import]
 del KWTA1d
 del KWTA2d
 del BrokenReLU
+del FCBlock
 
 # (from .optim)
 del Lookahead

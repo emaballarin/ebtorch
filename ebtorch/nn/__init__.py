@@ -24,8 +24,10 @@
 
 # Imports
 from .kwta import KWTA1d, KWTA2d, BrokenReLU
+from .architectures import FCBlock
 from .utils import *  # lgtm [py/polluting-import]
 
 # Deletions
 del kwta
 del AutoClipper
+del architectures
