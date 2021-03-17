@@ -38,13 +38,10 @@ class FCBlock(nn.Module):
         hactiv,
         oactiv,
         bias: Union[bool, List[bool]] = True,
-        stateful: Union[None, List[nn.Module]] = None,
     ) -> None:
         super().__init__()
         allsizes: List[int] = [fin] + hsizes + [fout]
-        # Register stateful components (nn.Modules) to allow their training
-        if stateful is not None:
-            self.stateful = nn.ModuleList(stateful)
+
         # Biases for the linears below
         if not isinstance(bias, list):
             bias = [bias] * (len(allsizes) - 1)
@@ -53,6 +50,7 @@ class FCBlock(nn.Module):
                 raise RuntimeError(
                     "If 'bias' is a list, it must have as many elements as #linears"
                 )
+
         self.linears: nn.ModuleList = nn.ModuleList(
             [
                 nn.Linear(allsizes[i], allsizes[i + 1], bias=bias[i])
@@ -62,7 +60,7 @@ class FCBlock(nn.Module):
         self.hactiv = hactiv
         self.oactiv = oactiv
 
-        # Address the hactiv-list case
+        # Address the "hactiv: list" case
         if (
             hactiv is not None
             and isinstance(hactiv, list)
