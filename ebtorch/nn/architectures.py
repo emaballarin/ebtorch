@@ -24,7 +24,6 @@
 # IMPORTS
 from typing import List, Union
 from torch import nn, Tensor
-import torch.nn.functional as F
 
 
 # CLASSES
@@ -47,7 +46,7 @@ class FCBlock(nn.Module):
         if stateful is not None:
             self.stateful = nn.ModuleList(stateful)
         # Biases for the linears below
-        if type(bias) is not list:
+        if not isinstance(bias, list):
             bias = [bias] * (len(allsizes) - 1)
         else:
             if not len(bias) == len(allsizes) - 1:
@@ -66,7 +65,7 @@ class FCBlock(nn.Module):
         # Address the hactiv-list case
         if (
             hactiv is not None
-            and type(hactiv) is list
+            and isinstance(hactiv, list)
             and not len(hactiv) == len(self.linears) - 1
         ):
             raise RuntimeError(
@@ -79,7 +78,7 @@ class FCBlock(nn.Module):
         for idx, linear in enumerate(self.linears):
             x: Tensor = linear(x)
             if self.hactiv is not None and idx < len(self.linears) - 1:
-                if type(self.hactiv) is not list:
+                if not isinstance(self.hactiv, list):
                     x: Tensor = self.hactiv(x)
                 else:
                     x: Tensor = self.hactiv[idx](x)
