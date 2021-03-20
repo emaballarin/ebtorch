@@ -48,3 +48,4 @@ del SAM
 
 # (from .utils)
 del LogCSV
+del AverageMeter

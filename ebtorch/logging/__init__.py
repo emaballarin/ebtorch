@@ -24,6 +24,8 @@
 
 # Imports
 from .logcsv import LogCSV
+from .avgmeter import AverageMeter
 
 # Deletions
 del logcsv
+del avgmeter

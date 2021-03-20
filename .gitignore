@@ -112,13 +112,19 @@ data/
 *.pth
 
 # JetBrains IDEs settings
-.idea/
 .idea
+.idea/
 *.idea
+**/.idea/*
 
 # MS Visual Studio Code (and IonIDE workaround)
+.vscode
+.ionide
+.fake
 .vscode/
 .ionide/
+**/.vscode/*
+**/.ionide/*
 
 # Old KDE settings
 .directory
@@ -149,3 +155,8 @@ oldmodels/
 # EXTRA
 install.sh
 format.sh
+
+# Typesheds
+typeshed
+typeshed/
+**/typeshed/*
