@@ -52,7 +52,7 @@ class AverageMeter:
         self.sum: realnum = 0
         self.count: int = 0
 
-    def update(self, val, n=1):
+    def update(self, val: realnum, n: int = 1):
         self.val: realnum = val
         self.sum += val * n
         self.count += n
