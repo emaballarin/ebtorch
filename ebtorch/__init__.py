@@ -36,6 +36,7 @@ del KWTA1d
 del KWTA2d
 del BrokenReLU
 del FCBlock
+del LMUCell
 
 # (from .optim)
 del Lookahead
@@ -45,6 +46,8 @@ del WarmAdamW
 del Ranger
 del utils
 del SAM
+del HCGD
+del HCAdam
 
 # (from .utils)
 del LogCSV

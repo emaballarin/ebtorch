@@ -27,9 +27,11 @@ from .lookahead import Lookahead
 from .radam import RAdam, PlainRAdam, WarmAdamW
 from .ranger import Ranger
 from .sam import SAM
+from .hcgd import HCGD, HCAdam
 
 # Deletions
 del lookahead
 del radam
 del ranger
 del sam
+del hcgd
