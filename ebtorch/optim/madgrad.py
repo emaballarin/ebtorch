@@ -260,9 +260,9 @@ class MADGRAD(torch.optim.Optimizer):
                     # Apply stepweight (AdamW-like) decay or not: `yes` case; part 1
                     if group["awwd"]:
                         if group["mawd"]:
-                            wd_diff = torch.add(p.data, alpha=-ck * lr * decay)
+                            wd_diff = torch.mul(input=p.data, other=-ck * lr * decay)
                         else:
-                            wd_diff = torch.add(p.data, alpha=-lr * decay)
+                            wd_diff = torch.mul(input=p.data, other=-lr * decay)
 
                     # Step
                     if momentum == 0:
@@ -275,7 +275,7 @@ class MADGRAD(torch.optim.Optimizer):
 
                     # Apply stepweight (AdamW-like) decay or not: `yes` case; part 2
                     if group["awwd"]:
-                        p.data.add_(p.data, wd_diff)
+                        p.data.add_(wd_diff)
 
         self.state["k"] += 1
         return loss
