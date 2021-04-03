@@ -48,6 +48,7 @@ del utils
 del SAM
 del HCGD
 del HCAdam
+del MADGRAD
 
 # (from .utils)
 del LogCSV
