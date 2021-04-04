@@ -32,6 +32,14 @@
 
 # IMPORTS
 
+# Type hints
+from typing import Union
+
+# Operations on floats and ints
+from math import sqrt as math_sqrt
+
+# Tensors and NN-related
+import torch
 from torch import nn
 from .functional import mish as fmish
 
@@ -58,3 +66,85 @@ class Mish(nn.Module):
 
     def forward(self, x_input):
         return fmish(x_input)
+
+
+# Adapted from Federico Andres Lois' mish_init.py GitHub Gist
+# (cfr.: https://gist.github.com/redknightlois/b5d36fd2ae306cb8b3484c1e3bcce253)
+
+
+def init_layer(mlayer, variance: Union[float, int] = 1.0):
+    """
+    Initialize the weights and biases of a Layer according to the
+    "Variance-based initialization method for Mish-activation layers"
+    by Federico Andres Lois.
+
+    BatchNorm and other layers endowed with running statistics are automatically
+    skipped (as they should), but particular care must be put in ensuring
+    that other non-Mish-activated (or non-weights-and-biases) layers are skipped
+    too.
+
+
+    Parameters
+    ----------
+    mlayer : Layer
+        The Layer that will be initialized.
+    variance : float, optional
+        Dispersion parameter for the weights. Default: 1.0
+    """
+
+    def _calculate_fan_in_and_fan_out(tensor):
+        dimensions = tensor.dim()
+
+        if dimensions < 2:  # 1D Tensor
+            return 1, 1
+
+        if dimensions == 2:  # Linear Layer
+            fan_in = tensor.size(1)
+            fan_out = tensor.size(0)
+        else:
+            num_input_fmaps = tensor.size(1)
+            num_output_fmaps = tensor.size(0)
+            receptive_field_size = 1
+
+            if tensor.dim() > 2:
+                receptive_field_size = tensor[0][0].numel()
+
+            fan_in = num_input_fmaps * receptive_field_size
+            fan_out = num_output_fmaps * receptive_field_size
+
+        return fan_in, fan_out
+
+    def _initialize_weights(tensor, variance, filters=1):
+        fan_in, fan_out = _calculate_fan_in_and_fan_out(tensor)
+        gain = variance / math_sqrt(fan_in * filters)
+
+        with torch.no_grad():
+            torch.nn.init.normal_(tensor)
+            return tensor.data * gain
+
+    def _initialize_bias(tensor, variance):
+        with torch.no_grad():
+            torch.nn.init.normal_(tensor)
+            return tensor.data * variance
+
+    if mlayer is None:
+        return
+
+    if hasattr(mlayer, "weight") and mlayer.weight is not None:
+
+        # Explicitly skip layers with running statistics (e.g. BatchNorm)
+        if hasattr(mlayer, "running_mean"):
+            return
+
+        filters = 1
+
+        # Treat Layers with "channels" as Convolutional Layers
+        if hasattr(mlayer, "in_channels"):
+            filters = mlayer.in_channels
+
+        mlayer.weight.data = _initialize_weights(
+            mlayer.weight, variance=variance, filters=filters
+        )
+
+    if hasattr(mlayer, "bias") and mlayer.bias is not None:
+        mlayer.bias.data = _initialize_bias(mlayer.bias, variance=variance)
