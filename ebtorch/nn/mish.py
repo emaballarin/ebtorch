@@ -72,7 +72,7 @@ class Mish(nn.Module):
 # (cfr.: https://gist.github.com/redknightlois/b5d36fd2ae306cb8b3484c1e3bcce253)
 
 
-def init_layer(mlayer, variance: Union[float, int] = 1.0):
+def mishlayer_init(mlayer, variance: Union[float, int] = 1.0):
     """
     Initialize the weights and biases of a Layer according to the
     "Variance-based initialization method for Mish-activation layers"

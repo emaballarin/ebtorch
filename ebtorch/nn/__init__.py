@@ -27,7 +27,7 @@ from .kwta import KWTA1d, KWTA2d, BrokenReLU
 from .architectures import FCBlock
 from .utils import *  # lgtm [py/polluting-import]
 from .lmu import LMUCell
-from .mish import Mish
+from .mish import Mish, mishlayer_init
 
 # Deletions
 del kwta
