@@ -39,7 +39,7 @@ from typing import Union
 from math import sqrt as math_sqrt
 
 # Tensors and NN-related
-import torch
+import torch  # lgtm [py/import-and-import-from]
 from torch import nn
 from .functional import mish as fmish
 

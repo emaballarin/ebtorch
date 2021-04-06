@@ -32,7 +32,7 @@
 
 # IMPORTS
 
-import torch
+import torch  # lgtm [py/import-and-import-from]
 from torch import Tensor
 from torch.overrides import has_torch_function_unary, handle_torch_function
 import torch.nn.functional as F

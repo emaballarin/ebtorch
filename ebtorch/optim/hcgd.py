@@ -193,7 +193,7 @@ class HCGD(Optimizer):
 
             # step towards this value
             for group, group_jacobian in zip(self.param_groups, jacobian):
-                weight_decay = group["weight_decay"]
+                weight_decay = group["weight_decay"]  # lgtm [py/unused-local-variable]
                 fcn_change_limiter = group["fcn_change_limiter"]
                 inner_lr = group["inner_lr"]
                 momentum = group["momentum"]
@@ -348,7 +348,7 @@ class HCAdam(Optimizer):
                 state = self.state[p]
 
                 # State initialization
-                #if len(state) == 0:
+                # if len(state) == 0:
                 if not state:
                     state["step"] = 0
                     # Exponential moving average of gradient values
