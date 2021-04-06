@@ -115,7 +115,7 @@ def mishlayer_init(mlayer, variance: Union[float, int] = 1.0):
         return fan_in, fan_out
 
     def _initialize_weights(tensor, variance, filters=1):
-        fan_in, fan_out = _calculate_fan_in_and_fan_out(tensor)
+        fan_in, _ = _calculate_fan_in_and_fan_out(tensor)
         gain = variance / math_sqrt(fan_in * filters)
 
         with torch.no_grad():

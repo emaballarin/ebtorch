@@ -18,9 +18,11 @@
 
 
 # IMPORTS
+
+import math
+
 import torch
 from torch.optim import Optimizer
-import math
 
 
 # AUXILIARY/UTILITY
@@ -346,7 +348,8 @@ class HCAdam(Optimizer):
                 state = self.state[p]
 
                 # State initialization
-                if len(state) == 0:
+                #if len(state) == 0:
+                if not state:
                     state["step"] = 0
                     # Exponential moving average of gradient values
                     state["exp_avg"] = torch.zeros_like(p.data)

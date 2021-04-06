@@ -17,14 +17,15 @@
 #
 # ==============================================================================
 
+import math
+from functools import partial
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import math
 import numpy as np
 from nengolib.signal import Identity, cont2discrete
 from nengolib.synapses import LegendreDelay
-from functools import partial
 
 
 # from: https://github.com/deepsound-project/samplernn-pytorch/blob/master/nn.py#L46

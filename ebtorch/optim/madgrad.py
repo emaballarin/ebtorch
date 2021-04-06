@@ -119,7 +119,7 @@ class MADGRAD(torch.optim.Optimizer):
         if weight_decay < 0:
             raise ValueError(f"Weight decay {weight_decay} must be non-negative")
         if eps < 0:
-            raise ValueError(f"Eps must be non-negative")
+            raise ValueError(f"Eps {eps} must be non-negative")
         if mawd and not awwd:
             raise RuntimeError("MAWD requires AWWD, but AWWD is not enabled")
 
