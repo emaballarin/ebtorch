@@ -35,7 +35,7 @@ from torch.optim.optimizer import Optimizer
 
 
 def centralized_gradient(x, use_gc=True, gc_conv_only=False):
-    """credit - https://github.com/Yonghongwei/Gradient-Centralization """
+    """credit - https://github.com/Yonghongwei/Gradient-Centralization"""
     if use_gc:
         if gc_conv_only:
             if len(list(x.size())) > 3:
