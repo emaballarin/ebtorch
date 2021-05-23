@@ -24,13 +24,12 @@
 
 # Imports
 from .autoclip import AutoClipper
-from .repr import (
+from .reprutils import (
     store_repr_fx,
-    store_repr_fx_conditional,
     store_repr_hook,
     store_repr_autohook,
 )
 
 # Deletions
 del autoclip
-del repr
+del reprutils

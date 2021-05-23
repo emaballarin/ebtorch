@@ -23,14 +23,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # IMPORTS
-import torch as th
-from torch import Tensor
-
 from typing import Union, List
 
 from functools import partial
 
-# ------------------------------------------------------------------------------
+import torch as th
+from torch import Tensor
 
 
 def store_repr_fx(representation: Union[Tensor, None], x: Tensor) -> Tensor:
@@ -42,7 +40,7 @@ def store_repr_fx(representation: Union[Tensor, None], x: Tensor) -> Tensor:
                 "Known representation is not a torch.Tensor. If you need to initialize it empty, use a 0-dimensional tensor"
             )
 
-        elif representation.shape[0] == 0:
+        if representation.shape[0] == 0:
             representation = th.tensor(
                 [[] for _ in range(x.shape[0])], requires_grad=False
             )
@@ -58,22 +56,6 @@ def store_repr_fx(representation: Union[Tensor, None], x: Tensor) -> Tensor:
         return th.cat(
             (representation, th.flatten(x, start_dim=1).clone().detach()), dim=1
         )
-
-
-# ------------------------------------------------------------------------------
-
-
-def store_repr_fx_conditional(
-    representation: Union[Tensor, None], x: Tensor, doit: bool
-) -> Tensor:
-
-    with th.no_grad():
-
-        if doit:
-            return store_repr(representation, x)
-
-
-# ------------------------------------------------------------------------------
 
 
 def store_repr_hook(
@@ -94,7 +76,7 @@ def store_repr_hook(
                 "If you need to initialize it empty, use a 0-dimensional tensor as the only element."
             )
 
-        elif representation_list[0].shape[0] == 0:
+        if representation_list[0].shape[0] == 0:
             representation_list[0] = th.tensor(
                 [[] for _ in range(out.shape[0])], requires_grad=False
             )
@@ -111,9 +93,6 @@ def store_repr_hook(
             (representation_list[0], th.flatten(out, start_dim=1).clone().detach()),
             dim=1,
         )
-
-
-# ------------------------------------------------------------------------------
 
 
 def store_repr_autohook(

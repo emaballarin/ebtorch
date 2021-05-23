@@ -38,6 +38,5 @@ del mish
 # Deletions (from .utils)
 del AutoClipper
 del store_repr_fx
-del store_repr_fx_conditional
 del store_repr_hook
 del store_repr_autohook
