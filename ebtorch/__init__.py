@@ -36,6 +36,7 @@ del KWTA1d
 del KWTA2d
 del BrokenReLU
 del FCBlock
+del CausalConv1d
 del LMUCell
 
 # (from .optim)
