@@ -100,7 +100,7 @@ class CausalConv1d(nn.Conv1d):
         dilation=1,
         groups: int = 1,
         bias: bool = True,
-        padding_mode: str = 'zeros'
+        padding_mode: str = "zeros",
     ):
         self.__padding = (kernel_size - 1) * dilation
 
@@ -113,7 +113,7 @@ class CausalConv1d(nn.Conv1d):
             dilation=dilation,
             groups=groups,
             bias=bias,
-            padding_mode=padding_mode
+            padding_mode=padding_mode,
         )
 
     def forward(self, x):
