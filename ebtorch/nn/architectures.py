@@ -93,13 +93,14 @@ class FCBlock(nn.Module):
 class CausalConv1d(nn.Conv1d):
     def __init__(
         self,
-        in_channels,
-        out_channels,
+        in_channels: int,
+        out_channels: int,
         kernel_size,
         stride=1,
         dilation=1,
-        groups=1,
-        bias=True,
+        groups: int = 1,
+        bias: bool = True,
+        padding_mode: str = 'zeros'
     ):
         self.__padding = (kernel_size - 1) * dilation
 
@@ -112,6 +113,7 @@ class CausalConv1d(nn.Conv1d):
             dilation=dilation,
             groups=groups,
             bias=bias,
+            padding_mode=padding_mode
         )
 
     def forward(self, x):
