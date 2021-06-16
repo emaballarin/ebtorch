@@ -44,8 +44,9 @@ class AutoClipper:
         self.queue_list: List[float] = []
 
     def grad_consider(self, model) -> None:
-        if self.queue_size is not None and len(self.queue_list) >= self.queue_size:
-            _ = self.queue_list.pop()
+        if self.queue_size is not None:
+            while len(self.queue_list) >= self.queue_size:
+                _ = self.queue_list.pop()
         self.queue_list.insert(0, _get_grad_norm(model))
 
     def grad_autoclip_(self, model, clip_percentile) -> None:
