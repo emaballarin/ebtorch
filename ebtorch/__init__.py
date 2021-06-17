@@ -38,6 +38,11 @@ del BrokenReLU
 del FCBlock
 del CausalConv1d
 del LMUCell
+# -- from AdaptiveIO --
+del VariationalDropout
+del AdaptiveInput
+del AdaptiveLogSoftmaxWithLoss
+# --                 --
 
 # (from .optim)
 del Lookahead

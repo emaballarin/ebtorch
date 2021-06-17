@@ -28,6 +28,7 @@ from .architectures import FCBlock, CausalConv1d
 from .utils import *  # lgtm [py/polluting-import]
 from .lmu import LMUCell
 from .mish import Mish, mishlayer_init
+from .adaptiveio import VariationalDropout, AdaptiveInput, AdaptiveLogSoftmaxWithLoss
 
 # Deletions
 del kwta
