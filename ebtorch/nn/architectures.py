@@ -22,14 +22,121 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # IMPORTS
-from typing import List, Union
+import copy
+from typing import List, Union, Optional
 from torch import nn, Tensor
 
 
 # CLASSES
 
-# Fully-Connected Block
+# Fully-Connected Block, New version
+# Joint work with Davide Roznowicz (https://github.com/DavideRoznowicz)
 class FCBlock(nn.Module):
+    def __init__(
+        self,
+        in_sizes: Union[List[int], tuple],
+        out_size: int,
+        bias: Optional[Union[List[bool], tuple, bool]] = None,
+        activation_fx: Optional[Union[nn.ModuleList, nn.Module]] = None,
+        dropout: Optional[Union[List[Union[float, bool]], float, bool, tuple]] = None,
+        batchnorm: Optional[Union[List[bool], bool, tuple]] = None,
+    ) -> None:
+        super().__init__()
+
+        self.activation_fx = nn.ModuleList()
+
+        error_uneven_size: str = (
+            "The length of lists of arguments must be the same across them."
+        )
+        error_illegal_dropout: str = "The 'dropout' argument must be either False, a float, or an iterable of floats and/or False."
+
+        # Default cases
+        if bias is None:
+            bias = [True] * len(in_sizes)
+        if dropout is None:
+            dropout = [False] * len(in_sizes)
+        if batchnorm is None:
+            batchnorm = [True] * (len(in_sizes) - 1) + [False]
+        if activation_fx is None:
+            for _ in range(len(in_sizes) - 1):
+                self.activation_fx.append(nn.ReLU())
+
+        # Ergonomics
+        if isinstance(bias, bool):
+            bias = [bias] * len(in_sizes)
+        if isinstance(dropout, bool):
+            if not dropout:
+                dropout = [False] * len(in_sizes)
+            else:
+                raise ValueError(error_illegal_dropout)
+        elif isinstance(dropout, float) or (
+            isinstance(dropout, int) and (dropout in (0, 1))
+        ):
+            dropout = [dropout] * len(in_sizes)
+        elif not isinstance(dropout, list):
+            raise ValueError(error_illegal_dropout)
+
+        if isinstance(batchnorm, bool):
+            batchnorm = [batchnorm] * len(in_sizes)
+
+        if isinstance(activation_fx, nn.Module) and not isinstance(
+            activation_fx, nn.ModuleList
+        ):
+            for _ in range(len(in_sizes)):
+                self.activation_fx.append(copy.deepcopy(activation_fx))
+
+        # Sanitize
+        if (
+            not len(in_sizes)
+            == len(bias)
+            == len(self.activation_fx)
+            == len(dropout)
+            == len(batchnorm)
+        ):
+            raise ValueError(error_uneven_size)
+
+        # Start with an empty module list
+        self.module_battery = nn.ModuleList(modules=None)
+
+        for layer_idx in range(len(in_sizes) - 1):
+            self.module_battery.append(
+                nn.Linear(
+                    in_features=in_sizes[layer_idx],
+                    out_features=in_sizes[layer_idx + 1],
+                    bias=bias[layer_idx],
+                )
+            )
+            self.module_battery.append(copy.deepcopy(self.activation_fx[layer_idx]))
+
+            if batchnorm[layer_idx]:
+                self.module_battery.append(
+                    nn.BatchNorm1d(num_features=in_sizes[layer_idx + 1])
+                )
+
+            if isinstance(dropout[layer_idx], bool) and dropout[layer_idx]:
+                raise ValueError(error_illegal_dropout)
+            elif not isinstance(dropout[layer_idx], bool):
+                self.module_battery.append(nn.Dropout(p=dropout[layer_idx]))
+
+        self.module_battery.append(
+            nn.Linear(in_features=in_sizes[-1], out_features=out_size, bias=bias[-1])
+        )
+        self.module_battery.append(copy.deepcopy(self.activation_fx[-1]))
+        if batchnorm[-1]:
+            self.module_battery.append(nn.BatchNorm1d(num_features=out_size))
+        if isinstance(dropout[-1], bool) and dropout[-1]:
+            raise ValueError(error_illegal_dropout)
+        elif not isinstance(dropout[-1], bool):
+            self.module_battery.append(nn.Dropout(p=dropout[-1]))
+
+    def forward(self, x: Tensor) -> Tensor:
+        for module_idx in range(len(self.module_battery)):
+            x = self.module_battery[module_idx](x)
+        return x
+
+
+# Fully-Connected Block, Legacy version
+class FCBlockLegacy(nn.Module):
     def __init__(
         self,
         fin: int,
@@ -104,7 +211,7 @@ class CausalConv1d(nn.Conv1d):
     ):
         self.__padding = (kernel_size - 1) * dilation
 
-        super(CausalConv1d, self).__init__(
+        super().__init__(
             in_channels,
             out_channels,
             kernel_size=kernel_size,
@@ -117,7 +224,7 @@ class CausalConv1d(nn.Conv1d):
         )
 
     def forward(self, x):
-        result = super(CausalConv1d, self).forward(x)
+        result = super().forward(x)
         if self.__padding != 0:
             return result[:, :, : -self.__padding]
         return result

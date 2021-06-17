@@ -35,6 +35,7 @@ from .logging import *  # lgtm [py/polluting-import]
 del KWTA1d
 del KWTA2d
 del BrokenReLU
+del FCBlockLegacy
 del FCBlock
 del CausalConv1d
 del LMUCell
