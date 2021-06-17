@@ -5,11 +5,11 @@
 # (c) 2020 Taufiquzzaman Peyash (https://github.com/taufique74) - All Rights Reserved.
 #
 
-import math
+from collections import namedtuple
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from collections import namedtuple
 from torch.nn import Sequential, ModuleList, Linear, Module
 
 
