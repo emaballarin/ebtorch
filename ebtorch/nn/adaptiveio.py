@@ -7,7 +7,7 @@
 
 from collections import namedtuple
 
-import torch
+import torch  # lgtm [py/import-and-import-from]
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn import Sequential, ModuleList, Linear, Module

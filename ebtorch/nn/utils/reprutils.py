@@ -27,7 +27,7 @@ from typing import Union, List
 
 from functools import partial
 
-import torch as th
+import torch as th  # lgtm [py/import-and-import-from]
 from torch import Tensor
 
 
