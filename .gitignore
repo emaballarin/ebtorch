@@ -147,7 +147,6 @@ old/
 prova/
 test/
 references/
-venv/
 *.ipynb_checkpoints/
 *data/
 oldmodels/

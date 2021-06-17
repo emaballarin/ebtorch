@@ -22,8 +22,8 @@ class VariationalDropout(nn.Module):
         if not self.training or self.dropout <= 0.0:
             return x
 
-        batch_size = x.size(1)
-        mask = x.new_empty(1, batch_size, x.size(2), requires_grad=False).bernoulli_(
+        batch_size = x.shape[1]
+        mask = x.new_empty(1, batch_size, x.shape[2], requires_grad=False).bernoulli_(
             1 - self.dropout
         )
         x = x.masked_fill(mask == 0, 0) / (1 - self.dropout)

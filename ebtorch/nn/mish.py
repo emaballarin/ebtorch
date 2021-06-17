@@ -57,7 +57,7 @@ class Mish(nn.Module):
         - Output: (N, *), same shape as the input
     Examples:
         >>> m = Mish()
-        >>> input = torch.randn(2)
+        >>> x_input = torch.randn(2)
         >>> output = m(input)
     """
 

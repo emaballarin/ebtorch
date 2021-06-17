@@ -141,7 +141,7 @@ class HCGD(Optimizer):
             ]
         else:
             # make empty (just a placeholder that we'll iterate through later)
-            jacobian = [[None for p in group["params"]] for group in self.param_groups]
+            jacobian = [[None for _ in group["params"]] for group in self.param_groups]
 
         # take a proposed step.
         # if using momentum, the proposed step includes momentum
@@ -333,7 +333,7 @@ class HCAdam(Optimizer):
             ]
         else:
             # make empty (just a placeholder that we'll iterate through later)
-            jacobian = [[None for p in group["params"]] for group in self.param_groups]
+            jacobian = [[None for _ in group["params"]] for group in self.param_groups]
 
         # In this loop we just take a step of Adam
         for group in self.param_groups:
@@ -370,7 +370,7 @@ class HCAdam(Optimizer):
                 if group["weight_decay"] != 0:
                     grad = grad.add(group["weight_decay"], p.data)
 
-                ### Take Adam step
+                # Take Adam step
                 # Decay the first and second moment running average coefficient
                 exp_avg.mul_(beta1).add_(1 - beta1, grad)
                 exp_avg_sq.mul_(beta2).addcmul_(1 - beta2, grad, grad)

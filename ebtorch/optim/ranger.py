@@ -100,7 +100,7 @@ class Ranger(Optimizer):
         self.k = k
 
         # radam buffer for state
-        self.radam_buffer = [[None, None, None] for ind in range(10)]
+        self.radam_buffer = [[None, None, None] for _ in range(10)]
 
         # gc on or off
         self.gc_loc = gc_loc
