@@ -35,6 +35,7 @@ del kwta
 del architectures
 del lmu
 del mish
+del adaptiveio
 
 # Deletions (from .utils)
 del AutoClipper
