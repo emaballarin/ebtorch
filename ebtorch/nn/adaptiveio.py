@@ -63,8 +63,8 @@ class RNNModel(nn.Module):
         self.decoder.bias.data.zero_()
         self.decoder.weight.data.uniform_(-initrange, initrange)
 
-    def forward(self, input, hidden):
-        emb = self.drop(self.encoder(input))
+    def forward(self, myinput, hidden):
+        emb = self.drop(self.encoder(myinput))
         output, hidden = self.rnn(emb, hidden)
         output = self.drop(output)
         decoded = self.decoder(output)
@@ -121,11 +121,11 @@ class AWD_LSTM(nn.LSTM):
                     param.data, p=self.dropoutw, training=self.training
                 ).contiguous()
 
-    def forward(self, input, hx=None):
+    def forward(self, myinput, hx=None):
         self._drop_weights()
         self.flatten_parameters()
-        input = self.input_drop(input)
-        seq, state = super().forward(input, hx=hx)
+        myinput = self.input_drop(myinput)
+        seq, state = super().forward(myinput, hx=hx)
         return self.output_drop(seq), state
 
 
@@ -141,12 +141,15 @@ class AdaptiveSoftmaxRNN(nn.Module):
         emb_dropout=0.0,
         rnn_dropout=0.2,
         tail_dropout=0.5,
-        cutoffs=[20000, 50000],
+        cutoffs=(20000, 50000),
         tie_weights=False,
         adaptive_input=False,
     ):
         super(AdaptiveSoftmaxRNN, self).__init__()
-        ntoken = ntoken
+
+        cutoffs = list(cutoffs)
+
+        # ntoken = ntoken #??
         self.emb_dropout = nn.Dropout(emb_dropout)
         self.out_dropout = nn.Dropout(0.5)
         if adaptive_input:
@@ -165,7 +168,9 @@ class AdaptiveSoftmaxRNN(nn.Module):
 
         # weight sharing as described in the paper
         if tie_weights and adaptive_input:
-            for i in range(len(cutoffs)):
+            # for i in range(len(cutoffs)):
+            for i in enumerate(cutoffs):
+                i = i[0]
                 self.encoder.tail[i][0].weight = self.decoder.tail[i][1].weight
 
                 # sharing the projection layers
@@ -173,14 +178,21 @@ class AdaptiveSoftmaxRNN(nn.Module):
                     self.decoder.tail[i][0].weight.transpose(0, 1)
                 )
 
-    def init_weights(self):
-        initrange = 0.1
-        # self.encoder.weight.data.uniform_(-initrange, initrange)
-        # self.decoder.bias.data.zero_()
-        # self.decoder.weight.data.uniform_(-initrange, initrange)
+    # Very ugly workaround to save some memory until this is "fixed"!
+    @staticmethod
+    def init_weights():
+        print(
+            "You called the mathod 'init_weights()' which is currently not implemented. Nothing has been done, but execution has not been halted for backward-compatibility."
+        )
 
-    def forward(self, input, hidden, targets):
-        emb = self.emb_dropout(self.encoder(input))  # (seq_len, bsz, ninp)
+    # def init_weights(self):
+    # initrange = 0.1
+    # self.encoder.weight.data.uniform_(-initrange, initrange)
+    # self.decoder.bias.data.zero_()
+    # self.decoder.weight.data.uniform_(-initrange, initrange)
+
+    def forward(self, myinput, hidden, targets):
+        emb = self.emb_dropout(self.encoder(myinput))  # (seq_len, bsz, ninp)
         output, hidden = self.rnn(emb, hidden)  # (seq_len, bsz, ninp)
         output = self.out_dropout(output)
         output = output.view(-1, output.size(2))  # (seq_len*bsz, ninp)
@@ -211,11 +223,14 @@ class AdaptiveSoftmaxRNNImproved(nn.Module):
         out_dropout=0.4,
         rnn_dropout=0.3,
         tail_dropout=0.3,
-        cutoffs=[20000, 50000],
+        cutoffs=(20000, 50000),
         tie_weights=True,
     ):
         super().__init__()
-        ntoken = ntoken
+
+        cutoffs = list(cutoffs)
+
+        # ntoken = ntoken #??
         self.emb_dropout = nn.Dropout(emb_dropout)
         self.out_dropout = nn.Dropout(out_dropout)
 
@@ -238,7 +253,9 @@ class AdaptiveSoftmaxRNNImproved(nn.Module):
 
         # weight sharing as described in the paper
         if tie_weights:
-            for i in range(len(cutoffs)):
+            # for i in range(len(cutoffs)):
+            for i in enumerate(cutoffs):
+                i = i[0]
                 self.encoder.tail[i][0].weight = self.decoder.tail[i][1].weight
 
                 # sharing the projection layers
@@ -246,14 +263,21 @@ class AdaptiveSoftmaxRNNImproved(nn.Module):
                     self.decoder.tail[i][0].weight.transpose(0, 1)
                 )
 
-    def init_weights(self):
-        initrange = 0.1
-        # self.encoder.weight.data.uniform_(-initrange, initrange)
-        # self.decoder.bias.data.zero_()
-        # self.decoder.weight.data.uniform_(-initrange, initrange)
+    # Very ugly workaround to save some memory until this is "fixed"!
+    @staticmethod
+    def init_weights():
+        print(
+            "You called the mathod 'init_weights()' which is currently not implemented. Nothing has been done, but execution has not been halted for backward-compatibility."
+        )
 
-    def forward(self, input, hidden, targets):
-        emb = self.emb_dropout(self.encoder(input))  # (seq_len, bsz, ninp)
+    # def init_weights(self):
+    # initrange = 0.1
+    # self.encoder.weight.data.uniform_(-initrange, initrange)
+    # self.decoder.bias.data.zero_()
+    # self.decoder.weight.data.uniform_(-initrange, initrange)
+
+    def forward(self, myinput, hidden, targets):
+        emb = self.emb_dropout(self.encoder(myinput))  # (seq_len, bsz, ninp)
         output, hidden = self.rnn(emb, hidden)  # (seq_len, bsz, ninp)
         output = self.out_dropout(output)
         output = output.view(-1, output.size(2))  # (seq_len*bsz, ninp)
@@ -291,7 +315,7 @@ class AdaptiveInput(nn.Module):
             or (min(cutoffs) <= 0)
             or (max(cutoffs) >= (n_classes - 1))
             or (len(set(cutoffs)) != len(cutoffs))
-            or any([int(c) != c for c in cutoffs])
+            or any(int(c) != c for c in cutoffs)
         ):
             raise ValueError(
                 "cutoffs should be a sequence of unique, positive "
@@ -329,14 +353,14 @@ class AdaptiveInput(nn.Module):
 
             self.tail.append(projection)
 
-    def forward(self, input):
+    def forward(self, myinput):
         used_rows = 0
-        input_size = list(input.size())
+        input_size = list(myinput.size())
 
-        output = input.new_zeros(
-            [input.size(0) * input.size(1)] + [self.in_features]
+        output = myinput.new_zeros(
+            [myinput.size(0) * myinput.size(1)] + [self.in_features]
         ).float()
-        input = input.view(-1)
+        myinput = myinput.view(-1)
 
         cutoff_values = [0] + self.cutoffs
         for i in range(len(cutoff_values) - 1):
@@ -344,15 +368,15 @@ class AdaptiveInput(nn.Module):
             low_idx = cutoff_values[i]
             high_idx = cutoff_values[i + 1]
 
-            input_mask = (input >= low_idx) & (input < high_idx)
+            input_mask = (myinput >= low_idx) & (myinput < high_idx)
             row_indices = input_mask.nonzero().squeeze()
 
             if row_indices.numel() == 0:
                 continue
             out = (
-                self.head(input[input_mask] - low_idx)
+                self.head(myinput[input_mask] - low_idx)
                 if i == 0
-                else self.tail[i - 1](input[input_mask] - low_idx)
+                else self.tail[i - 1](myinput[input_mask] - low_idx)
             )
             output.index_copy_(0, row_indices, out)
             used_rows += row_indices.numel()
@@ -361,8 +385,8 @@ class AdaptiveInput(nn.Module):
         #     raise RuntimeError("Target values should be in [0, {}], "
         #                        "but values in range [{}, {}] "
         #                        "were found. ".format(self.n_classes - 1,
-        #                                              input.min().item(),
-        #                                              input.max().item()))
+        #                                              myinput.min().item(),
+        #                                              myinput.max().item()))
         return output.view(input_size[0], input_size[1], -1)
 
 
@@ -388,7 +412,7 @@ class AdaptiveLogSoftmaxWithLoss(Module):
             or (min(cutoffs) <= 0)
             or (max(cutoffs) > (n_classes - 1))
             or (len(set(cutoffs)) != len(cutoffs))
-            or any([int(c) != c for c in cutoffs])
+            or any(int(c) != c for c in cutoffs)
         ):
 
             raise ValueError(
@@ -430,8 +454,8 @@ class AdaptiveLogSoftmaxWithLoss(Module):
             i2h.reset_parameters()
             h2o.reset_parameters()
 
-    def forward(self, input, target):
-        if input.size(0) != target.size(0):
+    def forward(self, myinput, target):
+        if myinput.size(0) != target.size(0):
             raise RuntimeError(
                 "Input and target should have the same size " "in the batch dimension."
             )
@@ -439,7 +463,7 @@ class AdaptiveLogSoftmaxWithLoss(Module):
         used_rows = 0
         batch_size = target.size(0)
 
-        output = input.new_zeros(batch_size)
+        output = myinput.new_zeros(batch_size)
         gather_inds = target.new_empty(batch_size)
 
         cutoff_values = [0] + self.cutoffs
@@ -459,7 +483,7 @@ class AdaptiveLogSoftmaxWithLoss(Module):
 
             else:
                 relative_target = target[target_mask] - low_idx
-                input_subset = input.index_select(0, row_indices)
+                input_subset = myinput.index_select(0, row_indices)
 
                 cluster_output = self.tail[i - 1](input_subset)
                 cluster_index = self.shortlist_size + i - 1
@@ -481,24 +505,24 @@ class AdaptiveLogSoftmaxWithLoss(Module):
                 )
             )
 
-        head_output = self.head(input)
+        head_output = self.head(myinput)
         head_logprob = F.log_softmax(head_output, dim=1)
         output += head_logprob.gather(1, gather_inds.unsqueeze(1)).squeeze()
         loss = (-output).mean()
 
         return _ASMoutput(output, loss)
 
-    def _get_full_log_prob(self, input, head_output):
+    def _get_full_log_prob(self, myinput, head_output):
         """Given input tensor, and output of `self.head`,
         compute the log of the full distribution"""
 
-        out = input.new_empty((head_output.size(0), self.n_classes))
+        out = myinput.new_empty((head_output.size(0), self.n_classes))
         head_logprob = F.log_softmax(head_output, dim=1)
 
         out[:, : self.shortlist_size] = head_logprob[:, : self.shortlist_size]
 
         for i, (start_idx, stop_idx) in enumerate(zip(self.cutoffs, self.cutoffs[1:])):
-            cluster_output = self.tail[i](input)
+            cluster_output = self.tail[i](myinput)
             cluster_logprob = F.log_softmax(cluster_output, dim=1)
             output_logprob = cluster_logprob + head_logprob[
                 :, self.shortlist_size + i
@@ -508,11 +532,11 @@ class AdaptiveLogSoftmaxWithLoss(Module):
 
         return out
 
-    def log_prob(self, input):
+    def log_prob(self, myinput):
         r"""Computes log probabilities for all :math:`\texttt{n\_classes}`
 
         Args:
-            input (Tensor): a minibatch of examples
+            myinput (Tensor): a minibatch of examples
 
         Returns:
             log-probabilities of for each class :math:`c`
@@ -525,15 +549,15 @@ class AdaptiveLogSoftmaxWithLoss(Module):
 
         """
 
-        head_output = self.head(input)
-        return self._get_full_log_prob(input, head_output)
+        head_output = self.head(myinput)
+        return self._get_full_log_prob(myinput, head_output)
 
-    def predict(self, input):
-        r"""This is equivalent to `self.log_pob(input).argmax(dim=1)`,
+    def predict(self, myinput):
+        r"""This is equivalent to `self.log_pob(myinput).argmax(dim=1)`,
         but is more efficient in some cases.
 
         Args:
-            input (Tensor): a minibatch of examples
+            myinput (Tensor): a minibatch of examples
 
         Returns:
             output (Tensor): a class with the highest probability for each example
@@ -543,21 +567,21 @@ class AdaptiveLogSoftmaxWithLoss(Module):
             - Output: :math:`(N)`
         """
 
-        head_output = self.head(input)
+        head_output = self.head(myinput)
         output = torch.argmax(head_output, dim=1)
         not_in_shortlist = output >= self.shortlist_size
-        all_in_shortlist = not (not_in_shortlist.any())
+        all_in_shortlist = not not_in_shortlist.any()
 
         if all_in_shortlist:
             return output
 
         elif not_in_shortlist.all():
-            log_prob = self._get_full_log_prob(input, head_output)
+            log_prob = self._get_full_log_prob(myinput, head_output)
             return torch.argmax(log_prob, dim=1)
 
         else:
             log_prob = self._get_full_log_prob(
-                input[not_in_shortlist], head_output[not_in_shortlist]
+                myinput[not_in_shortlist], head_output[not_in_shortlist]
             )
             output[not_in_shortlist] = torch.argmax(log_prob, dim=1)
             return output
