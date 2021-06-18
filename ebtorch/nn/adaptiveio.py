@@ -8,9 +8,14 @@
 from collections import namedtuple
 
 import torch  # lgtm [py/import-and-import-from]
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.nn import Sequential, ModuleList, Linear, Module
+import torch.nn as nn  # lgtm [py/import-and-import-from]
+import torch.nn.functional as F  # lgtm [py/import-and-import-from]
+from torch.nn import (
+    Sequential,
+    ModuleList,
+    Linear,
+    Module,
+)  # lgtm [py/import-and-import-from]
 
 
 class VariationalDropout(nn.Module):

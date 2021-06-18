@@ -82,7 +82,7 @@ class FCBlock(nn.Module):
         if isinstance(activation_fx, nn.Module) and not isinstance(
             activation_fx, nn.ModuleList
         ):
-            for _ in range(len(in_sizes)):
+            for _ in enumerate(in_sizes):
                 self.activation_fx.append(copy.deepcopy(activation_fx))
 
         # Sanitize
@@ -130,7 +130,8 @@ class FCBlock(nn.Module):
             self.module_battery.append(nn.Dropout(p=dropout[-1]))
 
     def forward(self, x: Tensor) -> Tensor:
-        for module_idx in range(len(self.module_battery)):
+        for module_idx in enumerate(self.module_battery):
+            module_idx = module_idx[0]
             x = self.module_battery[module_idx](x)
         return x
 
