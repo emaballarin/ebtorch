@@ -23,15 +23,27 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Imports
-from .autoclip import AutoClipper
-from .reprutils import (
-    store_repr_fx,
-    store_repr_hook,
-    store_repr_autohook,
-)
-from .onlyutils import argser_f
+from typing import Union
+from functools import partial as fpartial
 
-# Deletions
-del autoclip
-del reprutils
-del onlyutils
+# Functions
+def argser_f(f, arglist: Union[list, tuple, dict]):
+    error_listerror = "Function arguments must be either an args tuple or a kwargs dictionary, or both in this order inside a list."
+    if isinstance(arglist, list):
+        if len(arglist) == 0:
+            return fpartial(f)
+        elif len(arglist) > 2:
+            raise ValueError(error_listerror)
+        elif len(arglist) == 2:
+            return fpartial(f, *arglist[0], **arglist[1])
+        else:
+            if isinstance(arglist[0], tuple):
+                return fpartial(f, *arglist[0])
+            if isinstance(arglist[0], dict):
+                return fpartial(f, **arglist[0])
+    elif isinstance(arglist, tuple):
+        return fpartial(f, *arglist)
+    elif isinstance(arglist, dict):
+        return fpartial(f, **arglist)
+    else:
+        raise ValueError(error_listerror)

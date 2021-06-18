@@ -57,7 +57,7 @@ del HCGD
 del HCAdam
 del MADGRAD
 
-# (from .utils)
+# (from .logging)
 del LogCSV
 del AverageMeter
 

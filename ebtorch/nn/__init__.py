@@ -42,3 +42,4 @@ del AutoClipper
 del store_repr_fx
 del store_repr_hook
 del store_repr_autohook
+del argser_f
