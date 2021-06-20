@@ -27,6 +27,7 @@
 from .nn import *  # lgtm [py/polluting-import]
 from .optim import *  # lgtm [py/polluting-import]
 from .logging import *  # lgtm [py/polluting-import]
+from .utils import * # lgtm [py/polluting-import]
 
 
 # DELETIONS:
@@ -64,3 +65,10 @@ del AverageMeter
 # (from .mish)
 del Mish
 del mishlayer_init
+
+# (from .utils)
+del AutoClipper
+del store_repr_fx
+del store_repr_hook
+del store_repr_autohook
+del argser_f
