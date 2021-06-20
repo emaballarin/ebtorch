@@ -22,7 +22,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-# Imports
+# Imports (specific)
 from .autoclip import AutoClipper
 from .reprutils import (
     store_repr_fx,
@@ -31,7 +31,7 @@ from .reprutils import (
 )
 from .onlyutils import argser_f
 
-# Deletions
+# Deletions (from .)
 del autoclip
 del reprutils
 del onlyutils

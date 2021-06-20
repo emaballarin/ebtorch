@@ -22,17 +22,12 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-# IMPORTS:
-
+# Imports (wildcard)
 from .nn import *  # lgtm [py/polluting-import]
 from .optim import *  # lgtm [py/polluting-import]
 from .logging import *  # lgtm [py/polluting-import]
-from .utils import * # lgtm [py/polluting-import]
 
-
-# DELETIONS:
-
-# (from .nn)
+# Deletions (from .nn)
 del KWTA1d
 del KWTA2d
 del BrokenReLU
@@ -40,13 +35,13 @@ del FCBlockLegacy
 del FCBlock
 del CausalConv1d
 del LMUCell
-# -- from AdaptiveIO --
 del VariationalDropout
 del AdaptiveInput
 del AdaptiveLogSoftmaxWithLoss
-# --                 --
+del Mish
+del mishlayer_init
 
-# (from .optim)
+# Deletions (from .optim)
 del Lookahead
 del RAdam
 del PlainRAdam
@@ -57,17 +52,6 @@ del HCGD
 del HCAdam
 del MADGRAD
 
-# (from .logging)
+# Deletions (from .logging)
 del LogCSV
 del AverageMeter
-
-# (from .mish)
-del Mish
-del mishlayer_init
-
-# (from .utils)
-del AutoClipper
-del store_repr_fx
-del store_repr_hook
-del store_repr_autohook
-del argser_f

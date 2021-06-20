@@ -22,16 +22,30 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-# Imports
+# Imports (wildcard)
+from .utils import *  # lgtm [py/polluting-import]
+from .functional import mish
+
+# Imports (specific)
 from .kwta import KWTA1d, KWTA2d, BrokenReLU
 from .architectures import FCBlockLegacy, FCBlock, CausalConv1d
 from .lmu import LMUCell
 from .mish import Mish, mishlayer_init
 from .adaptiveio import VariationalDropout, AdaptiveInput, AdaptiveLogSoftmaxWithLoss
 
-# Deletions
+# Deletions (from .)
 del kwta
 del architectures
 del lmu
 del mish
 del adaptiveio
+
+# Deletions (from .functional)
+# del mish  # (already done by chance!)
+
+# Deletions (from .utils)
+del AutoClipper
+del store_repr_fx
+del store_repr_hook
+del store_repr_autohook
+del argser_f

@@ -22,10 +22,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-# Imports
+# Imports (specific)
 from .logcsv import LogCSV
 from .avgmeter import AverageMeter
 
-# Deletions
+# Deletions (from .)
 del logcsv
 del avgmeter
