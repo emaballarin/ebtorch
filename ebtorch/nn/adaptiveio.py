@@ -77,7 +77,14 @@ class RNNModel(nn.Module):
         return F.log_softmax(decoded, dim=1), hidden
 
     def init_hidden(self, bsz):
-        weight = next(self.parameters())
+        try:
+            weight = next(self.parameters())
+        except StopIteration:
+            print("Warning! Call to exhausted 'self.parameters()' iterator.")
+            print(
+                "Explicit exception has been silenced, but no further action has been performed."
+            )
+            pass
         if self.rnn_type == "LSTM":
             return (
                 weight.new_zeros(self.nlayers, bsz, self.nhid),
@@ -208,7 +215,14 @@ class AdaptiveSoftmaxRNN(nn.Module):
         return output, hidden, loss
 
     def init_hidden(self, bsz):
-        weight = next(self.parameters())
+        try:
+            weight = next(self.parameters())
+        except StopIteration:
+            print("Warning! Call to exhausted 'self.parameters()' iterator.")
+            print(
+                "Explicit exception has been silenced, but no further action has been performed."
+            )
+            pass
         return (
             weight.new_zeros(self.nlayers, bsz, self.nhid),
             weight.new_zeros(self.nlayers, bsz, self.nhid),
@@ -293,7 +307,14 @@ class AdaptiveSoftmaxRNNImproved(nn.Module):
         return output, hidden, loss
 
     def init_hidden(self, bsz):
-        weight = next(self.parameters())
+        try:
+            weight = next(self.parameters())
+        except StopIteration:
+            print("Warning! Call to exhausted 'self.parameters()' iterator.")
+            print(
+                "Explicit exception has been silenced, but no further action has been performed."
+            )
+            pass
         return (
             weight.new_zeros(self.nlayers, bsz, self.nhid),
             weight.new_zeros(self.nlayers, bsz, self.nhid),
