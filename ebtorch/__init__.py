@@ -27,7 +27,7 @@
 from .nn import *  # lgtm [py/polluting-import]
 from .optim import *  # lgtm [py/polluting-import]
 from .logging import *  # lgtm [py/polluting-import]
-from .utils import * # lgtm [py/polluting-import]
+from .utils import *  # lgtm [py/polluting-import]
 
 
 # DELETIONS:
