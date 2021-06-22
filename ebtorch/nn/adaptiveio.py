@@ -84,7 +84,6 @@ class RNNModel(nn.Module):
             print(
                 "Explicit exception has been silenced, but no further action has been performed."
             )
-            pass
         if self.rnn_type == "LSTM":
             return (
                 weight.new_zeros(self.nlayers, bsz, self.nhid),
@@ -222,7 +221,6 @@ class AdaptiveSoftmaxRNN(nn.Module):
             print(
                 "Explicit exception has been silenced, but no further action has been performed."
             )
-            pass
         return (
             weight.new_zeros(self.nlayers, bsz, self.nhid),
             weight.new_zeros(self.nlayers, bsz, self.nhid),
@@ -314,7 +312,6 @@ class AdaptiveSoftmaxRNNImproved(nn.Module):
             print(
                 "Explicit exception has been silenced, but no further action has been performed."
             )
-            pass
         return (
             weight.new_zeros(self.nlayers, bsz, self.nhid),
             weight.new_zeros(self.nlayers, bsz, self.nhid),
