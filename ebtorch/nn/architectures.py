@@ -60,6 +60,7 @@ class FCBlock(nn.Module):
         if activation_fx is None:
             for _ in range(len(in_sizes) - 1):
                 self.activation_fx.append(nn.ReLU())
+            self.activation_fx.append(nn.Identity())
 
         # Ergonomics
         if isinstance(bias, bool):
