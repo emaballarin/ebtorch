@@ -67,8 +67,8 @@ class Lookahead(Optimizer):  # lgtm [py/missing-call-to-init]
             "pullback_momentum": self.pullback_momentum,
         }
 
-    def zero_grad(self):
-        self.optimizer.zero_grad()
+    def zero_grad(self, set_to_none=False):
+        self.optimizer.zero_grad(set_to_none)
 
     def get_la_step(self):
         return self._la_step
