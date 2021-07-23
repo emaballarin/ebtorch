@@ -85,6 +85,8 @@ class FCBlock(nn.Module):
         ):
             for _ in enumerate(in_sizes):
                 self.activation_fx.append(copy.deepcopy(activation_fx))
+        elif isinstance(activation_fx, nn.ModuleList):
+            self.activation_fx = copy.deepcopy(activation_fx)
 
         # Sanitize
         if (
