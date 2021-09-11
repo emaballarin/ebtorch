@@ -34,6 +34,9 @@
 
 import torch  # lgtm [py/import-and-import-from]
 from torch import Tensor
+from torch import abs as th_abs
+from torch import sign as th_sign
+from torch import heaviside as th_heaviside
 from torch.overrides import has_torch_function_unary, handle_torch_function
 import torch.nn.functional as F
 
@@ -50,3 +53,29 @@ def mish(x_input: Tensor) -> Tensor:
     if has_torch_function_unary(x_input):
         return handle_torch_function(mish, (x_input,), x_input)
     return x_input * torch.tanh(F.softplus(x_input))
+
+
+@torch.jit.script
+def mishpulse(x_input: Tensor) -> Tensor:
+    """
+    Applies the mishpulse function element-wise:
+    mishpulse(x) = -sign(x) * mish(-abs(x) + 0.6361099463262276) + step(x)
+    """
+    if has_torch_function_unary(x_input):
+        return handle_torch_function(mish, (x_input,), x_input)
+
+    return -th_sign(x_input) * mish(
+        -th_abs(x_input) + 0.6361099463262276
+    ) + th_heaviside(x_input, values=torch.tensor([0.0]))
+
+
+@torch.jit.script
+def mishpulse_symmy(x_input: Tensor) -> Tensor:
+    """
+    Applies the mishpulse function, adapted to be y-symmetric, element-wise:
+    mishpulse_symmy(x) = -sign(x) * (mish(-abs(x) + 1.127332431855187) - 1)
+    """
+    if has_torch_function_unary(x_input):
+        return handle_torch_function(mish, (x_input,), x_input)
+
+    return -th_sign(x_input) * (mish(-th_abs(x_input) + 1.127332431855187) - 1.0)

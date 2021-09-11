@@ -23,7 +23,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Imports (specific)
-from .inner_functional import mish
+from .inner_functional import mish, mishpulse, mishpulse_symmy
 
 # Deletions (from .)
 del inner_functional

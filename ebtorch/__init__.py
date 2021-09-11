@@ -39,6 +39,8 @@ del VariationalDropout
 del AdaptiveInput
 del AdaptiveLogSoftmaxWithLoss
 del Mish
+del MishPulse
+del MishPulseSymmY
 del mishlayer_init
 
 # Deletions (from .optim)

@@ -24,13 +24,13 @@
 
 # Imports (wildcard)
 from .utils import *  # lgtm [py/polluting-import]
-from .functional import mish
+from .functional import mish, mishpulse, mishpulse_symmy
 
 # Imports (specific)
 from .kwta import KWTA1d, KWTA2d, BrokenReLU
 from .architectures import FCBlockLegacy, FCBlock, CausalConv1d
 from .lmu import LMUCell
-from .mish import Mish, mishlayer_init
+from .mish import Mish, MishPulse, MishPulseSymmY, mishlayer_init
 from .adaptiveio import VariationalDropout, AdaptiveInput, AdaptiveLogSoftmaxWithLoss
 
 # Deletions (from .)

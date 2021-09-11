@@ -42,6 +42,8 @@ from math import sqrt as math_sqrt
 import torch  # lgtm [py/import-and-import-from]
 from torch import nn
 from .functional import mish as fmish
+from .functional import mishpulse as fmishpulse
+from .functional import mishpulse_symmy as fmishpulse_symmy
 
 
 # CLASSES
@@ -66,6 +68,48 @@ class Mish(nn.Module):
 
     def forward(self, x_input):
         return fmish(x_input)
+
+
+class MishPulse(nn.Module):
+    """
+    Applies the mishpulse function element-wise:
+    mishpulse(x) = -sign(x) * mish(-abs(x) + 0.6361099463262276) + step(x)
+    Shape:
+        - Input: (N, *) where * means, any number of additional
+            dimensions
+        - Output: (N, *), same shape as the input
+    Examples:
+        >>> m = MishPulse()
+        >>> x_input = torch.randn(2)
+        >>> output = m(input)
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x_input):
+        return fmishpulse(x_input)
+
+
+class MishPulseSymmY(nn.Module):
+    """
+    Applies the mishpulse function, adapted to be y-symmetric, element-wise:
+    mishpulse_symmy(x) = -sign(x) * (mish(-abs(x) + 1.127332431855187) - 1)
+    Shape:
+        - Input: (N, *) where * means, any number of additional
+            dimensions
+        - Output: (N, *), same shape as the input
+    Examples:
+        >>> m = MishPulseSymmY()
+        >>> x_input = torch.randn(2)
+        >>> output = m(input)
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x_input):
+        return fmishpulse_symmy(x_input)
 
 
 # Adapted from Federico Andres Lois' mish_init.py GitHub Gist
