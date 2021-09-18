@@ -127,7 +127,9 @@ def store_repr_hook(
             starting_idx = 0
 
         starting_indices.append(starting_idx)
-        representation_list[0] = th.cat((representation_list[0], repr_additional), dim=1)
+        representation_list[0] = th.cat(
+            (representation_list[0], repr_additional), dim=1
+        )
 
 
 def store_repr_autohook(
@@ -139,7 +141,9 @@ def store_repr_autohook(
 ) -> None:
 
     if len(starting_indices) != 0:
-        raise ValueError("starting_indices list is not empty. Use an empty list instead.")
+        raise ValueError(
+            "starting_indices list is not empty. Use an empty list instead."
+        )
 
     with ExitStack() as stack:
         if not preserve_graph:
@@ -158,6 +162,7 @@ def store_repr_autohook(
                         preserve_graph=preserve_graph,
                     )
                 )
+
 
 def gather_model_repr(
     model,
