@@ -24,7 +24,8 @@
 # IMPORTS
 import copy
 from typing import List, Union, Optional
-from torch import nn, Tensor
+import torch
+from torch import nn, Tensor, DeviceObjType
 
 
 # CLASSES
@@ -232,3 +233,31 @@ class CausalConv1d(nn.Conv1d):
         if self.__padding != 0:
             return result[:, :, : -self.__padding]
         return result
+
+
+# Reparameterizer / Sampler for (C)VAEs & co.
+
+# Do not make static, regardless of what the linter/analyzer says... ;)
+def _gauss_reparameterize_sample(
+    z_mu: Tensor, z_log_var: Tensor, device: Optional[DeviceObjType] = None
+) -> Tensor:
+    if device is None:
+        device = z_mu.device
+        if not device == z_log_var.device:
+            raise RuntimeError(
+                "Device mismatch among 'z_mu' ({}) and 'z_log_var' ({})!".format(
+                    device, z_log_var.device
+                )
+            )
+    return z_mu.to(device) + torch.randn_like(z_mu).to(device) * torch.exp(
+        z_log_var * 0.5
+    ).to(device)
+
+
+class GaussianReparameterizerSampler(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    # Do not make static!
+    def forward(self, z_mu: Tensor, z_log_var: Tensor) -> Tensor:
+        return _gauss_reparameterize_sample(z_mu, z_log_var)

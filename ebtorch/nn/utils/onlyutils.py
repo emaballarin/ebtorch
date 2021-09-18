@@ -26,6 +26,7 @@
 from typing import Union
 from functools import partial as fpartial
 
+
 # Functions
 def argser_f(f, arglist: Union[list, tuple, dict]):
     error_listerror = "Function arguments must be either an args tuple or a kwargs dictionary, or both in this order inside a list."
@@ -47,3 +48,10 @@ def argser_f(f, arglist: Union[list, tuple, dict]):
         return fpartial(f, **arglist)
     else:
         raise ValueError(error_listerror)
+
+
+def emplace_kv(dictionary: dict, k, v) -> dict:
+    """
+    Returns input dict with added k:v pair, overwriting if k already exists
+    """
+    return {**dictionary, k: v}

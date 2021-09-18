@@ -23,17 +23,27 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # IMPORTS
-from typing import Union, List
+from typing import Union, List, Optional, Tuple
+
+from contextlib import ExitStack
 
 from functools import partial
+
+from collections import OrderedDict
+
+from copy import deepcopy
 
 import torch as th  # lgtm [py/import-and-import-from]
 from torch import Tensor
 
 
-def store_repr_fx(representation: Union[Tensor, None], x: Tensor) -> Tensor:
+def store_repr_fx(
+    representation: Union[Tensor, None], x: Tensor, preserve_graph: bool = False
+) -> Tuple[Tensor, int]:
 
-    with th.no_grad():
+    with ExitStack() as stack:
+        if not preserve_graph:
+            stack.enter_context(th.no_grad())  # It's fine!
 
         if not isinstance(representation, th.Tensor):
             raise ValueError(
@@ -42,7 +52,7 @@ def store_repr_fx(representation: Union[Tensor, None], x: Tensor) -> Tensor:
 
         if representation.shape[0] == 0:
             representation = th.tensor(
-                [[] for _ in range(x.shape[0])], requires_grad=False
+                [[] for _ in range(x.shape[0])], requires_grad=preserve_graph
             )
 
         elif representation.shape[0] != x.shape[0]:
@@ -53,16 +63,33 @@ def store_repr_fx(representation: Union[Tensor, None], x: Tensor) -> Tensor:
                 )
             )
 
-        return th.cat(
-            (representation, th.flatten(x, start_dim=1).clone().detach()), dim=1
-        )
+        if preserve_graph:
+            repr_additional = th.flatten(x, start_dim=1).clone()
+        else:
+            repr_additional = th.flatten(x, start_dim=1).clone().detach()
+
+        try:
+            starting_idx = representation.shape[1]
+        except IndexError:
+            starting_idx = 0
+
+        new_repr = th.cat((representation, repr_additional), dim=1)
+
+        return ret_repr, starting_idx
 
 
 def store_repr_hook(
-    representation_list: List[Tensor], mod, inp: Tensor, out: Tensor
+    representation_list: List[Tensor],
+    starting_indices: List[int],
+    mod,
+    inp: Tensor,
+    out: Tensor,
+    preserve_graph: bool = False,
 ) -> None:
 
-    with th.no_grad():
+    with ExitStack() as stack:
+        if not preserve_graph:
+            stack.enter_context(th.no_grad())  # It's fine!
 
         _ = mod, inp  # Fake-gather
 
@@ -78,7 +105,7 @@ def store_repr_hook(
 
         if representation_list[0].shape[0] == 0:
             representation_list[0] = th.tensor(
-                [[] for _ in range(out.shape[0])], requires_grad=False
+                [[] for _ in range(out.shape[0])], requires_grad=preserve_graph
             )
 
         elif representation_list[0].shape[0] != out.shape[0]:
@@ -89,18 +116,66 @@ def store_repr_hook(
                 )
             )
 
-        representation_list[0] = th.cat(
-            (representation_list[0], th.flatten(out, start_dim=1).clone().detach()),
-            dim=1,
-        )
+        if preserve_graph:
+            repr_additional = th.flatten(out, start_dim=1).clone()
+        else:
+            repr_additional = th.flatten(out, start_dim=1).clone().detach()
+
+        try:
+            starting_idx = representation_list[0].shape[1]
+        except IndexError:
+            starting_idx = 0
+
+        starting_indices.append(starting_idx)
+        representation_list[0] = th.cat((representation_list[0], repr_additional), dim=1)
 
 
 def store_repr_autohook(
-    model, named_layers: List[str], representation_list: List[Tensor]
+    model,
+    representation_list: List[Tensor],
+    starting_indices: List[int],
+    named_layers: Union[List[str], None] = None,
+    preserve_graph: bool = False,
 ) -> None:
 
-    with th.no_grad():
+    if len(starting_indices) != 0:
+        raise ValueError("starting_indices list is not empty. Use an empty list instead.")
+
+    with ExitStack() as stack:
+        if not preserve_graph:
+            stack.enter_context(th.no_grad())  # It's fine!
 
         for name, mod in model.named_modules():
-            if name in named_layers:
-                mod.register_forward_hook(partial(store_repr_hook, representation_list))
+
+            if (
+                named_layers is not None and name in named_layers
+            ) or named_layers is None:
+                mod.register_forward_hook(
+                    partial(
+                        store_repr_hook,
+                        representation_list,
+                        starting_indices,
+                        preserve_graph=preserve_graph,
+                    )
+                )
+
+def gather_model_repr(
+    model,
+    xin: Tensor,
+    named_layers: Union[List[str], None] = None,
+    preserve_graph: bool = False,
+) -> Tuple[Tensor, tuple, Tensor]:
+
+    my_repr = [th.tensor([])]
+    my_sizes = []
+
+    store_repr_autohook(model, my_repr, my_sizes, named_layers, preserve_graph)
+    xout = model(xin)
+
+    ret_sizes = deepcopy(tuple(my_sizes))
+    if preserve_graph:
+        ret_repr, xout = my_repr[0].clone(), xout.clone()
+    else:
+        ret_repr, xout = my_repr[0].clone().detach(), xout.clone().detach()
+
+    return ret_repr, ret_sizes, xout

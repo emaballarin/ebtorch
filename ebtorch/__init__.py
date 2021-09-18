@@ -42,6 +42,7 @@ del Mish
 del MishPulse
 del MishPulseSymmY
 del mishlayer_init
+del GaussianReparameterizerSampler
 
 # Deletions (from .optim)
 del Lookahead

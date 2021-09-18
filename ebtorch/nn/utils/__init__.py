@@ -28,8 +28,9 @@ from .reprutils import (
     store_repr_fx,
     store_repr_hook,
     store_repr_autohook,
+    gather_model_repr,
 )
-from .onlyutils import argser_f
+from .onlyutils import argser_f, emplace_kv
 
 # Deletions (from .)
 del autoclip

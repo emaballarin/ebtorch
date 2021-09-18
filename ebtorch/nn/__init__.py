@@ -28,7 +28,7 @@ from .functional import mish, mishpulse, mishpulse_symmy
 
 # Imports (specific)
 from .kwta import KWTA1d, KWTA2d, BrokenReLU
-from .architectures import FCBlockLegacy, FCBlock, CausalConv1d
+from .architectures import FCBlockLegacy, FCBlock, CausalConv1d, GaussianReparameterizerSampler
 from .lmu import LMUCell
 from .mish import Mish, MishPulse, MishPulseSymmY, mishlayer_init
 from .adaptiveio import VariationalDropout, AdaptiveInput, AdaptiveLogSoftmaxWithLoss
@@ -48,4 +48,6 @@ del AutoClipper
 del store_repr_fx
 del store_repr_hook
 del store_repr_autohook
+del gather_model_repr
 del argser_f
+del emplace_kv
