@@ -138,7 +138,7 @@ def store_repr_autohook(
     preserve_graph: bool = False,
 ) -> None:
 
-    if len(starting_indices) != 0:
+    if starting_indices:
         raise ValueError(
             "starting_indices list is not empty. Use an empty list instead."
         )
