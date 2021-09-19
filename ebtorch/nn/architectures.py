@@ -24,7 +24,7 @@
 # IMPORTS
 import copy
 from typing import List, Union, Optional
-import torch
+import torch  # lgtm [py/import-and-import-from]
 from torch import nn, Tensor, DeviceObjType
 
 

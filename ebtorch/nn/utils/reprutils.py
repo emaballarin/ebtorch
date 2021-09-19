@@ -23,13 +23,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # IMPORTS
-from typing import Union, List, Optional, Tuple
+from typing import Union, List, Tuple
 
 from contextlib import ExitStack
 
 from functools import partial
-
-from collections import OrderedDict
 
 from copy import deepcopy
 
@@ -38,7 +36,7 @@ from torch import Tensor
 
 
 def store_repr_fx(
-    representation: Union[Tensor, None], x: Tensor, preserve_graph: bool = False
+    representation: Tensor, x: Tensor, preserve_graph: bool = False
 ) -> Tuple[Tensor, int]:
 
     with ExitStack() as stack:
@@ -75,7 +73,7 @@ def store_repr_fx(
 
         new_repr = th.cat((representation, repr_additional), dim=1)
 
-        return ret_repr, starting_idx
+        return new_repr, starting_idx
 
 
 def store_repr_hook(
