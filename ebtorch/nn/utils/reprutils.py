@@ -183,4 +183,4 @@ def gather_model_repr(
     else:
         ret_repr, xout = my_repr[0].clone().detach(), xout.clone().detach()
 
-    return ret_repr, ret_sizes, xout
+    return xout, ret_repr, ret_sizes
