@@ -44,6 +44,29 @@ import torch.nn.functional as F
 # FUNCTIONS
 
 
+def field_transform(
+    x_input: Tensor,
+    pre_sum: float = 0.0,
+    mult_div: float = 1.0,
+    post_sum: float = 0.0,
+    div_not_mul: bool = False,
+) -> Tensor:
+    if div_not_mul:
+        return torch.add(
+            input=torch.div(
+                input=torch.add(input=x_input, other=pre_sum), other=mult_div
+            ),
+            other=post_sum,
+        )
+    else:
+        return torch.add(
+            input=torch.mul(
+                input=torch.add(input=x_input, other=pre_sum), other=mult_div
+            ),
+            other=post_sum,
+        )
+
+
 @torch.jit.script
 def mish(x_input: Tensor) -> Tensor:
     """

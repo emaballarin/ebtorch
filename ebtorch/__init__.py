@@ -38,10 +38,14 @@ del LMUCell
 del VariationalDropout
 del AdaptiveInput
 del AdaptiveLogSoftmaxWithLoss
+del FieldTransform
 del Mish
 del MishPulse
 del MishPulseSymmY
 del mishlayer_init
+del field_transform
+del mishpulse
+del mishpulse_symmy
 del GaussianReparameterizerSampler
 
 # Deletions (from .optim)

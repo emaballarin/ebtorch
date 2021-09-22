@@ -24,7 +24,7 @@
 
 # Imports (wildcard)
 from .utils import *  # lgtm [py/polluting-import]
-from .functional import mish, mishpulse, mishpulse_symmy
+from .functional import field_transform, mish, mishpulse, mishpulse_symmy
 
 # Imports (specific)
 from .kwta import KWTA1d, KWTA2d, BrokenReLU
@@ -35,6 +35,7 @@ from .architectures import (
     GaussianReparameterizerSampler,
 )
 from .lmu import LMUCell
+from .fieldtransform import FieldTransform
 from .mish import Mish, MishPulse, MishPulseSymmY, mishlayer_init
 from .adaptiveio import VariationalDropout, AdaptiveInput, AdaptiveLogSoftmaxWithLoss
 
@@ -44,6 +45,7 @@ del architectures
 del lmu
 del mish
 del adaptiveio
+del fieldtransform
 
 # Deletions (from .functional)
 # del mish  # (already done by chance!)
