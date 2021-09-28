@@ -29,6 +29,8 @@ from .reprutils import (
     store_repr_hook,
     store_repr_autohook,
     gather_model_repr,
+    model_reqgrad_,
+    model_reqgrad,
 )
 from .onlyutils import argser_f, emplace_kv
 

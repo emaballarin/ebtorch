@@ -33,6 +33,7 @@ from copy import deepcopy
 
 import torch as th  # lgtm [py/import-and-import-from]
 from torch import Tensor
+from torch.nn import Module
 
 
 def store_repr_fx(
@@ -182,3 +183,14 @@ def gather_model_repr(
         ret_repr, xout = my_repr[0].clone().detach(), xout.clone().detach()
 
     return xout, ret_repr, ret_sizes
+
+
+def model_reqgrad_(model: Module, set_to: bool) -> None:
+    for parameter in model.parameters():
+        parameter.requires_grad = set_to
+
+
+def model_reqgrad(model: Module, set_to: bool) -> Module:
+    new_model = deepcopy(model)
+    model_reqgrad_(model=new_model, set_to=set_to)
+    return new_model
