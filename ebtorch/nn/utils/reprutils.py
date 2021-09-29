@@ -34,10 +34,14 @@ from copy import deepcopy
 import torch as th  # lgtm [py/import-and-import-from]
 from torch import Tensor
 from torch.nn import Module
+from torch.utils.hooks import RemovableHandle
 
 
 def store_repr_fx(
-    representation: Tensor, x: Tensor, preserve_graph: bool = False
+    representation: Tensor,
+    x: Tensor,
+    device: th.DeviceObjType,
+    preserve_graph: bool = False,
 ) -> Tuple[Tensor, int]:
 
     with ExitStack() as stack:
@@ -52,7 +56,7 @@ def store_repr_fx(
         if representation.shape[0] == 0:
             representation = th.tensor(
                 [[] for _ in range(x.shape[0])], requires_grad=preserve_graph
-            )
+            ).to(device)
 
         elif representation.shape[0] != x.shape[0]:
             raise ValueError(
@@ -80,9 +84,10 @@ def store_repr_fx(
 def store_repr_hook(
     representation_list: List[Tensor],
     starting_indices: List[int],
-    mod,
+    mod: Module,
     inp: Tensor,
     out: Tensor,
+    device: th.DeviceObjType,
     preserve_graph: bool = False,
 ) -> None:
 
@@ -105,7 +110,7 @@ def store_repr_hook(
         if representation_list[0].shape[0] == 0:
             representation_list[0] = th.tensor(
                 [[] for _ in range(out.shape[0])], requires_grad=preserve_graph
-            )
+            ).to(device)
 
         elif representation_list[0].shape[0] != out.shape[0]:
             raise ValueError(
@@ -130,14 +135,17 @@ def store_repr_hook(
             (representation_list[0], repr_additional), dim=1
         )
 
+    del _
+
 
 def store_repr_autohook(
-    model,
+    model: Module,
     representation_list: List[Tensor],
     starting_indices: List[int],
+    device: th.DeviceObjType,
     named_layers: Union[List[str], None] = None,
     preserve_graph: bool = False,
-) -> None:
+) -> List[RemovableHandle]:
 
     if starting_indices:
         raise ValueError(
@@ -148,39 +156,56 @@ def store_repr_autohook(
         if not preserve_graph:
             stack.enter_context(th.no_grad())  # It's fine!
 
+        handles: List[RemovableHandle] = []
+
+        name: str
+        mod: Module
         for name, mod in model.named_modules():
 
             if (
                 named_layers is not None and name in named_layers
             ) or named_layers is None:
-                mod.register_forward_hook(
+                handle: RemovableHandle = mod.register_forward_hook(
                     partial(
                         store_repr_hook,
                         representation_list,
                         starting_indices,
+                        device=device,
                         preserve_graph=preserve_graph,
                     )
                 )
+                handles.append(handle)
+    return handles
 
 
 def gather_model_repr(
-    model,
+    model: Module,
     xin: Tensor,
+    device: th.DeviceObjType,
     named_layers: Union[List[str], None] = None,
     preserve_graph: bool = False,
-) -> Tuple[Tensor, tuple, Tensor]:
+) -> Tuple[Tensor, Tensor, Tuple[int]]:
 
-    my_repr = [th.tensor([])]
-    my_sizes = []
+    my_repr: List[Tensor] = [th.tensor([]).to(device)]
+    my_sizes: List[int] = []
 
-    store_repr_autohook(model, my_repr, my_sizes, named_layers, preserve_graph)
-    xout = model(xin)
+    handles: List[RemovableHandle] = store_repr_autohook(
+        model, my_repr, my_sizes, device, named_layers, preserve_graph
+    )
+    xout: Tensor = model(xin)
 
-    ret_sizes = deepcopy(tuple(my_sizes))
+    ret_sizes: Tuple[int] = deepcopy(tuple(my_sizes))
+
     if preserve_graph:
         ret_repr, xout = my_repr[0].clone(), xout.clone()
     else:
         ret_repr, xout = my_repr[0].clone().detach(), xout.clone().detach()
+
+    handle: RemovableHandle
+    for handle in handles:
+        handle.remove()
+        del handle
+    del handles
 
     return xout, ret_repr, ret_sizes
 
