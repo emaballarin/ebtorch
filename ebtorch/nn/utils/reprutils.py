@@ -135,8 +135,6 @@ def store_repr_hook(
             (representation_list[0], repr_additional), dim=1
         )
 
-    del _
-
 
 def store_repr_autohook(
     model: Module,
@@ -204,8 +202,6 @@ def gather_model_repr(
     handle: RemovableHandle
     for handle in handles:
         handle.remove()
-        del handle
-    del handles
 
     return xout, ret_repr, ret_sizes
 
