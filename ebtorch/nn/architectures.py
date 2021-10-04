@@ -25,8 +25,10 @@
 import copy
 from typing import List, Union, Optional
 import torch  # lgtm [py/import-and-import-from]
-from torch import nn, Tensor, DeviceObjType
+from torch import nn, Tensor
 
+# CUSTOM TYPES
+realnum = Union[float, int]
 
 # CLASSES
 
@@ -239,7 +241,7 @@ class CausalConv1d(nn.Conv1d):
 
 # Do not make static, regardless of what the linter/analyzer says... ;)
 def _gauss_reparameterize_sample(
-    z_mu: Tensor, z_log_var: Tensor, device: Optional[DeviceObjType] = None
+    z_mu: Tensor, z_log_var: Tensor, device: Optional[torch.DeviceObjType] = None
 ) -> Tensor:
     if device is None:
         device = z_mu.device
@@ -261,3 +263,107 @@ class GaussianReparameterizerSampler(nn.Module):
     # Do not make static!
     def forward(self, z_mu: Tensor, z_log_var: Tensor) -> Tensor:
         return _gauss_reparameterize_sample(z_mu, z_log_var)
+
+
+class SGRUHCell(nn.Module):
+
+    """
+    Stateful (i.e. implicit hidden state) GRU HyperCell (i.e. arbitrary
+    time-order and depth) with ReadIn and ReadOut custom heads
+    """
+
+    def __init__(
+        self,
+        recurrent_input_size: int,
+        hidden_size: int,
+        num_layers: int = 1,
+        bias: bool = True,
+        batch_first: bool = False,
+        dropout: realnum = 0,
+        bidirectional: bool = False,
+        tbptt: Union[bool, int] = False,
+        hx: Optional[Tensor] = None,
+        readin_head: nn.Module = nn.Identity(),
+        readout_head: nn.Module = nn.Identity(),
+    ) -> None:
+        super().__init__()
+
+        # Validate tbptt (otherwise it could become impossible to catch mistakes!)
+        if not (
+            (isinstance(tbptt, bool) and not tbptt)
+            or (isinstance(tbptt, int) and tbptt >= 0)
+        ):
+            raise ValueError(
+                "Parameter 'tbptt' must be either False or a positive integer. Given: {}".format(
+                    tbptt
+                )
+            )
+        else:
+            self._tbptt: int = int(tbptt)  # False == 0
+
+        # Copy and store read-heads
+        self._readin: nn.Module = copy.deepcopy(readin_head)
+        self._readout: nn.Module = copy.deepcopy(readout_head)
+
+        # Instantiate GRU Cell (eventually deep, of arbitrary order)
+        self._GRU: nn.GRU = nn.GRU(
+            input_size=recurrent_input_size,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            bias=bias,
+            batch_first=batch_first,
+            dropout=dropout,
+            bidirectional=bidirectional,
+        )
+
+        # Copy and store given hidden state, preserving the computational graph
+        if hx is not None:
+            self._hx: Tensor = hx.clone()
+        else:
+            self._hx = hx
+
+        # Track recurrence
+        self._recurrence_idx: int = 0
+
+    def forward(self, x: Tensor) -> Tensor:
+
+        # Implement Truncated BPTT (if requested to do so)
+        if (
+            self._tbptt > 0
+            and self._recurrence_idx > 0
+            and self._recurrence_idx % self._tbptt == 0
+        ):
+            self._hx: Tensor = self._hx.detach()
+
+        # Read input in, through the readin head
+        x: Tensor = self._readin(x)
+
+        # Perform one step of recurrent dynamics
+        out: Tensor
+        if self._recurrence_idx == 0 and self._hx is None:
+            out, self._hx = self._GRU(input=x)
+        else:
+            # If self._recurrence_idx != 0, we always manage hx ourselves
+            out, self._hx = self._GRU(input=x, hx=self._hx)
+
+        self._recurrence_idx += 1
+
+        # Spit output out, through the readout head
+        out: Tensor = self._readout(out)
+
+        # Return
+        return out
+
+    def reset_hx(self, hx: Optional[Tensor] = None) -> None:
+
+        # Register the detachment of self._hx in PyTorch computational graph
+        self._hx: Tensor = self._hx.detach()
+
+        # Re-initialize self._hx
+        if hx is not None:
+            self._hx: Tensor = hx.clone()
+        else:
+            self._hx = hx
+
+        # Restart the recurrence index
+        self._recurrence_idx: int = 0

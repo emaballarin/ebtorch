@@ -34,6 +34,7 @@ del BrokenReLU
 del FCBlockLegacy
 del FCBlock
 del CausalConv1d
+del SGRUHCell
 del LMUCell
 del VariationalDropout
 del AdaptiveInput

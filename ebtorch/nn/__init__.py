@@ -32,6 +32,7 @@ from .architectures import (
     FCBlockLegacy,
     FCBlock,
     CausalConv1d,
+    SGRUHCell,
     GaussianReparameterizerSampler,
 )
 from .lmu import LMUCell
