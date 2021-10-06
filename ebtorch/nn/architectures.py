@@ -357,7 +357,10 @@ class SGRUHCell(nn.Module):
     def reset_hx(self, hx: Optional[Tensor] = None) -> None:
 
         # Register the detachment of self._hx in PyTorch computational graph
-        self._hx: Tensor = self._hx.detach()
+        if self._hx is not None:
+            self._hx: Tensor = self._hx.detach()
+        else:
+            self._hx = None
 
         # Re-initialize self._hx
         if hx is not None:
