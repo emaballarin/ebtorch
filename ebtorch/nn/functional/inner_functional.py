@@ -73,9 +73,7 @@ def mish(x_input: Tensor) -> Tensor:
     Applies the mish function element-wise:
     mish(x) = x * tanh(softplus(x)) = x * tanh(ln(1 + exp(x)))
     """
-    if has_torch_function_unary(x_input):
-        return handle_torch_function(mish, (x_input,), x_input)
-    return x_input * torch.tanh(F.softplus(x_input))
+    return F.mish(x_input)
 
 
 @torch.jit.script
@@ -102,3 +100,16 @@ def mishpulse_symmy(x_input: Tensor) -> Tensor:
         return handle_torch_function(mish, (x_input,), x_input)
 
     return -th_sign(x_input) * (mish(-th_abs(x_input) + 1.127332431855187) - 1.0)
+
+
+@torch.jit.script
+def serlu(x_input: Tensor, lambd: float = 1.07862, alph: float = 2.90427) -> Tensor:
+    """
+    Applies the SERLU function element-wise,
+    defined after [Zhang & Li, 2018]
+    """
+    return torch.where(
+        x_input >= 0.0,
+        torch.mul(x_input, lambd),
+        torch.mul(torch.mul(x_input, torch.exp(x_input)), lambd * alph),
+    )

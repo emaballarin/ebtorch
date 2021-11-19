@@ -48,6 +48,7 @@ del field_transform
 del mishpulse
 del mishpulse_symmy
 del GaussianReparameterizerSampler
+del SERLU
 
 # Deletions (from .optim)
 del Lookahead
