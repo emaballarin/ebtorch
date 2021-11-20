@@ -20,6 +20,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # LIST OF REQUIREMENTS:
-torch
+torch>=1.10
 numpy
 nengolib

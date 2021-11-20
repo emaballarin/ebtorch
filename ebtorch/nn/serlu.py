@@ -45,7 +45,7 @@ class SERLU(nn.Module):
     defined after [Zhang & Li, 2018]
     """
 
-    def __init__(self, lambd: float, alph: float) -> None:
+    def __init__(self, lambd: float = 1.07862, alph: float = 2.90427) -> None:
         super().__init__()
         self._lambd: float
         self._alph: float

@@ -41,7 +41,6 @@ from math import sqrt as math_sqrt
 # Tensors and NN-related
 import torch  # lgtm [py/import-and-import-from]
 from torch import nn
-from .functional import mish as fmish
 from .functional import mishpulse as fmishpulse
 from .functional import mishpulse_symmy as fmishpulse_symmy
 
