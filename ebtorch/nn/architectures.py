@@ -40,7 +40,7 @@ class FCBlock(nn.Module):
         in_sizes: Union[List[int], tuple],
         out_size: int,
         bias: Optional[Union[List[bool], tuple, bool]] = None,
-        activation_fx: Optional[Union[nn.ModuleList, nn.Module]] = None,
+        activation_fx: Optional[Union[List, nn.ModuleList, nn.Module]] = None,
         dropout: Optional[Union[List[Union[float, bool]], float, bool, tuple]] = None,
         batchnorm: Optional[Union[List[bool], bool, tuple]] = None,
     ) -> None:
@@ -83,7 +83,9 @@ class FCBlock(nn.Module):
         if isinstance(batchnorm, bool):
             batchnorm = [batchnorm] * len(in_sizes)
 
-        if isinstance(activation_fx, nn.Module) and not isinstance(
+        if isinstance(activation_fx, List):
+            self.activation_fx = nn.ModuleList(copy.deepcopy(activation_fx))
+        elif isinstance(activation_fx, nn.Module) and not isinstance(
             activation_fx, nn.ModuleList
         ):
             for _ in enumerate(in_sizes):
