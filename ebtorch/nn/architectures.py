@@ -139,7 +139,7 @@ class FCBlock(nn.Module):
 
     def reset_parameters(self):
         for module in self.modules():
-            if hasattr(module, "reset_parameters"):
+            if module is not self and hasattr(module, "reset_parameters"):
                 module.reset_parameters()
 
     def forward(self, x: Tensor) -> Tensor:
