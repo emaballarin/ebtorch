@@ -137,6 +137,11 @@ class FCBlock(nn.Module):
         elif not isinstance(dropout[-1], bool):
             self.module_battery.append(nn.Dropout(p=dropout[-1]))
 
+    def reset_parameters(self):
+        for module in self.modules():
+            if hasattr(module, "reset_parameters"):
+                module.reset_parameters()
+
     def forward(self, x: Tensor) -> Tensor:
         for module_idx in enumerate(self.module_battery):
             module_idx = module_idx[0]
