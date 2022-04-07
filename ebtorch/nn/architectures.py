@@ -137,7 +137,7 @@ class FCBlock(nn.Module):
         elif not isinstance(dropout[-1], bool):
             self.module_battery.append(nn.Dropout(p=dropout[-1]))
 
-    def reset_parameters(self):
+    def reset_parameters(self) -> None:
         for module in self.modules():
             if module is not self and hasattr(module, "reset_parameters"):
                 module.reset_parameters()

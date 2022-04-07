@@ -3,7 +3,7 @@
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.2.0
     hooks:
       - id: check-yaml
       - id: check-json
@@ -13,7 +13,7 @@ repos:
         language_version: python3
 
   - repo: https://github.com/psf/black
-    rev: 21.9b0
+    rev: 22.3.0
     hooks:
       - id: black
         args: [--safe]
@@ -21,7 +21,7 @@ repos:
         args: [--safe]
 
   - repo: https://github.com/janosh/format-ipy-cells
-    rev: v0.1.7
+    rev: v0.1.10
     hooks:
       - id: format-ipy-cells
 
