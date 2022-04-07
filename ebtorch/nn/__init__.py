@@ -40,6 +40,7 @@ from .fieldtransform import FieldTransform
 from .mish import Mish, MishPulse, MishPulseSymmY, mishlayer_init
 from .adaptiveio import VariationalDropout, AdaptiveInput, AdaptiveLogSoftmaxWithLoss
 from .serlu import SERLU
+from .smelu import SmeLU
 
 # Deletions (from .)
 del kwta
@@ -49,6 +50,7 @@ del mish
 del adaptiveio
 del fieldtransform
 del serlu
+del smelu
 
 # Deletions (from .functional)
 # del mish  # (already done by chance!)

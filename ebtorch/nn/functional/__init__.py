@@ -23,7 +23,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Imports (specific)
-from .inner_functional import field_transform, mish, mishpulse, mishpulse_symmy, serlu
+from .inner_functional import (
+    field_transform,
+    mish,
+    mishpulse,
+    mishpulse_symmy,
+    serlu,
+    smelu,
+)
 
 # Deletions (from .)
 del inner_functional

@@ -25,23 +25,21 @@
 # IMPORTS
 
 from torch import nn, Tensor
-from .functional import serlu as fserlu
+from .functional import smelu as fsmelu
 
 
 # CLASSES
 
 
-class SERLU(nn.Module):
+class SmeLU(nn.Module):
     """
-    Applies the SERLU function element-wise,
-    defined after [Zhang & Li, 2018]
+    Applies the SmeLU function element-wise,
+    defined after [Shamir & Ling, 2022]
     """
 
-    def __init__(self, lambd: float = 1.07862, alph: float = 2.90427) -> None:
+    def __init__(self, beta: float = 2.0) -> None:
         super().__init__()
-        self._lambd: float
-        self._alph: float
-        self._lambd, self._alph = lambd, alph
+        self._beta: float = beta
 
     def forward(self, x_input: Tensor) -> Tensor:
-        return fserlu(x_input, lambd=self._lambd, alph=self._alph)
+        return fsmelu(x_input, beta=self._beta)

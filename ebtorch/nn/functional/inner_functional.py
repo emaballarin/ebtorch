@@ -110,3 +110,17 @@ def serlu(x_input: Tensor, lambd: float = 1.07862, alph: float = 2.90427) -> Ten
         torch.mul(x_input, lambd),
         torch.mul(torch.mul(x_input, torch.exp(x_input)), lambd * alph),
     )
+
+
+@torch.jit.script
+def smelu(x_input: Tensor, beta: float = 2.0) -> Tensor:
+    """
+    Applies the SmeLU function element-wise,
+    defined after [Shamir & Ling, 2022]
+    """
+    assert beta >= 0
+    return torch.where(
+        torch.abs(x_input) <= beta,
+        torch.div(torch.pow(torch.add(x_input, beta), 2), 4.0 * beta),
+        F.relu(x_input),
+    )

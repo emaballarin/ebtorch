@@ -49,6 +49,7 @@ del mishpulse
 del mishpulse_symmy
 del GaussianReparameterizerSampler
 del SERLU
+del SmeLU
 
 # Deletions (from .optim)
 del Lookahead
