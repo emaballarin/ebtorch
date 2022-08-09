@@ -28,7 +28,7 @@ from torch.optim import Optimizer
 # AUXILIARY/UTILITY
 
 # From torch.optim.optimizer
-class _RequiredParameter(object):
+class _RequiredParameter:
     """Singleton class representing a required parameter for an Optimizer."""
 
     def __repr__(self):
