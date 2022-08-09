@@ -101,7 +101,7 @@ class AWD_LSTM(nn.LSTM):
         dropoutw: float = 0.5,
         dropouto: float = 0.5,
         unit_forget_bias=True,
-        **kwargs
+        **kwargs,
     ):
 
         super().__init__(*args, **kwargs)
@@ -491,11 +491,9 @@ class AdaptiveLogSoftmaxWithLoss(Module):
 
         if used_rows != batch_size:
             raise RuntimeError(
-                "Target values should be in [0, {}], "
-                "but values in range [{}, {}] "
-                "were found. ".format(
-                    self.n_classes - 1, target.min().item(), target.max().item()
-                )
+                f"Target values should be in [0, {self.n_classes - 1}], "
+                "but values in range [{target.min().item()}, {target.max().item()}] "
+                "were found. "
             )
 
         head_output = self.head(myinput)
