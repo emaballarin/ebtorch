@@ -51,7 +51,5 @@ def argser_f(f, arglist: Union[list, tuple, dict]):
 
 
 def emplace_kv(dictionary: dict, k, v) -> dict:
-    """
-    Returns input dict with added k:v pair, overwriting if k already exists
-    """
+    """Returns input dict with added k:v pair, overwriting if k already exists"""
     return {**dictionary, k: v}
