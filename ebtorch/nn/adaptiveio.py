@@ -194,7 +194,6 @@ class AdaptiveSoftmaxRNN(nn.Module):
             "You called the mathod 'init_weights()' which is currently not implemented. Nothing has been done, but execution has not been halted for backward-compatibility."
         )
 
-
     def forward(self, myinput, hidden, targets):
         emb = self.emb_dropout(self.encoder(myinput))  # (seq_len, bsz, ninp)
         output, hidden = self.rnn(emb, hidden)  # (seq_len, bsz, ninp)
@@ -276,7 +275,6 @@ class AdaptiveSoftmaxRNNImproved(nn.Module):
             "You called the mathod 'init_weights()' which is currently not implemented. Nothing has been done, but execution has not been halted for backward-compatibility."
         )
 
-
     def forward(self, myinput, hidden, targets):
         emb = self.emb_dropout(self.encoder(myinput))  # (seq_len, bsz, ninp)
         output, hidden = self.rnn(emb, hidden)  # (seq_len, bsz, ninp)
@@ -336,7 +334,6 @@ class AdaptiveInput(nn.Module):
 
         self.n_clusters = len(self.cutoffs) - 1
         self.head_size = self.cutoffs[0]
-
 
         self.head = nn.Embedding(self.head_size, self.in_features)
         #                                   nn.Linear(self.in_features, self.in_features, bias=self.head_bias))
