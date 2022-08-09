@@ -160,7 +160,6 @@ class AdaptiveSoftmaxRNN(nn.Module):
 
         cutoffs = list(cutoffs)
 
-        # ntoken = ntoken #??
         self.emb_dropout = nn.Dropout(emb_dropout)
         self.out_dropout = nn.Dropout(0.5)
         if adaptive_input:
@@ -169,7 +168,6 @@ class AdaptiveSoftmaxRNN(nn.Module):
             self.encoder = nn.Embedding(ntoken, ninp)
 
         self.rnn = nn.LSTM(ninp, nhid, nlayers, dropout=rnn_dropout)
-        # self.decoder = nn.Linear(nhid, ntoken)
         self.decoder = AdaptiveLogSoftmaxWithLoss(
             nhid, ntoken, cutoffs=cutoffs, div_value=2.0, tail_drop=tail_dropout
         )
@@ -196,20 +194,12 @@ class AdaptiveSoftmaxRNN(nn.Module):
             "You called the mathod 'init_weights()' which is currently not implemented. Nothing has been done, but execution has not been halted for backward-compatibility."
         )
 
-    # def init_weights(self):
-    # initrange = 0.1
-    # self.encoder.weight.data.uniform_(-initrange, initrange)
-    # self.decoder.bias.data.zero_()
-    # self.decoder.weight.data.uniform_(-initrange, initrange)
 
     def forward(self, myinput, hidden, targets):
         emb = self.emb_dropout(self.encoder(myinput))  # (seq_len, bsz, ninp)
         output, hidden = self.rnn(emb, hidden)  # (seq_len, bsz, ninp)
         output = self.out_dropout(output)
         output = output.view(-1, output.size(2))  # (seq_len*bsz, ninp)
-        # output = output.transpose(0,1)
-        # targets = targets.view(targets.size(0) * targets.size(1)) # (seq_len * bsz)
-        # targets = targets.transpose(0,1)
         output, loss = self.decoder(output, targets)
         return output, hidden, loss
 
@@ -247,7 +237,6 @@ class AdaptiveSoftmaxRNNImproved(nn.Module):
 
         cutoffs = list(cutoffs)
 
-        # ntoken = ntoken #??
         self.emb_dropout = nn.Dropout(emb_dropout)
         self.out_dropout = nn.Dropout(out_dropout)
 
@@ -287,20 +276,12 @@ class AdaptiveSoftmaxRNNImproved(nn.Module):
             "You called the mathod 'init_weights()' which is currently not implemented. Nothing has been done, but execution has not been halted for backward-compatibility."
         )
 
-    # def init_weights(self):
-    # initrange = 0.1
-    # self.encoder.weight.data.uniform_(-initrange, initrange)
-    # self.decoder.bias.data.zero_()
-    # self.decoder.weight.data.uniform_(-initrange, initrange)
 
     def forward(self, myinput, hidden, targets):
         emb = self.emb_dropout(self.encoder(myinput))  # (seq_len, bsz, ninp)
         output, hidden = self.rnn(emb, hidden)  # (seq_len, bsz, ninp)
         output = self.out_dropout(output)
         output = output.view(-1, output.size(2))  # (seq_len*bsz, ninp)
-        # output = output.transpose(0,1)
-        # targets = targets.view(targets.size(0) * targets.size(1)) # (seq_len * bsz)
-        # targets = targets.transpose(0,1)
         output, loss = self.decoder(output, targets)
         return output, hidden, loss
 
@@ -356,8 +337,6 @@ class AdaptiveInput(nn.Module):
         self.n_clusters = len(self.cutoffs) - 1
         self.head_size = self.cutoffs[0]
 
-        #         self.head = nn.Sequential(nn.Embedding(self.head_size, self.in_features),
-        #                                   nn.Linear(self.in_features, self.in_features, bias=self.head_bias))
 
         self.head = nn.Embedding(self.head_size, self.in_features)
         #                                   nn.Linear(self.in_features, self.in_features, bias=self.head_bias))
@@ -404,12 +383,6 @@ class AdaptiveInput(nn.Module):
             output.index_copy_(0, row_indices, out)
             used_rows += row_indices.numel()
 
-        # if used_rows != input_size[0] * input_size[1]:
-        #     raise RuntimeError("Target values should be in [0, {}], "
-        #                        "but values in range [{}, {}] "
-        #                        "were found. ".format(self.n_classes - 1,
-        #                                              myinput.min().item(),
-        #                                              myinput.max().item()))
         return output.view(input_size[0], input_size[1], -1)
 
 
