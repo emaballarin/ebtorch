@@ -125,7 +125,6 @@ class HCGD(Optimizer):
                                 the network on validation data anyways, in which case it would be silly to
                                 re-evaluate it here
         """
-
         loss = None
         if closure is not None:
             loss = closure()
@@ -317,7 +316,6 @@ class HCAdam(Optimizer):
                                 the network on validation data anyways, in which case it would be silly to
                                 re-evaluate it here
         """
-
         loss = None
         if closure is not None:
             loss = closure()

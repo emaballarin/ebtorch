@@ -538,7 +538,6 @@ class AdaptiveLogSoftmaxWithLoss(Module):
     def _get_full_log_prob(self, myinput, head_output):
         """Given input tensor, and output of `self.head`,
         compute the log of the full distribution"""
-
         out = myinput.new_empty((head_output.size(0), self.n_classes))
         head_logprob = F.log_softmax(head_output, dim=1)
 
@@ -571,7 +570,6 @@ class AdaptiveLogSoftmaxWithLoss(Module):
             - Output: :math:`(N, \texttt{n\_classes})`
 
         """
-
         head_output = self.head(myinput)
         return self._get_full_log_prob(myinput, head_output)
 
@@ -589,7 +587,6 @@ class AdaptiveLogSoftmaxWithLoss(Module):
             - Input: :math:`(N, \texttt{in\_features})`
             - Output: :math:`(N)`
         """
-
         head_output = self.head(myinput)
         output = torch.argmax(head_output, dim=1)
         not_in_shortlist = output >= self.shortlist_size
