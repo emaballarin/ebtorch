@@ -55,6 +55,7 @@ del SmeLU
 del Lookahead
 del RAdam
 del PlainRAdam
+del Adan
 del WarmAdamW
 del Ranger
 del SAM
