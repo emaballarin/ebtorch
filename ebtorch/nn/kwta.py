@@ -249,4 +249,4 @@ class BrokenReLU(Module):
 
     def extra_repr(self) -> str:
         inplace_str: str = ", inplace=True" if self.inplace else ""
-        return "plateau={}{}".format(self.plateau, inplace_str)
+        return f"plateau={self.plateau}{inplace_str}"

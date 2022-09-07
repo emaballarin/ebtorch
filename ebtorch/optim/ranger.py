@@ -145,12 +145,7 @@ class Ranger(Optimizer):
 
                 state = self.state[p]  # get state dict for this param
 
-                if (
-                    not state
-                ):  # if first time to run...init dictionary with our desired entries
-                    # if self.first_run_check==0:
-                    # self.first_run_check=1
-                    # print("Initializing slow buffer...should not see this at load from saved model!")
+                if not state:
                     state["step"] = 0
                     state["exp_avg"] = torch.zeros_like(p_data_fp32)
                     state["exp_avg_sq"] = torch.zeros_like(p_data_fp32)
@@ -206,10 +201,6 @@ class Ranger(Optimizer):
                     else:
                         step_size = 1.0 / (1 - beta1 ** state["step"])
                     buffered[2] = step_size
-
-                # if group['weight_decay'] != 0:
-                #    p_data_fp32.add_(-group['weight_decay']
-                #                     * group['lr'], p_data_fp32)
 
                 # apply lr
                 if N_sma > self.N_sma_threshhold:
