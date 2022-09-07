@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2020-* Michael Zhang, James Lucas, Geoffrey Hinton, Jimmy Ba
@@ -18,8 +17,6 @@
 # ==============================================================================
 # SPDX-License-Identifier: MIT
 # SPDX-License-Identifier: Apache-2.0
-
-
 from collections import defaultdict
 
 import torch

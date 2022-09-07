@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -21,18 +20,16 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
-
 # Imports (specific)
 from .autoclip import AutoClipper
-from .reprutils import (
-    store_repr_fx,
-    store_repr_hook,
-    store_repr_autohook,
-    gather_model_repr,
-    model_reqgrad_,
-    model_reqgrad,
-)
-from .onlyutils import argser_f, emplace_kv
+from .onlyutils import argser_f
+from .onlyutils import emplace_kv
+from .reprutils import gather_model_repr
+from .reprutils import model_reqgrad
+from .reprutils import model_reqgrad_
+from .reprutils import store_repr_autohook
+from .reprutils import store_repr_fx
+from .reprutils import store_repr_hook
 
 # Deletions (from .)
 del autoclip

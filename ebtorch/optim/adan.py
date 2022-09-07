@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2022-* Xingyu Xie, Pan Zhou, Huan Li, Zhouchen Lin, Shuicheng Yan.
@@ -29,8 +28,8 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
-
 import math
+
 import torch
 from torch.optim.optimizer import Optimizer
 

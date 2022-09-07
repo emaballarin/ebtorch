@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2020-* Less Wright. All Rights Reserved.
@@ -28,8 +27,8 @@
 #
 # Ranger version: 2020.9.4 (ranger2020.py)
 # Cfr.: https://github.com/lessw2020/Ranger-Deep-Learning-Optimizer
-
 import math
+
 import torch
 from torch.optim.optimizer import Optimizer
 

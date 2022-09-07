@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2021-* Facebook, Inc. and its affiliates, Aaron Defazio,
@@ -35,11 +34,12 @@
 # ==============================================================================
 # SPDX-License-Identifier: MIT
 # SPDX-License-Identifier: Apache-2.0
-
 import math
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from typing import Any
+from typing import Callable
+from typing import Optional
+from typing import TYPE_CHECKING
 
-import torch
 import torch.optim
 
 if TYPE_CHECKING:

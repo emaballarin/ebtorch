@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2020-* Prem Seetharaman, Gordon Wichern, Bryan Pardo,
@@ -18,10 +17,12 @@
 # ==============================================================================
 # SPDX-License-Identifier: MIT
 # SPDX-License-Identifier: Apache-2.0
+from typing import List
+from typing import Optional
+from typing import Union
 
-from typing import Union, Optional, List
-import torch.nn.utils as thutils
 import numpy as np
+import torch.nn.utils as thutils
 
 realnum = Union[float, int]
 

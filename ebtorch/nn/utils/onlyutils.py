@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -21,10 +20,9 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
-
 # Imports
-from typing import Union
 from functools import partial as fpartial
+from typing import Union
 
 
 # Functions

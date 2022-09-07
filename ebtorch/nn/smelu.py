@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2021-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -21,10 +20,10 @@
 #
 # ==============================================================================
 # SPDX-License-Identifier: Apache-2.0
-
 # IMPORTS
+from torch import nn
+from torch import Tensor
 
-from torch import nn, Tensor
 from .functional import smelu as fsmelu
 
 

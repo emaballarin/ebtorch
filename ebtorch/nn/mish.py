@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2021-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -29,20 +28,19 @@
 # ==============================================================================
 # SPDX-License-Identifier: MIT
 # SPDX-License-Identifier: Apache-2.0
-
 # IMPORTS
-
 # Type hints
+from math import sqrt as math_sqrt
 from typing import Union
 
-# Operations on floats and ints
-from math import sqrt as math_sqrt
-
-# Tensors and NN-related
 import torch  # lgtm [py/import-and-import-from]
 from torch import nn
+
 from .functional import mishpulse as fmishpulse
 from .functional import mishpulse_symmy as fmishpulse_symmy
+
+# Operations on floats and ints
+# Tensors and NN-related
 
 
 # CLASSES

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2021-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -29,12 +28,11 @@
 # ==============================================================================
 # SPDX-License-Identifier: MIT
 # SPDX-License-Identifier: Apache-2.0
-
 # IMPORTS
-
 # Tensors and NN-related
 from torch import nn
 from torch import Tensor
+
 from .functional import field_transform as ffield_transform
 
 

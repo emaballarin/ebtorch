@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2019-* Chang Xiao, Peilin Zhong, Changxi Zheng
@@ -13,16 +12,19 @@
 #                      [maintainance, adaptation, extension]
 #
 # ==============================================================================
-
-
 # For type-annotation
-from typing import Optional, Callable, Union, Any, List
+from typing import Any
+from typing import Callable
+from typing import List
+from typing import Optional
+from typing import Union
 
-# For neural network layers and tensor functions
 import torch  # lgtm [py/import-and-import-from]
+import torch.nn.functional as F
 from torch import Tensor
 from torch.nn import Module
-import torch.nn.functional as F
+
+# For neural network layers and tensor functions
 
 
 # Custom type-annotation types

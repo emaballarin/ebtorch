@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2019-* Brent Komer. All Rights Reserved.
@@ -16,15 +15,15 @@
 #                      [maintainance, adaptation, extension]
 #
 # ==============================================================================
-
 import math
 from functools import partial
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import numpy as np
-from nengolib.signal import Identity, cont2discrete
+from nengolib.signal import cont2discrete
+from nengolib.signal import Identity
 from nengolib.synapses import LegendreDelay
 
 

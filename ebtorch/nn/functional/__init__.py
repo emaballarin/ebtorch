@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -21,16 +20,13 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
-
 # Imports (specific)
-from .inner_functional import (
-    field_transform,
-    mish,
-    mishpulse,
-    mishpulse_symmy,
-    serlu,
-    smelu,
-)
+from .inner_functional import field_transform
+from .inner_functional import mish
+from .inner_functional import mishpulse
+from .inner_functional import mishpulse_symmy
+from .inner_functional import serlu
+from .inner_functional import smelu
 
 # Deletions (from .)
 del inner_functional

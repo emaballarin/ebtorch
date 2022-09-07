@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -21,15 +20,13 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
-
 # IMPORTS
-from typing import Union, List, Tuple
-
 from contextlib import ExitStack
-
-from functools import partial
-
 from copy import deepcopy
+from functools import partial
+from typing import List
+from typing import Tuple
+from typing import Union
 
 import torch as th  # lgtm [py/import-and-import-from]
 from torch import Tensor

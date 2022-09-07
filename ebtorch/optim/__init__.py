@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -21,15 +20,17 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
-
 # Imports (specific)
-from .lookahead import Lookahead
-from .radam import RAdam, PlainRAdam, WarmAdamW
 from .adan import Adan
+from .hcgd import HCAdam
+from .hcgd import HCGD
+from .lookahead import Lookahead
+from .madgrad import MADGRAD
+from .radam import PlainRAdam
+from .radam import RAdam
+from .radam import WarmAdamW
 from .ranger import Ranger
 from .sam import SAM
-from .hcgd import HCGD, HCAdam
-from .madgrad import MADGRAD
 
 # Deletions (from .)
 del lookahead

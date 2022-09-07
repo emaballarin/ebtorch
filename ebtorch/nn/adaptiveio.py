@@ -4,18 +4,15 @@
 # A bare copy-paste from: https://github.com/taufique74/AdaptiveIO/blob/master/model.py
 # (c) 2020 Taufiquzzaman Peyash (https://github.com/taufique74) - All Rights Reserved.
 #
-
 from collections import namedtuple
 
 import torch  # lgtm [py/import-and-import-from]
 import torch.nn as nn  # lgtm [py/import-and-import-from]
 import torch.nn.functional as F  # lgtm [py/import-and-import-from]
-from torch.nn import (
-    Sequential,
-    ModuleList,
-    Linear,
-    Module,
-)  # lgtm [py/import-and-import-from]
+from torch.nn import Linear
+from torch.nn import Module
+from torch.nn import ModuleList
+from torch.nn import Sequential
 
 
 class VariationalDropout(nn.Module):

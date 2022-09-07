@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -21,11 +20,10 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
-
 # Imports (wildcard)
+from .logging import *  # lgtm [py/polluting-import]
 from .nn import *  # lgtm [py/polluting-import]
 from .optim import *  # lgtm [py/polluting-import]
-from .logging import *  # lgtm [py/polluting-import]
 
 # Deletions (from .nn)
 del KWTA1d

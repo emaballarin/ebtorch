@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2021-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -29,13 +28,12 @@
 # ==============================================================================
 # SPDX-License-Identifier: MIT
 # SPDX-License-Identifier: Apache-2.0
-
 # IMPORTS
-
 import torch  # lgtm [py/import-and-import-from]
-from torch import Tensor
-from torch.overrides import has_torch_function_unary, handle_torch_function
 import torch.nn.functional as F
+from torch import Tensor
+from torch.overrides import handle_torch_function
+from torch.overrides import has_torch_function_unary
 
 
 # FUNCTIONS

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -20,12 +19,15 @@
 #
 # ==============================================================================
 # SPDX-License-Identifier: Apache-2.0
-
 # IMPORTS
 import copy
-from typing import List, Union, Optional
+from typing import List
+from typing import Optional
+from typing import Union
+
 import torch  # lgtm [py/import-and-import-from]
-from torch import nn, Tensor
+from torch import nn
+from torch import Tensor
 
 # CUSTOM TYPES
 realnum = Union[float, int]

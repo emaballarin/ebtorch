@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -21,26 +20,33 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
-
 # Imports (wildcard)
-from .utils import *  # lgtm [py/polluting-import]
-from .functional import field_transform, mish, mishpulse, mishpulse_symmy
-
-# Imports (specific)
-from .kwta import KWTA1d, KWTA2d, BrokenReLU
-from .architectures import (
-    FCBlockLegacy,
-    FCBlock,
-    CausalConv1d,
-    SGRUHCell,
-    GaussianReparameterizerSampler,
-)
-from .lmu import LMUCell
+from .adaptiveio import AdaptiveInput
+from .adaptiveio import AdaptiveLogSoftmaxWithLoss
+from .adaptiveio import VariationalDropout
+from .architectures import CausalConv1d
+from .architectures import FCBlock
+from .architectures import FCBlockLegacy
+from .architectures import GaussianReparameterizerSampler
+from .architectures import SGRUHCell
 from .fieldtransform import FieldTransform
-from .mish import Mish, MishPulse, MishPulseSymmY, mishlayer_init
-from .adaptiveio import VariationalDropout, AdaptiveInput, AdaptiveLogSoftmaxWithLoss
+from .functional import field_transform
+from .functional import mish
+from .functional import mishpulse
+from .functional import mishpulse_symmy
+from .kwta import BrokenReLU
+from .kwta import KWTA1d
+from .kwta import KWTA2d
+from .lmu import LMUCell
+from .mish import Mish
+from .mish import mishlayer_init
+from .mish import MishPulse
+from .mish import MishPulseSymmY
 from .serlu import SERLU
 from .smelu import SmeLU
+from .utils import *  # lgtm [py/polluting-import]
+
+# Imports (specific)
 
 # Deletions (from .)
 del kwta

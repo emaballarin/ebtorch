@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -20,11 +19,10 @@
 #
 # ==============================================================================
 # SPDX-License-Identifier: Apache-2.0
-
 # IMPORTS
-from typing import Union
-from pathlib import Path
 import csv
+from pathlib import Path
+from typing import Union
 
 
 class LogCSV:

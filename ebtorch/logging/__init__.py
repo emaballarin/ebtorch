@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
@@ -21,10 +20,9 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
-
 # Imports (specific)
-from .logcsv import LogCSV
 from .avgmeter import AverageMeter
+from .logcsv import LogCSV
 
 # Deletions (from .)
 del logcsv

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2017-* The PyTorch Contributors. All Rights Reserved.
@@ -27,7 +26,6 @@
 # ==============================================================================
 # SPDX-License-Identifier: BSD-3-Clause
 # SPDX-License-Identifier: Apache-2.0
-
 # IMPORTS:
 from typing import Union
 

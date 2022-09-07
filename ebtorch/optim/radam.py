@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright (c) 2020-* Liyuan Liu, Haoming Jiang, Pengcheng He, Weizhu Chen,
@@ -30,9 +29,8 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
-
-
 import math
+
 import torch
 from torch.optim.optimizer import Optimizer
 

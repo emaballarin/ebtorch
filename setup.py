@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 # ==============================================================================
 #
 # Copyright 2019-* Yana Hasson <yana.hasson.inria@gmail.com>
@@ -26,10 +25,11 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
-
 import os
 import warnings
-from setuptools import find_packages, setup
+
+from setuptools import find_packages
+from setuptools import setup
 
 
 def read(fname):
