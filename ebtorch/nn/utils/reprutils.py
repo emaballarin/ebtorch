@@ -58,9 +58,7 @@ def store_repr_fx(
         elif representation.shape[0] != x.shape[0]:
             raise ValueError(
                 "Tensor batch-size mismatch!"
-                "Known representation has batch size {}, whereas acquired tensor has {}".format(
-                    representation.shape[0], x.shape[0]
-                )
+                f"Known representation has batch size {representation.shape[0]}, whereas acquired tensor has {x.shape[0]}"
             )
 
         if preserve_graph:
@@ -112,9 +110,7 @@ def store_repr_hook(
         elif representation_list[0].shape[0] != out.shape[0]:
             raise ValueError(
                 "Tensor batch-size mismatch!"
-                "Known representation has batch size {}, whereas acquired tensor has {}".format(
-                    representation_list[0].shape[0], out.shape[0]
-                )
+                f"Known representation has batch size {representation_list[0].shape[0]}, whereas acquired tensor has {out.shape[0]}"
             )
 
         if preserve_graph:

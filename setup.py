@@ -46,7 +46,7 @@ def check_dependencies():
             missing_dependencies.append(package_name)
 
     if missing_dependencies:
-        warnings.warn("Missing dependencies: {}.".format(missing_dependencies))
+        warnings.warn(f"Missing dependencies: {missing_dependencies}")
 
 
 DEPENDENCY_PACKAGE_NAMES = ["torch", "numpy", "nengolib"]

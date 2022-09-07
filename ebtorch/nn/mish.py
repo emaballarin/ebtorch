@@ -63,10 +63,10 @@ class MishPulse(nn.Module):
         >>> output = m(input)
     """
 
-    def __init__(self):
+    def __init__(self):  # skipcq: PYL-W0235
         super().__init__()
 
-    def forward(self, x_input):
+    def forward(self, x_input):  # skipcq: PYL-R0201
         return fmishpulse(x_input)
 
 
@@ -84,10 +84,10 @@ class MishPulseSymmY(nn.Module):
         >>> output = m(input)
     """
 
-    def __init__(self):
+    def __init__(self):  # skipcq: PYL-W0235
         super().__init__()
 
-    def forward(self, x_input):
+    def forward(self, x_input):  # skipcq: PYL-R0201
         return fmishpulse_symmy(x_input)
 
 

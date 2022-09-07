@@ -127,7 +127,8 @@ class Adan(Optimizer):
             global_grad_norm = torch.sqrt(global_grad_norm)
 
             clip_global_grad_norm = torch.clamp(
-                max_grad_norm / (global_grad_norm + group["eps"]), max=1.0
+                max_grad_norm / (global_grad_norm + group["eps"]),
+                max=1.0,  # skipcq: PYL-W0631
             )
         else:
             clip_global_grad_norm = 1.0

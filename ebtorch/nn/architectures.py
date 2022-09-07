@@ -256,9 +256,7 @@ def _gauss_reparameterize_sample(
         device = z_mu.device
         if not device == z_log_var.device:
             raise RuntimeError(
-                "Device mismatch among 'z_mu' ({}) and 'z_log_var' ({})!".format(
-                    device, z_log_var.device
-                )
+                f"Device mismatch among 'z_mu' ({device}) and 'z_log_var' ({z_log_var.device})!"
             )
     return z_mu.to(device) + torch.randn_like(z_mu).to(device) * torch.exp(
         z_log_var * 0.5
@@ -266,11 +264,11 @@ def _gauss_reparameterize_sample(
 
 
 class GaussianReparameterizerSampler(nn.Module):
-    def __init__(self):
+    def __init__(self):  # skipcq: PYL-W0235
         super().__init__()
 
     # Do not make static!
-    def forward(self, z_mu: Tensor, z_log_var: Tensor) -> Tensor:
+    def forward(self, z_mu: Tensor, z_log_var: Tensor) -> Tensor:  # skipcq: PYL-R0201
         return _gauss_reparameterize_sample(z_mu, z_log_var)
 
 
@@ -303,9 +301,7 @@ class SGRUHCell(nn.Module):
             or (isinstance(tbptt, int) and tbptt >= 0)
         ):
             raise ValueError(
-                "Parameter 'tbptt' must be either False or a positive integer. Given: {}".format(
-                    tbptt
-                )
+                f"Parameter 'tbptt' must be either False or a positive integer. Given: {tbptt}"
             )
         else:
             self._tbptt: int = int(tbptt)  # False == 0

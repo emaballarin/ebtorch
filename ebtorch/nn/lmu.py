@@ -29,7 +29,7 @@ from nengolib.synapses import LegendreDelay
 
 # from: https://github.com/deepsound-project/samplernn-pytorch/blob/master/nn.py#L46
 def lecun_uniform(tensor):
-    fan_in = nn.init._calculate_correct_fan(tensor, "fan_in")
+    fan_in = nn.init._calculate_correct_fan(tensor, "fan_in")  # skipcq: PYL-W0212
     nn.init.uniform_(tensor, -math.sqrt(3 / fan_in), math.sqrt(3 / fan_in))
 
 
@@ -71,7 +71,7 @@ class LMUCell(nn.Module):
             self.hidden_activation = torch.relu
         else:
             raise NotImplementedError(
-                "hidden activation '{}' is not implemented".format(hidden_activation)
+                f"hidden activation '{hidden_activation}' is not implemented"
             )
 
         realizer = Identity()

@@ -134,9 +134,7 @@ class KWTA1d(Module):
         return comp * x
 
     def extra_repr(self) -> str:
-        return "largest={}, abstransf={}, ratio={}, k={}, reduction={}".format(
-            self.largest, self.abstransf, self.ratio, self.k, self.reduction
-        )
+        return f"largest={self.largest}, abstransf={self.abstransf}, ratio={self.ratio}, k={self.k}, reduction={self.reduction}"
 
 
 class KWTA2d(Module):
@@ -233,14 +231,7 @@ class KWTA2d(Module):
         return self.actual_forward(x)
 
     def extra_repr(self) -> str:
-        return "largest={}, abstransf={}, ratio={}, k={}, reduction={}, actual_forward={}".format(
-            self.largest,
-            self.abstransf,
-            self.ratio,
-            self.k,
-            self.reduction,
-            self.actual_forward,
-        )
+        return f"largest={self.largest}, abstransf={self.abstransf}, ratio={self.ratio}, k={self.k}, reduction={self.reduction}, actual_forward={self.actual_forward}"
 
 
 class BrokenReLU(Module):

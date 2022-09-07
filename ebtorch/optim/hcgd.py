@@ -102,7 +102,7 @@ class HCGD(Optimizer):
         self.n_corrections = n_corrections
         self.clip_correction_grad = clip_correction_grad
 
-    def __setstate__(self, state):
+    def __setstate__(self, state):  # skipcq: PYL-W0235
         super(HCGD, self).__setstate__(state)
 
     def step(self, validation_eval, closure=None, orig_val_output=None):
