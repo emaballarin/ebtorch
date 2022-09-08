@@ -169,7 +169,7 @@ class FCBlockLegacy(nn.Module):
         if not isinstance(bias, list):
             bias = [bias] * (len(allsizes) - 1)
         else:
-            if not len(bias) == len(allsizes) - 1:
+            if len(bias) != len(allsizes) - 1:
                 raise RuntimeError(
                     "If 'bias' is a list, it must have as many elements as #linears"
                 )
@@ -187,7 +187,7 @@ class FCBlockLegacy(nn.Module):
         if (
             hactiv is not None
             and isinstance(hactiv, list)
-            and not len(hactiv) == len(self.linears) - 1
+            and (len(hactiv) != len(self.linears) - 1)
         ):
             raise RuntimeError(
                 "If 'hactiv' is a list, it must have as many elements as (#linears - 1)"
@@ -254,7 +254,7 @@ def _gauss_reparameterize_sample(
 ) -> Tensor:
     if device is None:
         device = z_mu.device
-        if not device == z_log_var.device:
+        if device != z_log_var.device:
             raise RuntimeError(
                 f"Device mismatch among 'z_mu' ({device}) and 'z_log_var' ({z_log_var.device})!"
             )
