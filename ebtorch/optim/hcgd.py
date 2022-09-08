@@ -342,7 +342,6 @@ class HCAdam(Optimizer):
                 state = self.state[p]
 
                 # State initialization
-                # if len(state) == 0:
                 if not state:
                     state["step"] = 0
                     # Exponential moving average of gradient values

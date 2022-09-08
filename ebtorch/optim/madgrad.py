@@ -213,7 +213,7 @@ class MADGRAD(torch.optim.Optimizer):
 
                 if grad.is_sparse:
                     grad = grad.coalesce()
-                    grad_val = grad._values()
+                    grad_val = grad._values()  # skipcq: PYL-W0212
 
                     p_masked = p.sparse_mask(grad)
                     grad_sum_sq_masked = grad_sum_sq.sparse_mask(grad)
@@ -221,10 +221,12 @@ class MADGRAD(torch.optim.Optimizer):
 
                     # Compute x_0 from other known quantities
                     rms_masked_vals = (
-                        grad_sum_sq_masked._values().pow(1 / 3).add_(eps)
+                        grad_sum_sq_masked._values()  # skipcq: PYL-W0212
+                        .pow(1 / 3)
+                        .add_(eps)  # skipcq: PYL-W0212
                     )  # skipcq: PYL-W0212
                     x0_masked_vals = p_masked._values().addcdiv(  # skipcq: PYL-W0212
-                        s_masked._values(),
+                        s_masked._values(),  # skipcq: PYL-W0212
                         rms_masked_vals,
                         value=1,  # skipcq: PYL-W0212
                     )
@@ -235,22 +237,24 @@ class MADGRAD(torch.optim.Optimizer):
                     grad_sum_sq_masked.add_(grad_sq, alpha=lamb)
 
                     rms_masked_vals = (
-                        grad_sum_sq_masked._values().pow_(1 / 3).add_(eps)
-                    )  # skipcq: PYL-W0212
+                        grad_sum_sq_masked._values()  # skipcq: PYL-W0212
+                        .pow_(1 / 3)  # skipcq: PYL-W0212
+                        .add_(eps)  # skipcq: PYL-W0212
+                    )
 
                     s.add_(grad, alpha=lamb)
                     s_masked._values().add_(grad_val, alpha=lamb)  # skipcq: PYL-W0212
 
                     # update masked copy of p
                     p_kp1_masked_vals = x0_masked_vals.addcdiv(
-                        s_masked._values(),
+                        s_masked._values(),  # skipcq: PYL-W0212
                         rms_masked_vals,
-                        value=-1,  # skipcq: PYL-W0212
+                        value=-1,
                     )
                     # Copy updated masked p to dense p using an add operation
-                    p_masked._values().add_(
+                    p_masked._values().add_(  # skipcq: PYL-W0212
                         p_kp1_masked_vals, alpha=-1
-                    )  # skipcq: PYL-W0212
+                    )
                     p.data.add_(p_masked, alpha=-1)
                 else:
                     if momentum == 0:

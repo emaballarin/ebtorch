@@ -120,7 +120,7 @@ class Ranger(Optimizer):
         print("set state called")
         super(Ranger, self).__setstate__(state)
 
-    def step(self, closure=None):
+    def step(self, closure=None):  # skipcq: PYL-W0613
         loss = None
         # note - below is commented out b/c I have other work that passes back the loss as a float, and thus not a callable closure.
         # Uncomment if you need to use the actual closure...

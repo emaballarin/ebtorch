@@ -153,7 +153,7 @@ class Adan(Optimizer):
                     continue
 
                 state = self.state[p]
-                if len(state) == 0:
+                if not state:
                     state["exp_avg"] = torch.zeros_like(p)
                     state["exp_avg_sq"] = torch.zeros_like(p)
                     state["exp_avg_diff"] = torch.zeros_like(p)
