@@ -125,8 +125,9 @@ class Ranger(Optimizer):
         # note - below is commented out b/c I have other work that passes back the loss as a float, and thus not a callable closure.
         # Uncomment if you need to use the actual closure...
 
-        # if closure is not None:
-        # loss = closure()
+        # skipcq: PY-W0069
+        # if closure is not None: # skipcq: PY-W0069
+        # loss = closure()  # skipcq: PY-W0069
 
         # Evaluate averages and grad, update param tensors
         for group in self.param_groups:
