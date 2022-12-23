@@ -20,13 +20,13 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
-# IMPORTS
+#
 from contextlib import ExitStack
 from copy import deepcopy
 from functools import partial
 from typing import List
+from typing import Optional
 from typing import Tuple
-from typing import Union
 
 import torch as th  # lgtm [py/import-and-import-from]
 from torch import Tensor
@@ -47,7 +47,7 @@ def store_repr_fx(
 
         if not isinstance(representation, th.Tensor):
             raise ValueError(
-                "Known representation is not a torch.Tensor. If you need to initialize it empty, use a 0-dimensional tensor"
+                "Representation is not a tensor. If you need to initialize it empty, use a 0-dimensional one"
             )
 
         if representation.shape[0] == 0:
@@ -58,7 +58,7 @@ def store_repr_fx(
         elif representation.shape[0] != x.shape[0]:
             raise ValueError(
                 "Tensor batch-size mismatch!"
-                f"Known representation has batch size {representation.shape[0]}, whereas acquired tensor has {x.shape[0]}"
+                f"Representation has batch size {representation.shape[0]}, whereas acquired tensor has {x.shape[0]}"
             )
 
         if preserve_graph:
@@ -110,7 +110,7 @@ def store_repr_hook(
         elif representation_list[0].shape[0] != out.shape[0]:
             raise ValueError(
                 "Tensor batch-size mismatch!"
-                f"Known representation has batch size {representation_list[0].shape[0]}, whereas acquired tensor has {out.shape[0]}"
+                f"Representation has batch size {representation_list[0].shape[0]}, whereas acquired tensor has {out.shape[0]}"
             )
 
         if preserve_graph:
@@ -134,7 +134,7 @@ def store_repr_autohook(
     representation_list: List[Tensor],
     starting_indices: List[int],
     device: th.DeviceObjType,
-    named_layers: Union[List[str], None] = None,
+    named_layers: Optional[Tuple[str, ...]] = None,
     preserve_graph: bool = False,
 ) -> List[RemovableHandle]:
 
@@ -172,16 +172,15 @@ def store_repr_autohook(
 def gather_model_repr(
     model: Module,
     xin: Tensor,
-    device: th.DeviceObjType,
-    named_layers: Union[List[str], None] = None,
+    named_layers: Optional[Tuple[str, ...]] = None,
     preserve_graph: bool = False,
 ) -> Tuple[Tensor, Tensor, Tuple[int]]:
 
-    my_repr: List[Tensor] = [th.tensor([]).to(device)]
+    my_repr: List[Tensor] = [th.tensor([]).to(xin.device)]
     my_sizes: List[int] = []
 
     handles: List[RemovableHandle] = store_repr_autohook(
-        model, my_repr, my_sizes, device, named_layers, preserve_graph
+        model, my_repr, my_sizes, xin.device, named_layers, preserve_graph
     )
     xout: Tensor = model(xin)
 
