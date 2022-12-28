@@ -29,6 +29,7 @@ from .architectures import FCBlock
 from .architectures import FCBlockLegacy
 from .architectures import GaussianReparameterizerSampler
 from .architectures import SGRUHCell
+from .convolutional_flatten import ConvolutionalFlattenLayer
 from .debuglayers import ProbePrintLayer
 from .fieldtransform import FieldTransform
 from .functional import field_transform
@@ -62,6 +63,7 @@ del serlu
 del smelu
 del reshapelayers
 del debuglayers
+del convolutional_flatten
 
 # Deletions (from .functional)
 # del mish  # (already done by chance!)

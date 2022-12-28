@@ -51,6 +51,7 @@ del SmeLU
 del ReshapeLayer
 del FlatChannelize2DLayer
 del ProbePrintLayer
+del ConvolutionalFlattenLayer
 
 # Deletions (from .optim)
 del Lookahead

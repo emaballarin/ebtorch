@@ -137,18 +137,18 @@ def mishlayer_init(mlayer, variance: Union[float, int] = 1.0):
 
         return fan_in, fan_out
 
-    def _initialize_weights(tensor, variance, filters=1):
+    def _initialize_weights(tensor, _variance, _filters=1):
         fan_in, _ = _calculate_fan_in_and_fan_out(tensor)
-        gain = variance / math_sqrt(fan_in * filters)
+        gain = _variance / math_sqrt(fan_in * _filters)
 
         with torch.no_grad():
             torch.nn.init.normal_(tensor)
             return tensor.data * gain
 
-    def _initialize_bias(tensor, variance):
+    def _initialize_bias(tensor, _variance):
         with torch.no_grad():
             torch.nn.init.normal_(tensor)
-            return tensor.data * variance
+            return tensor.data * _variance
 
     if mlayer is None:
         return
@@ -166,8 +166,8 @@ def mishlayer_init(mlayer, variance: Union[float, int] = 1.0):
             filters = mlayer.in_channels
 
         mlayer.weight.data = _initialize_weights(
-            mlayer.weight, variance=variance, filters=filters
+            mlayer.weight, _variance=variance, _filters=filters
         )
 
     if hasattr(mlayer, "bias") and mlayer.bias is not None:
-        mlayer.bias.data = _initialize_bias(mlayer.bias, variance=variance)
+        mlayer.bias.data = _initialize_bias(mlayer.bias, _variance=variance)
