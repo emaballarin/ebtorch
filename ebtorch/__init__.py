@@ -48,6 +48,9 @@ del mishpulse_symmy
 del GaussianReparameterizerSampler
 del SERLU
 del SmeLU
+del ReshapeLayer
+del FlatChannelize2DLayer
+del ProbePrintLayer
 
 # Deletions (from .optim)
 del Lookahead

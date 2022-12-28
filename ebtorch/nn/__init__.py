@@ -29,6 +29,7 @@ from .architectures import FCBlock
 from .architectures import FCBlockLegacy
 from .architectures import GaussianReparameterizerSampler
 from .architectures import SGRUHCell
+from .debuglayers import ProbePrintLayer
 from .fieldtransform import FieldTransform
 from .functional import field_transform
 from .functional import mish
@@ -42,6 +43,8 @@ from .mish import Mish
 from .mish import mishlayer_init
 from .mish import MishPulse
 from .mish import MishPulseSymmY
+from .reshapelayers import FlatChannelize2DLayer
+from .reshapelayers import ReshapeLayer
 from .serlu import SERLU
 from .smelu import SmeLU
 from .utils import *  # lgtm [py/polluting-import]
@@ -57,6 +60,8 @@ del adaptiveio
 del fieldtransform
 del serlu
 del smelu
+del reshapelayers
+del debuglayers
 
 # Deletions (from .functional)
 # del mish  # (already done by chance!)
