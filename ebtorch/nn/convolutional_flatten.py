@@ -21,6 +21,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import math
 
+import torch
 from torch import nn
 
 
@@ -37,15 +38,19 @@ class ConvolutionalFlattenLayer(nn.Module):
         channels_in: int,
         bias: bool = True,
         actually_flatten: bool = True,
-    ):
+    ) -> None:
         super(ConvolutionalFlattenLayer, self).__init__()
         channels_out: int = math.ceil(
             (channels_in * height * width)
-            / ((height - detail_size) * (width - detail_size))
+            / ((height - detail_size + 1) * (width - detail_size + 1))
         )
 
-        self.actually_flatten = actually_flatten
-        self.conv = nn.Conv2d(
+        self._output_numel: int = (
+            channels_out * (height - detail_size + 1) * (width - detail_size + 1)
+        )
+
+        self.actually_flatten: bool = actually_flatten
+        self.conv: nn.Module = nn.Conv2d(
             in_channels=channels_in,
             out_channels=channels_out,
             kernel_size=detail_size,
@@ -54,7 +59,10 @@ class ConvolutionalFlattenLayer(nn.Module):
             bias=bias,
         )
 
-    def forward(self, x):
+    def output_numel(self) -> int:
+        return self._output_numel
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         if self.actually_flatten:
             return self.conv(x).flatten(start_dim=1)
         else:
