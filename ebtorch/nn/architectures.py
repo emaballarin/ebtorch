@@ -125,7 +125,7 @@ class FCBlock(nn.Module):
 
             if isinstance(dropout[layer_idx], bool) and dropout[layer_idx]:
                 raise ValueError(error_illegal_dropout)
-            elif not isinstance(dropout[layer_idx], bool):
+            if not isinstance(dropout[layer_idx], bool):
                 self.module_battery.append(nn.Dropout(p=dropout[layer_idx]))
 
         self.module_battery.append(
@@ -136,7 +136,7 @@ class FCBlock(nn.Module):
             self.module_battery.append(nn.BatchNorm1d(num_features=out_size))
         if isinstance(dropout[-1], bool) and dropout[-1]:
             raise ValueError(error_illegal_dropout)
-        elif not isinstance(dropout[-1], bool):
+        if not isinstance(dropout[-1], bool):
             self.module_battery.append(nn.Dropout(p=dropout[-1]))
 
     def reset_parameters(self) -> None:
@@ -302,8 +302,7 @@ class SGRUHCell(nn.Module):
             raise ValueError(
                 f"Parameter 'tbptt' must be either False or a positive integer. Given: {tbptt}"
             )
-        else:
-            self._tbptt: int = int(tbptt)  # False == 0
+        self._tbptt: int = int(tbptt)  # False == 0
 
         # Copy and store read-heads
         self._readin: nn.Module = copy.deepcopy(readin_head)

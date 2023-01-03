@@ -70,15 +70,14 @@ class AdverApply:
     ) -> Tuple[th.Tensor, ...]:
 
         _batch_size: int = x[0].shape[0]
-        assert _batch_size == x[1].shape[0]
 
         _adv_number: int = len(self.adversaries)
         _atom_size: int = int((_batch_size * perturbed_fraction) // _adv_number)
         _perturbed_size: int = _atom_size * _adv_number
 
-        _tensor_list_xclean: List[th.Tensor] = list()
-        _tensor_list_yclean: List[th.Tensor] = list()
-        _tensor_list_xpertu: List[th.Tensor] = list()
+        _tensor_list_xclean: List[th.Tensor] = []
+        _tensor_list_yclean: List[th.Tensor] = []
+        _tensor_list_xpertu: List[th.Tensor] = []
 
         x = [self.pre_process_fx(x[0].to(device)), x[1].to(device)]
 
