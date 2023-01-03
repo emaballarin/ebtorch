@@ -20,7 +20,7 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
-# Imports (wildcard)
+# Imports
 from .adaptiveio import AdaptiveInput
 from .adaptiveio import AdaptiveLogSoftmaxWithLoss
 from .adaptiveio import VariationalDropout
@@ -50,8 +50,6 @@ from .serlu import SERLU
 from .smelu import SmeLU
 from .utils import *  # lgtm [py/polluting-import]
 
-# Imports (specific)
-
 # Deletions (from .)
 del kwta
 del architectures
@@ -78,3 +76,5 @@ del argser_f
 del emplace_kv
 del model_reqgrad
 del model_reqgrad_
+del AdverApply
+del TA2ATAdapter

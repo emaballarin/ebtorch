@@ -111,12 +111,6 @@ data/
 *.pt
 *.pth
 
-# JetBrains IDEs settings
-.idea
-.idea/
-*.idea
-**/.idea/*
-
 # MS Visual Studio Code (and IonIDE workaround)
 .vscode
 .ionide
@@ -159,3 +153,10 @@ format.sh
 typeshed
 typeshed/
 **/typeshed/*
+
+# IntelliJ IDEA configuration files (as a whole)
+.idea/
+.idea/**
+.idea
+*.idea
+**/.idea/*

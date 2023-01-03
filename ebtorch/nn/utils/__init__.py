@@ -21,6 +21,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # Imports (specific)
+from .adverutils import AdverApply
+from .adverutils import TA2ATAdapter
 from .autoclip import AutoClipper
 from .onlyutils import argser_f
 from .onlyutils import emplace_kv
@@ -32,6 +34,7 @@ from .reprutils import store_repr_fx
 from .reprutils import store_repr_hook
 
 # Deletions (from .)
+del adverutils
 del autoclip
 del reprutils
 del onlyutils

@@ -18,8 +18,11 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
+#
 
 # LIST OF REQUIREMENTS:
-torch>=1.10
-numpy
+advertorch>=0.2.3
 nengolib
+numpy
+torch>=1.10
+torchattacks>=3.3

@@ -25,6 +25,7 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
+#
 import os
 import warnings
 
@@ -49,14 +50,14 @@ def check_dependencies():
         warnings.warn(f"Missing dependencies: {missing_dependencies}")
 
 
-DEPENDENCY_PACKAGE_NAMES = ["torch", "numpy", "nengolib"]
+DEPENDENCY_PACKAGE_NAMES = ["advertorch", "nengolib", "numpy", "torch", "torchattacks"]
 
 check_dependencies()
 
 
 setup(
     name="ebtorch",
-    version="0.4.4",
+    version="0.4.5",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",
