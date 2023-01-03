@@ -210,7 +210,6 @@ class FCBlockLegacy(nn.Module):
 
 # Causal Convolutional Layer, 1D
 # (cfr.: https://github.com/pytorch/pytorch/issues/1333#issuecomment-400338207)
-# TODO: possibly tidy-up the code!
 
 
 class CausalConv1d(nn.Conv1d):

@@ -51,30 +51,30 @@ from .smelu import SmeLU
 from .utils import *  # lgtm [py/polluting-import]
 
 # Deletions (from .)
-del kwta
+del adaptiveio
 del architectures
+del convolutional_flatten
+del debuglayers
+del fieldtransform
+del kwta
 del lmu
 del mish
-del adaptiveio
-del fieldtransform
+del reshapelayers
 del serlu
 del smelu
-del reshapelayers
-del debuglayers
-del convolutional_flatten
 
 # Deletions (from .functional)
 # del mish  # (already done by chance!)
 
 # Deletions (from .utils)
+del AdverApply
 del AutoClipper
-del store_repr_fx
-del store_repr_hook
-del store_repr_autohook
-del gather_model_repr
+del TA2ATAdapter
 del argser_f
 del emplace_kv
+del gather_model_repr
 del model_reqgrad
 del model_reqgrad_
-del AdverApply
-del TA2ATAdapter
+del store_repr_autohook
+del store_repr_fx
+del store_repr_hook

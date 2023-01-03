@@ -26,45 +26,45 @@ from .nn import *  # lgtm [py/polluting-import]
 from .optim import *  # lgtm [py/polluting-import]
 
 # Deletions (from .nn)
-del KWTA1d
-del KWTA2d
-del BrokenReLU
-del FCBlockLegacy
-del FCBlock
-del CausalConv1d
-del SGRUHCell
-del LMUCell
-del VariationalDropout
 del AdaptiveInput
 del AdaptiveLogSoftmaxWithLoss
+del BrokenReLU
+del CausalConv1d
+del ConvolutionalFlattenLayer
+del FCBlock
+del FCBlockLegacy
 del FieldTransform
+del FlatChannelize2DLayer
+del GaussianReparameterizerSampler
+del KWTA1d
+del KWTA2d
+del LMUCell
 del Mish
 del MishPulse
 del MishPulseSymmY
-del mishlayer_init
+del ProbePrintLayer
+del ReshapeLayer
+del SERLU
+del SGRUHCell
+del SmeLU
+del VariationalDropout
 del field_transform
+del mishlayer_init
 del mishpulse
 del mishpulse_symmy
-del GaussianReparameterizerSampler
-del SERLU
-del SmeLU
-del ReshapeLayer
-del FlatChannelize2DLayer
-del ProbePrintLayer
-del ConvolutionalFlattenLayer
 
 # Deletions (from .optim)
-del Lookahead
-del RAdam
-del PlainRAdam
 del Adan
-del WarmAdamW
+del HCAdam
+del HCGD
+del Lookahead
+del MADGRAD
+del PlainRAdam
+del RAdam
 del Ranger
 del SAM
-del HCGD
-del HCAdam
-del MADGRAD
+del WarmAdamW
 
 # Deletions (from .logging)
-del LogCSV
 del AverageMeter
+del LogCSV

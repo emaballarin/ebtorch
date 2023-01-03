@@ -33,10 +33,10 @@ from .ranger import Ranger
 from .sam import SAM
 
 # Deletions (from .)
-del lookahead
-del radam
 del adan
+del hcgd
+del lookahead
+del madgrad
+del radam
 del ranger
 del sam
-del hcgd
-del madgrad

@@ -15,6 +15,12 @@ from torch.nn import ModuleList
 from torch.nn import Sequential
 
 
+stop_iteration_literal = (
+    "Warning! Call to exhausted 'self.parameters()' iterator."
+    "\nExplicit exception has been silenced, but no further action has been performed."
+)
+
+
 class VariationalDropout(nn.Module):
     def __init__(self, dropout: float):
         super().__init__()
@@ -77,10 +83,7 @@ class RNNModel(nn.Module):
         try:
             weight = next(self.parameters())
         except StopIteration:
-            print("Warning! Call to exhausted 'self.parameters()' iterator.")
-            print(
-                "Explicit exception has been silenced, but no further action has been performed."
-            )
+            print(stop_iteration_literal)
         if self.rnn_type == "LSTM":
             return (
                 weight.new_zeros(self.nlayers, bsz, self.nhid),
@@ -203,10 +206,7 @@ class AdaptiveSoftmaxRNN(nn.Module):
         try:
             weight = next(self.parameters())
         except StopIteration:
-            print("Warning! Call to exhausted 'self.parameters()' iterator.")
-            print(
-                "Explicit exception has been silenced, but no further action has been performed."
-            )
+            print(stop_iteration_literal)
         return (
             weight.new_zeros(self.nlayers, bsz, self.nhid),
             weight.new_zeros(self.nlayers, bsz, self.nhid),
@@ -284,10 +284,7 @@ class AdaptiveSoftmaxRNNImproved(nn.Module):
         try:
             weight = next(self.parameters())
         except StopIteration:
-            print("Warning! Call to exhausted 'self.parameters()' iterator.")
-            print(
-                "Explicit exception has been silenced, but no further action has been performed."
-            )
+            print(stop_iteration_literal)
         return (
             weight.new_zeros(self.nlayers, bsz, self.nhid),
             weight.new_zeros(self.nlayers, bsz, self.nhid),
@@ -350,7 +347,6 @@ class AdaptiveInput(nn.Module):
             self.tail.append(projection)
 
     def forward(self, myinput):
-        used_rows = 0
         input_size = list(myinput.size())
 
         output = myinput.new_zeros(
@@ -375,7 +371,6 @@ class AdaptiveInput(nn.Module):
                 else self.tail[i - 1](myinput[input_mask] - low_idx)
             )
             output.index_copy_(0, row_indices, out)
-            used_rows += row_indices.numel()
 
         return output.view(input_size[0], input_size[1], -1)
 
@@ -447,7 +442,7 @@ class AdaptiveLogSoftmaxWithLoss(Module):
     def forward(self, myinput, target):
         if myinput.size(0) != target.size(0):
             raise RuntimeError(
-                "Input and target should have the same size " "in the batch dimension."
+                "Input and target should have the same size in the batch dimension."
             )
 
         used_rows = 0
