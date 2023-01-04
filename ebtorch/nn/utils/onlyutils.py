@@ -29,12 +29,23 @@ from typing import Union
 # Functions
 def argser_f(f, arglist: Union[list, tuple, dict]):
     error_listerror = "Function arguments must be either an args tuple or a kwargs dictionary, or both in this order inside a list."
+
+    # Catch errors early...
+    if not (
+        isinstance(arglist, list)
+        or isinstance(arglist, tuple)
+        or isinstance(arglist, dict)
+    ):
+        raise TypeError(error_listerror)
+    if isinstance(arglist, list):
+        if len(arglist) > 2:
+            raise ValueError(error_listerror)
+
+    # Input is already of correct type(s)
     if isinstance(arglist, list):
         if len(arglist) == 0:
             return fpartial(f)
-        elif len(arglist) > 2:
-            raise ValueError(error_listerror)
-        elif len(arglist) == 2:
+        if len(arglist) == 2:
             return fpartial(f, *arglist[0], **arglist[1])
         else:
             if isinstance(arglist[0], tuple):
@@ -43,10 +54,8 @@ def argser_f(f, arglist: Union[list, tuple, dict]):
                 return fpartial(f, **arglist[0])
     elif isinstance(arglist, tuple):
         return fpartial(f, *arglist)
-    elif isinstance(arglist, dict):
+    else:  # isinstance(arglist, dict)
         return fpartial(f, **arglist)
-    else:
-        raise ValueError(error_listerror)
 
 
 def emplace_kv(dictionary: dict, k, v) -> dict:

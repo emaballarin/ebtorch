@@ -29,7 +29,6 @@ from .madgrad import MADGRAD
 from .radam import PlainRAdam
 from .radam import RAdam
 from .radam import WarmAdamW
-from .ranger import Ranger
 from .sam import SAM
 
 # Deletions (from .)
@@ -38,5 +37,4 @@ del hcgd
 del lookahead
 del madgrad
 del radam
-del ranger
 del sam
