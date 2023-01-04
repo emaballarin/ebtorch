@@ -39,7 +39,7 @@ def argser_f(f, arglist: Union[list, tuple, dict]):
 
     # Input is already of correct type(s):
     if isinstance(arglist, list):
-        if len(arglist) == 0:
+        if not arglist:  # len(arglist) == 0:
             return fpartial(f)
         if len(arglist) == 2:
             return fpartial(f, *arglist[0], **arglist[1])

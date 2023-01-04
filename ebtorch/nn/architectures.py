@@ -85,7 +85,7 @@ class FCBlock(nn.Module):
         if isinstance(batchnorm, bool):
             batchnorm = [batchnorm] * len(in_sizes)
 
-        if isinstance(activation_fx, List):
+        if isinstance(activation_fx, list):
             self.activation_fx = nn.ModuleList(copy.deepcopy(activation_fx))
         elif isinstance(activation_fx, nn.Module) and not isinstance(
             activation_fx, nn.ModuleList
