@@ -30,18 +30,14 @@ from typing import Union
 def argser_f(f, arglist: Union[list, tuple, dict]):
     error_listerror = "Function arguments must be either an args tuple or a kwargs dictionary, or both in this order inside a list."
 
-    # Catch errors early...
-    if not (
-        isinstance(arglist, list)
-        or isinstance(arglist, tuple)
-        or isinstance(arglist, dict)
-    ):
+    if not isinstance(arglist, (list, tuple, dict)):
         raise TypeError(error_listerror)
     if isinstance(arglist, list):
+        # if not a list, it may not have len(...) defined
         if len(arglist) > 2:
             raise ValueError(error_listerror)
 
-    # Input is already of correct type(s)
+    # Input is already of correct type(s):
     if isinstance(arglist, list):
         if len(arglist) == 0:
             return fpartial(f)
