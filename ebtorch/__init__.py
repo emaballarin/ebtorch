@@ -61,7 +61,6 @@ del Lookahead
 del MADGRAD
 del PlainRAdam
 del RAdam
-del Ranger
 del SAM
 del WarmAdamW
 
