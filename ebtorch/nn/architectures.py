@@ -25,7 +25,7 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-import torch  # lgtm [py/import-and-import-from]
+import torch
 from torch import nn
 from torch import Tensor
 

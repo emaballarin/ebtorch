@@ -23,7 +23,7 @@ import torch
 from torch.optim.optimizer import Optimizer
 
 
-class Lookahead(Optimizer):  # lgtm [py/missing-call-to-init]
+class Lookahead(Optimizer):
     r"""PyTorch implementation of the lookahead wrapper.
 
     Lookahead Optimizer: https://arxiv.org/abs/1907.08610

@@ -48,7 +48,7 @@ from .reshapelayers import FlatChannelize2DLayer
 from .reshapelayers import ReshapeLayer
 from .serlu import SERLU
 from .smelu import SmeLU
-from .utils import *  # lgtm [py/polluting-import]
+from .utils import *
 
 # Deletions (from .)
 del adaptiveio

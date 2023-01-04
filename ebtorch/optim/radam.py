@@ -109,24 +109,24 @@ class RAdam(Optimizer):
                 state["step"] += 1
                 buffered = group["buffer"][int(state["step"] % 10)]
                 if state["step"] == buffered[0]:
-                    N_sma, step_size = buffered[1], buffered[2]
+                    n_sma, step_size = buffered[1], buffered[2]
                 else:
                     buffered[0] = state["step"]
                     beta2_t = beta2 ** state["step"]
-                    N_sma_max = 2 / (1 - beta2) - 1
-                    N_sma = N_sma_max - 2 * state["step"] * beta2_t / (1 - beta2_t)
-                    buffered[1] = N_sma
+                    n_sma_max = 2 / (1 - beta2) - 1
+                    n_sma = n_sma_max - 2 * state["step"] * beta2_t / (1 - beta2_t)
+                    buffered[1] = n_sma
 
                     # more conservative since it's an approximated value
-                    if N_sma >= 5:
+                    if n_sma >= 5:
                         step_size = math.sqrt(
                             (1 - beta2_t)
-                            * (N_sma - 4)
-                            / (N_sma_max - 4)
-                            * (N_sma - 2)
-                            / N_sma
-                            * N_sma_max
-                            / (N_sma_max - 2)
+                            * (n_sma - 4)
+                            / (n_sma_max - 4)
+                            * (n_sma - 2)
+                            / n_sma
+                            * n_sma_max
+                            / (n_sma_max - 2)
                         ) / (1 - beta1 ** state["step"])
                     elif self.degenerated_to_sgd:
                         step_size = 1.0 / (1 - beta1 ** state["step"])
@@ -135,7 +135,7 @@ class RAdam(Optimizer):
                     buffered[2] = step_size
 
                 # more conservative since it's an approximated value
-                if N_sma >= 5:
+                if n_sma >= 5:
                     if group["weight_decay"] != 0:
                         p_data_fp32.add_(
                             p_data_fp32, alpha=-group["weight_decay"] * group["lr"]
@@ -216,11 +216,11 @@ class PlainRAdam(Optimizer):
 
                 state["step"] += 1
                 beta2_t = beta2 ** state["step"]
-                N_sma_max = 2 / (1 - beta2) - 1
-                N_sma = N_sma_max - 2 * state["step"] * beta2_t / (1 - beta2_t)
+                n_sma_max = 2 / (1 - beta2) - 1
+                n_sma = n_sma_max - 2 * state["step"] * beta2_t / (1 - beta2_t)
 
                 # more conservative since it's an approximated value
-                if N_sma >= 5:
+                if n_sma >= 5:
                     if group["weight_decay"] != 0:
                         p_data_fp32.add_(
                             -group["weight_decay"] * group["lr"], p_data_fp32
@@ -229,12 +229,12 @@ class PlainRAdam(Optimizer):
                         group["lr"]
                         * math.sqrt(
                             (1 - beta2_t)
-                            * (N_sma - 4)
-                            / (N_sma_max - 4)
-                            * (N_sma - 2)
-                            / N_sma
-                            * N_sma_max
-                            / (N_sma_max - 2)
+                            * (n_sma - 4)
+                            / (n_sma_max - 4)
+                            * (n_sma - 2)
+                            / n_sma
+                            * n_sma_max
+                            / (n_sma_max - 2)
                         )
                         / (1 - beta1 ** state["step"])
                     )

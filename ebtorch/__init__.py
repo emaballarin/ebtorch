@@ -21,9 +21,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # Imports (wildcard)
-from .logging import *  # lgtm [py/polluting-import]
-from .nn import *  # lgtm [py/polluting-import]
-from .optim import *  # lgtm [py/polluting-import]
+from .logging import *
+from .nn import *
+from .optim import *
 
 # Deletions (from .nn)
 del AdaptiveInput

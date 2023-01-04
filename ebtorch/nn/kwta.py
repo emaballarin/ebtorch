@@ -19,7 +19,7 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-import torch  # lgtm [py/import-and-import-from]
+import torch
 import torch.nn.functional as F
 from torch import Tensor
 from torch.nn import Module

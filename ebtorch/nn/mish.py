@@ -33,7 +33,7 @@
 from math import sqrt as math_sqrt
 from typing import Union
 
-import torch  # lgtm [py/import-and-import-from]
+import torch
 from torch import nn
 
 from .functional import mishpulse as fmishpulse

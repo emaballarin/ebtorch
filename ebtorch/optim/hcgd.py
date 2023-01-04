@@ -188,7 +188,7 @@ class HCGD(Optimizer):
 
             # step towards this value
             for group, group_jacobian in zip(self.param_groups, jacobian):
-                weight_decay = group["weight_decay"]  # lgtm [py/unused-local-variable]
+                weight_decay = group["weight_decay"]
                 fcn_change_limiter = group["fcn_change_limiter"]
                 inner_lr = group["inner_lr"]
                 momentum = group["momentum"]
@@ -392,10 +392,10 @@ class HCAdam(Optimizer):
 
             diff = prop_val_output - orig_val_output
             distance_per_example = torch.norm(diff, 2, 1)
-            L2_mean = distance_per_example.mean()
+            l2_mean = distance_per_example.mean()
 
             # get the derivative and accumulate into p.grad
-            L2_mean.backward()
+            l2_mean.backward()
 
             # clip the grads on the correction (good if you're clipping other grads too)
             if self.clip_correction_grad > 0:
@@ -414,16 +414,16 @@ class HCAdam(Optimizer):
                     if (p.grad is None) and (j is None):
                         continue
                     amsgrad = group["amsgrad"]
-                    L2_grad = p.grad.data
+                    l2_grad = p.grad.data
 
                     if i == 0:
-                        jac = L2_grad.mul(fcn_change_limiter)
+                        jac = l2_grad.mul(fcn_change_limiter)
                     else:
                         # this is tricky: for n_iterations>1, we don't continue to converge towards the starting point;
                         # instead, we attempt to converge to the point such that
-                        #               ``  jacobian = -fcn_change_limiter * L2_grad    ``
+                        #               ``  jacobian = -fcn_change_limiter * l2_grad    ``
                         jac = j.data
-                        jac.add_(fcn_change_limiter, L2_grad)
+                        jac.add_(fcn_change_limiter, l2_grad)
 
                     # update the network with the correction
                     p.data.add_(-inner_lr, jac)
@@ -437,8 +437,8 @@ class HCAdam(Optimizer):
                         max_exp_avg_sq = state["max_exp_avg_sq"]
                     beta1, beta2 = group["betas"]
                     # Add the correction into the first and second running moments
-                    exp_avg.add_(1 - beta1, L2_grad)
-                    exp_avg_sq.addcmul_(1 - beta2, L2_grad, L2_grad)
+                    exp_avg.add_(1 - beta1, l2_grad)
+                    exp_avg_sq.addcmul_(1 - beta2, l2_grad, l2_grad)
 
                     if amsgrad:
                         # Maintains the maximum of all 2nd moment running avg. till now

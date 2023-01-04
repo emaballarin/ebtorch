@@ -29,7 +29,7 @@
 # SPDX-License-Identifier: MIT
 # SPDX-License-Identifier: Apache-2.0
 # IMPORTS
-import torch  # lgtm [py/import-and-import-from]
+import torch
 import torch.nn.functional as F
 from torch import Tensor
 from torch.overrides import handle_torch_function

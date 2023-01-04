@@ -49,8 +49,8 @@ class LMUCell(nn.Module):
         trainable_input_kernel=True,
         trainable_hidden_kernel=True,
         trainable_memory_kernel=True,
-        trainable_A=False,
-        trainable_B=False,
+        trainable_a=False,
+        trainable_b=False,
         input_encoders_initializer=lecun_uniform,
         hidden_encoders_initializer=lecun_uniform,
         memory_encoders_initializer=partial(torch.nn.init.constant_, val=0),
@@ -103,8 +103,8 @@ class LMUCell(nn.Module):
         self.memory_kernel = nn.Parameter(
             torch.Tensor(hidden_size, order), requires_grad=trainable_memory_kernel
         )
-        self.AT = nn.Parameter(torch.Tensor(self._A), requires_grad=trainable_A)
-        self.BT = nn.Parameter(torch.Tensor(self._B), requires_grad=trainable_B)
+        self.AT = nn.Parameter(torch.Tensor(self._A), requires_grad=trainable_a)
+        self.BT = nn.Parameter(torch.Tensor(self._B), requires_grad=trainable_b)
 
         # Initialize parameters
         input_encoders_initializer(self.input_encoders)

@@ -6,9 +6,9 @@
 #
 from collections import namedtuple
 
-import torch  # lgtm [py/import-and-import-from]
-import torch.nn as nn  # lgtm [py/import-and-import-from]
-import torch.nn.functional as F  # lgtm [py/import-and-import-from]
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 from torch.nn import Linear
 from torch.nn import Module
 from torch.nn import ModuleList
@@ -93,7 +93,7 @@ class RNNModel(nn.Module):
             return weight.new_zeros(self.nlayers, bsz, self.nhid)
 
 
-class AWD_LSTM(nn.LSTM):
+class AwdLstm(nn.LSTM):
     def __init__(
         self,
         *args,
@@ -237,7 +237,7 @@ class AdaptiveSoftmaxRNNImproved(nn.Module):
         self.out_dropout = nn.Dropout(out_dropout)
 
         self.encoder = AdaptiveInput(ninp, ntoken, cutoffs, tail_drop=tail_dropout)
-        self.rnn = AWD_LSTM(
+        self.rnn = AwdLstm(
             ninp,
             nhid,
             num_layers=nlayers,

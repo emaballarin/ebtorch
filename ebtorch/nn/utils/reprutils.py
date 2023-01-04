@@ -28,7 +28,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
-import torch as th  # lgtm [py/import-and-import-from]
+import torch as th
 from torch import Tensor
 from torch.nn import Module
 from torch.utils.hooks import RemovableHandle
