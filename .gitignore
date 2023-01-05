@@ -160,3 +160,6 @@ typeshed/
 .idea
 *.idea
 **/.idea/*
+
+# Pyre type checker working directory
+.pyre/

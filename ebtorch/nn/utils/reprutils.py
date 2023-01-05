@@ -37,7 +37,7 @@ from torch.utils.hooks import RemovableHandle
 def store_repr_fx(
     representation: Tensor,
     x: Tensor,
-    device: th.DeviceObjType,
+    device: str,
     preserve_graph: bool = False,
 ) -> Tuple[Tensor, int]:
 
@@ -82,7 +82,7 @@ def store_repr_hook(
     mod: Module,
     inp: Tensor,
     out: Tensor,
-    device: th.DeviceObjType,
+    device: str,
     preserve_graph: bool = False,
 ) -> None:
 
@@ -133,7 +133,7 @@ def store_repr_autohook(
     model: Module,
     representation_list: List[Tensor],
     starting_indices: List[int],
-    device: th.DeviceObjType,
+    device: str,
     named_layers: Optional[Tuple[str, ...]] = None,
     preserve_graph: bool = False,
 ) -> List[RemovableHandle]:
