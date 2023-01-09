@@ -373,3 +373,11 @@ class SGRUHCell(nn.Module):
 
         # Restart the recurrence index
         self._recurrence_idx: int = 0
+
+
+class ArgMaxLayer(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def forward(self, x: Tensor) -> Tensor:  # Do not make static!
+        return torch.argmax(x, dim=1)

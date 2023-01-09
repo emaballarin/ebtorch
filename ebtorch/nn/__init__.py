@@ -24,6 +24,7 @@
 from .adaptiveio import AdaptiveInput
 from .adaptiveio import AdaptiveLogSoftmaxWithLoss
 from .adaptiveio import VariationalDropout
+from .architectures import ArgMaxLayer
 from .architectures import CausalConv1d
 from .architectures import FCBlock
 from .architectures import FCBlockLegacy

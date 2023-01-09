@@ -28,6 +28,7 @@ from .optim import *
 # Deletions (from .nn)
 del AdaptiveInput
 del AdaptiveLogSoftmaxWithLoss
+del ArgMaxLayer
 del BrokenReLU
 del CausalConv1d
 del ConvolutionalFlattenLayer
