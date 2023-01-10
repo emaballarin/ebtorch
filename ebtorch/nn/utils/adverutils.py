@@ -82,29 +82,31 @@ class AdverApply:
         x = [self.pre_process_fx(x[0].to(device)), x[1].to(device)]
 
         # Clean fraction
-        _tensor_list_xclean.append(x[0][0:-_perturbed_size])
-        _tensor_list_yclean.append(x[1][0:-_perturbed_size])
-        _tensor_list_xpertu.append(x[0][0:-_perturbed_size])
+        if perturbed_fraction < 1.0:
+            _tensor_list_xclean.append(x[0][0:-_perturbed_size])
+            _tensor_list_yclean.append(x[1][0:-_perturbed_size])
+            _tensor_list_xpertu.append(x[0][0:-_perturbed_size])
 
         # Perturbed fraction
-        for _adv_idx, _adversary in enumerate(self.adversaries):
-            _start_idx = _batch_size - _perturbed_size + _adv_idx * _atom_size
-            _end_idx = _batch_size - _perturbed_size + (_adv_idx + 1) * _atom_size
+        if _atom_size > 0:
+            for _adv_idx, _adversary in enumerate(self.adversaries):
+                _start_idx = _batch_size - _perturbed_size + _adv_idx * _atom_size
+                _end_idx = _batch_size - _perturbed_size + (_adv_idx + 1) * _atom_size
 
-            # Clean subfraction
-            _tensor_list_xclean.append(x[0][_start_idx:_end_idx].detach())
-            _tensor_list_yclean.append(x[1][_start_idx:_end_idx].detach())
+                # Clean subfraction
+                _tensor_list_xclean.append(x[0][_start_idx:_end_idx].detach())
+                _tensor_list_yclean.append(x[1][_start_idx:_end_idx].detach())
 
-            # Perturbed subfraction
-            _xpertu: th.Tensor = (
-                _adversary.perturb(
-                    x[0][_start_idx:_end_idx],
-                    x[1][_start_idx:_end_idx],
+                # Perturbed subfraction
+                _xpertu: th.Tensor = (
+                    _adversary.perturb(
+                        x[0][_start_idx:_end_idx],
+                        x[1][_start_idx:_end_idx],
+                    )
+                    .reshape(x[0][_start_idx:_end_idx].shape)
+                    .detach()
                 )
-                .reshape(x[0][_start_idx:_end_idx].shape)
-                .detach()
-            )
-            _tensor_list_xpertu.append(_xpertu)
+                _tensor_list_xpertu.append(_xpertu)
 
             if output_also_clean:
                 return (
