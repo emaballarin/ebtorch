@@ -82,13 +82,13 @@ class AdverApply:
         x = [self.pre_process_fx(x[0].to(device)), x[1].to(device)]
 
         # Clean fraction
-        if perturbed_fraction < 1.0:
+        if _perturbed_size < _batch_size:
             _tensor_list_xclean.append(x[0][0:-_perturbed_size])
             _tensor_list_yclean.append(x[1][0:-_perturbed_size])
             _tensor_list_xpertu.append(x[0][0:-_perturbed_size])
 
         # Perturbed fraction
-        if _atom_size > 0:
+        if _perturbed_size > 0:
             for _adv_idx, _adversary in enumerate(self.adversaries):
                 _start_idx = _batch_size - _perturbed_size + _adv_idx * _atom_size
                 _end_idx = _batch_size - _perturbed_size + (_adv_idx + 1) * _atom_size
