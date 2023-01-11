@@ -83,9 +83,15 @@ class AdverApply:
 
         # Clean fraction
         if _perturbed_size < _batch_size:
-            _tensor_list_xclean.append(x[0][0:-_perturbed_size])
-            _tensor_list_yclean.append(x[1][0:-_perturbed_size])
-            _tensor_list_xpertu.append(x[0][0:-_perturbed_size])
+            _tensor_list_xclean.append(
+                x[0][0 : -_perturbed_size + int(_perturbed_size == 0) * _batch_size]
+            )
+            _tensor_list_yclean.append(
+                x[1][0 : -_perturbed_size + int(_perturbed_size == 0) * _batch_size]
+            )
+            _tensor_list_xpertu.append(
+                x[0][0 : -_perturbed_size + int(_perturbed_size == 0) * _batch_size]
+            )
 
         # Perturbed fraction
         if _perturbed_size > 0:
@@ -108,14 +114,14 @@ class AdverApply:
                 )
                 _tensor_list_xpertu.append(_xpertu)
 
-            if output_also_clean:
-                return (
-                    self.post_process_fx(th.concat(_tensor_list_xpertu, 0)).detach(),
-                    th.concat(_tensor_list_yclean, 0).detach(),
-                    self.post_process_fx(th.concat(_tensor_list_xclean, 0)).detach(),
-                )
-            else:
-                return (
-                    self.post_process_fx(th.concat(_tensor_list_xpertu, 0)).detach(),
-                    th.concat(_tensor_list_yclean, 0).detach(),
-                )
+        if output_also_clean:
+            return (
+                self.post_process_fx(th.concat(_tensor_list_xpertu, 0)).detach(),
+                th.concat(_tensor_list_yclean, 0).detach(),
+                self.post_process_fx(th.concat(_tensor_list_xclean, 0)).detach(),
+            )
+        else:
+            return (
+                self.post_process_fx(th.concat(_tensor_list_xpertu, 0)).detach(),
+                th.concat(_tensor_list_yclean, 0).detach(),
+            )
