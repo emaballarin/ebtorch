@@ -24,5 +24,6 @@
 advertorch>=0.2.3
 nengolib
 numpy
+requests
 torch>=1.10
 torchattacks>=3.3

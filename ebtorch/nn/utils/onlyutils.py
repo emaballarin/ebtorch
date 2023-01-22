@@ -25,6 +25,8 @@
 from functools import partial as fpartial
 from typing import Union
 
+import requests
+
 
 # Functions
 def argser_f(f, arglist: Union[list, tuple, dict]):
@@ -57,3 +59,37 @@ def argser_f(f, arglist: Union[list, tuple, dict]):
 def emplace_kv(dictionary: dict, k, v) -> dict:
     """Returns input dict with added k:v pair, overwriting if k already exists"""
     return {**dictionary, k: v}
+
+
+def download_gdrive(gdrive_id, fname_save):
+    # https://github.com/RobustBench/robustbench/blob/1a9c24fa69363d8130f8cdf67ca3ce8a7c481aa8/robustbench/utils.py#L34
+    def get_confirm_token(_response):
+        for key, value in _response.cookies.items():
+            if key.startswith("download_warning"):
+                return value
+
+        return None
+
+    def save_response_content(_response, _fname_save):
+        chunk_size = 32768
+
+        with open(_fname_save, "wb") as f:
+            for chunk in _response.iter_content(chunk_size):
+                if chunk:  # filter out keep-alive new chunks
+                    f.write(chunk)
+
+    print(f"Download started: path={fname_save} (gdrive_id={gdrive_id})")
+
+    url_base = "https://docs.google.com/uc?export=download&confirm=t"
+    session = requests.Session()
+
+    response = session.get(url_base, params={"id": gdrive_id}, stream=True)
+    token = get_confirm_token(response)
+
+    if token:
+        params = {"id": gdrive_id, "confirm": token}
+        response = session.get(url_base, params=params, stream=True)
+
+    save_response_content(response, fname_save)
+    session.close()
+    print(f"Download finished: path={fname_save} (gdrive_id={gdrive_id})")

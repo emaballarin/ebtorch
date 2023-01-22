@@ -22,6 +22,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Imports (specific)
 from .adan import Adan
+from .custom import ralah_optim
 from .hcgd import HCAdam
 from .hcgd import HCGD
 from .lookahead import Lookahead
@@ -33,6 +34,7 @@ from .sam import SAM
 
 # Deletions (from .)
 del adan
+del custom
 del hcgd
 del lookahead
 del madgrad

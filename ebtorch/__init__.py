@@ -56,6 +56,7 @@ del mishpulse_symmy
 
 # Deletions (from .optim)
 del Adan
+del ralah_optim
 del HCAdam
 del HCGD
 del Lookahead
