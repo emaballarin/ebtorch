@@ -28,11 +28,35 @@ from typing import Union
 import torch
 from torch import nn
 from torch import Tensor
+from torch.nn import functional as F
 
 # CUSTOM TYPES
 realnum = Union[float, int]
 
-# CLASSES
+
+# Loss functions
+@torch.jit.script
+def pixelwise_bce_sum(lhs: Tensor, rhs: Tensor) -> Tensor:
+    return F.binary_cross_entropy(lhs, rhs, reduction="sum")
+
+
+@torch.jit.script
+def pixelwise_bce_mean(lhs: Tensor, rhs: Tensor) -> Tensor:
+    return F.binary_cross_entropy(lhs, rhs, reduction="mean")
+
+
+@torch.jit.script
+def beta_reco_bce(
+    input_reco: Tensor,
+    input_orig: Tensor,
+    mu: Tensor,
+    sigma: Tensor,
+    beta: float = 0.5,
+):
+    kldiv = (beta * (torch.pow(mu, 2) + torch.exp(sigma) - sigma - 1)).sum()
+    pwbce = pixelwise_bce_sum(input_reco, input_orig)
+    return pwbce + kldiv
+
 
 # Fully-Connected Block, New version
 # Joint work with Davide Roznowicz (https://github.com/DavideRoznowicz)

@@ -25,10 +25,13 @@ from .adaptiveio import AdaptiveInput
 from .adaptiveio import AdaptiveLogSoftmaxWithLoss
 from .adaptiveio import VariationalDropout
 from .architectures import ArgMaxLayer
+from .architectures import beta_reco_bce
 from .architectures import CausalConv1d
 from .architectures import FCBlock
 from .architectures import FCBlockLegacy
 from .architectures import GaussianReparameterizerSampler
+from .architectures import pixelwise_bce_mean
+from .architectures import pixelwise_bce_sum
 from .architectures import SGRUHCell
 from .convolutional_flatten import ConvolutionalFlattenLayer
 from .debuglayers import ProbePrintLayer
