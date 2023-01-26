@@ -405,3 +405,12 @@ class ArgMaxLayer(nn.Module):
 
     def forward(self, x: Tensor) -> Tensor:  # Do not make static!
         return torch.argmax(x, dim=1)
+
+
+class BinarizeLayer(nn.Module):
+    def __init__(self, threshold: float = 0.5) -> None:
+        super().__init__()
+        self.threshold: float = threshold
+
+    def forward(self, x: Tensor) -> Tensor:
+        return (x > self.threshold).float()  # (...): th.Tensor
