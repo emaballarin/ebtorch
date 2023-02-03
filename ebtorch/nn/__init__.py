@@ -26,6 +26,7 @@ from .adaptiveio import AdaptiveLogSoftmaxWithLoss
 from .adaptiveio import VariationalDropout
 from .architectures import ArgMaxLayer
 from .architectures import beta_reco_bce
+from .architectures import BinarizeLayer
 from .architectures import CausalConv1d
 from .architectures import FCBlock
 from .architectures import FCBlockLegacy
