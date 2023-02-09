@@ -27,9 +27,7 @@ from .hcgd import HCAdam
 from .hcgd import HCGD
 from .lookahead import Lookahead
 from .madgrad import MADGRAD
-from .radam import PlainRAdam
 from .radam import RAdam
-from .radam import WarmAdamW
 from .sam import SAM
 
 # Deletions (from .)

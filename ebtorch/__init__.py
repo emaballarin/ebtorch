@@ -61,10 +61,8 @@ del HCAdam
 del HCGD
 del Lookahead
 del MADGRAD
-del PlainRAdam
 del RAdam
 del SAM
-del WarmAdamW
 
 # Deletions (from .logging)
 del AverageMeter
