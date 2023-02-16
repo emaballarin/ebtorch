@@ -43,7 +43,6 @@ T = TypeVar("T", bound="NNEnsemble")
 
 
 # Functions
-@th.jit.script
 def _tensor_no_op(
     x: Union[th.Tensor, Sequence[th.Tensor]]
 ) -> Union[th.Tensor, Sequence[th.Tensor]]:
