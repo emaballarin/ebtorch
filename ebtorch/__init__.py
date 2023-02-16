@@ -54,6 +54,9 @@ del field_transform
 del mishlayer_init
 del mishpulse
 del mishpulse_symmy
+del pixelwise_bce_mean
+del pixelwise_bce_sum
+del BinarizeLayer
 
 # Deletions (from .optim)
 del Adan

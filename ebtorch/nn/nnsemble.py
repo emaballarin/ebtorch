@@ -194,7 +194,9 @@ class NNEnsemble(thnn.Module):
         update_dormant_state: bool = False,
     ) -> T:
         self.swa_ensemble = swa_ensemble
-        if swa_ensemble and (self.aggregation != _tensor_no_op):
+        if swa_ensemble and (  # pylint: disable=W0143
+            self.aggregation != _tensor_no_op  # pylint: disable=W0143
+        ):  # pylint: disable=W0143
             _warn_swa_aggregation()
         if update_state:
             self._update_state_nofail(force_both=update_dormant_state)
@@ -231,7 +233,9 @@ class NNEnsemble(thnn.Module):
         self.notify_train_eval_changes_is_hardened: bool = hardened
         return self
 
-    def train(self: T, mode: bool = True, override_safetynet: bool = False) -> T:
+    def train(
+        self: T, mode: bool = True, override_safetynet: bool = False
+    ) -> thnn.Module:
         if self.notify_train_eval_changes_is_armed and self.training != mode:
             if self.notify_train_eval_changes_is_hardened:
                 raise RuntimeError(
@@ -257,9 +261,9 @@ class NNEnsemble(thnn.Module):
                     UserWarning,
                 )
                 mode = False
-        return T(super().train(mode=mode))
+        return super().train(mode=mode)
 
-    def eval(self: T, override_safetynet: bool = False) -> T:
+    def eval(self: T, override_safetynet: bool = False) -> thnn.Module:
         return self.train(mode=False, override_safetynet=override_safetynet)
 
     def forward(self: T, x: th.Tensor) -> th.Tensor:
