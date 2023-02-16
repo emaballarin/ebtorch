@@ -23,6 +23,8 @@
 #
 # Imports
 from functools import partial as fpartial
+from typing import Any
+from typing import Tuple
 from typing import Union
 
 import requests
@@ -93,3 +95,9 @@ def download_gdrive(gdrive_id, fname_save):
     save_response_content(response, fname_save)
     session.close()
     print(f"Download finished: path={fname_save} (gdrive_id={gdrive_id})")
+
+
+def argsink(*args) -> None:
+    """Make static analysis happy and memory lighter :)"""
+    _: Tuple[Any, ...] = args
+    del _

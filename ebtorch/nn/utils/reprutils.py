@@ -40,7 +40,6 @@ def store_repr_fx(
     device: str,
     preserve_graph: bool = False,
 ) -> Tuple[Tensor, int]:
-
     with ExitStack() as stack:
         if not preserve_graph:
             stack.enter_context(th.no_grad())  # It's fine!
@@ -85,7 +84,6 @@ def store_repr_hook(
     device: str,
     preserve_graph: bool = False,
 ) -> None:
-
     with ExitStack() as stack:
         if not preserve_graph:
             stack.enter_context(th.no_grad())  # It's fine!
@@ -137,7 +135,6 @@ def store_repr_autohook(
     named_layers: Optional[Tuple[str, ...]] = None,
     preserve_graph: bool = False,
 ) -> List[RemovableHandle]:
-
     if starting_indices:
         raise ValueError(
             "starting_indices list is not empty. Use an empty list instead."
@@ -152,7 +149,6 @@ def store_repr_autohook(
         name: str
         mod: Module
         for name, mod in model.named_modules():
-
             if (
                 named_layers is not None and name in named_layers
             ) or named_layers is None:
@@ -175,7 +171,6 @@ def gather_model_repr(
     named_layers: Optional[Tuple[str, ...]] = None,
     preserve_graph: bool = False,
 ) -> Tuple[Tensor, Tensor, Tuple[int]]:
-
     my_repr: List[Tensor] = [th.tensor([]).to(xin.device)]
     my_sizes: List[int] = []
 

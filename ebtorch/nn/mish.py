@@ -154,7 +154,6 @@ def mishlayer_init(mlayer, variance: Union[float, int] = 1.0):
         return
 
     if hasattr(mlayer, "weight") and mlayer.weight is not None:
-
         # Explicitly skip layers with running statistics (e.g. BatchNorm)
         if hasattr(mlayer, "running_mean"):
             return

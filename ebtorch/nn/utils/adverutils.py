@@ -68,7 +68,6 @@ class AdverApply:
         perturbed_fraction: float = 0.5,
         output_also_clean: bool = False,
     ) -> Tuple[th.Tensor, ...]:
-
         _batch_size: int = x[0].shape[0]
 
         _adv_number: int = len(self.adversaries)

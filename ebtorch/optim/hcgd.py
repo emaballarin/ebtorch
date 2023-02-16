@@ -23,6 +23,7 @@ from torch.optim import Optimizer
 
 # AUXILIARY/UTILITY
 
+
 # From torch.optim.optimizer
 class _RequiredParameter:
     """Singleton class representing a required parameter for an Optimizer."""
@@ -82,7 +83,6 @@ class HCGD(Optimizer):
         clip_correction_grad=0,
         weight_decay=0,
     ):
-
         if lr is not required and lr < 0.0:
             raise ValueError(f"Invalid learning rate: {lr}")
         if momentum < 0.0:
@@ -167,7 +167,6 @@ class HCGD(Optimizer):
                 p.data.add_(-1, v)
 
         for i in range(self.n_corrections):
-
             self.zero_grad()
 
             # get change in output on validation data now that we've updated the data
@@ -276,7 +275,6 @@ class HCAdam(Optimizer):
         weight_decay=0,
         amsgrad=False,
     ):
-
         defaults = dict(
             lr=lr,
             fcn_change_limiter=fcn_change_limiter,
@@ -384,7 +382,6 @@ class HCAdam(Optimizer):
         # Now, once we've taken a "test step", we correct this back towards the original location (with the
         # distance measure being L2 distance)
         for i in range(self.n_corrections):
-
             self.zero_grad()
 
             # get change in output on validation data now that we've updated the data

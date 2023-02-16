@@ -49,6 +49,7 @@ from .mish import Mish
 from .mish import mishlayer_init
 from .mish import MishPulse
 from .mish import MishPulseSymmY
+from .nnsemble import NNEnsemble
 from .reshapelayers import FlatChannelize2DLayer
 from .reshapelayers import ReshapeLayer
 from .serlu import SERLU
@@ -77,6 +78,8 @@ del AutoClipper
 del TA2ATAdapter
 del argser_f
 del emplace_kv
+del argsink
+del download_gdrive
 del gather_model_repr
 del model_reqgrad
 del model_reqgrad_

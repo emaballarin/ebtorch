@@ -103,7 +103,6 @@ class AwdLstm(nn.LSTM):
         unit_forget_bias=True,
         **kwargs,
     ):
-
         super().__init__(*args, **kwargs)
         self.unit_forget_bias = unit_forget_bias
         self.dropoutw = dropoutw
@@ -356,7 +355,6 @@ class AdaptiveInput(nn.Module):
 
         cutoff_values = [0] + self.cutoffs
         for i in range(len(cutoff_values) - 1):
-
             low_idx = cutoff_values[i]
             high_idx = cutoff_values[i + 1]
 
@@ -399,7 +397,6 @@ class AdaptiveLogSoftmaxWithLoss(Module):
             or (len(set(cutoffs)) != len(cutoffs))
             or any(int(c) != c for c in cutoffs)
         ):
-
             raise ValueError(
                 "cutoffs should be a sequence of unique, positive "
                 "integers sorted in an increasing order, where "
@@ -421,7 +418,6 @@ class AdaptiveLogSoftmaxWithLoss(Module):
         self.tail = ModuleList()
 
         for i in range(self.n_clusters):
-
             hsz = int(self.in_features // (self.div_value ** (i + 1)))
             osz = self.cutoffs[i + 1] - self.cutoffs[i]
 
@@ -453,7 +449,6 @@ class AdaptiveLogSoftmaxWithLoss(Module):
 
         cutoff_values = [0] + self.cutoffs
         for i in range(len(cutoff_values) - 1):
-
             low_idx = cutoff_values[i]
             high_idx = cutoff_values[i + 1]
 

@@ -26,6 +26,8 @@ from .adverutils import AdverApply
 from .adverutils import TA2ATAdapter
 from .autoclip import AutoClipper
 from .onlyutils import argser_f
+from .onlyutils import argsink
+from .onlyutils import download_gdrive
 from .onlyutils import emplace_kv
 from .reprutils import gather_model_repr
 from .reprutils import model_reqgrad

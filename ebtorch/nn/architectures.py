@@ -271,6 +271,7 @@ class CausalConv1d(nn.Conv1d):
 
 # Reparameterizer / Sampler for (C)VAEs & co.
 
+
 # Do not make static, regardless of what the linter/analyzer says... ;)
 def _gauss_reparameterize_sample(
     z_mu: Tensor, z_log_var: Tensor, device: Optional[torch.DeviceObjType] = None
@@ -353,7 +354,6 @@ class SGRUHCell(nn.Module):
         self._recurrence_idx: int = 0
 
     def forward(self, x: Tensor) -> Tensor:
-
         # Implement Truncated BPTT (if requested to do so)
         if (
             self._tbptt > 0
@@ -382,7 +382,6 @@ class SGRUHCell(nn.Module):
         return out
 
     def reset_hx(self, hx: Optional[Tensor] = None) -> None:
-
         # Register the detachment of self._hx in PyTorch computational graph
         if self._hx is not None:
             self._hx: Tensor = self._hx.detach()

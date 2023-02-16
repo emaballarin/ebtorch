@@ -34,6 +34,7 @@ del CausalConv1d
 del ConvolutionalFlattenLayer
 del FCBlock
 del FCBlockLegacy
+del NNEnsemble
 del FieldTransform
 del FlatChannelize2DLayer
 del GaussianReparameterizerSampler

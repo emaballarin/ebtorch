@@ -115,7 +115,6 @@ class LMUCell(nn.Module):
         memory_kernel_initializer(self.memory_kernel)
 
     def forward(self, finput, hx):
-
         h, m = hx
 
         u = (
