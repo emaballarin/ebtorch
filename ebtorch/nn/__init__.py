@@ -65,6 +65,7 @@ del fieldtransform
 del kwta
 del lmu
 del mish
+del nnsemble
 del reshapelayers
 del serlu
 del smelu

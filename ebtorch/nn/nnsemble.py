@@ -142,7 +142,7 @@ class NNEnsemble(thnn.Module):
         if not self.models:
             return
         self.vfmodel, self.vparams, self.vbuffers = combine_state_for_ensemble(
-            self.modules
+            self.models
         )
         self.vensemble = vmap(func=self.vfmodel, in_dims=(0, 0, None))
 

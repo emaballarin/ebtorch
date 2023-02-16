@@ -57,6 +57,7 @@ del mishpulse_symmy
 del pixelwise_bce_mean
 del pixelwise_bce_sum
 del BinarizeLayer
+del beta_reco_bce
 
 # Deletions (from .optim)
 del Adan
