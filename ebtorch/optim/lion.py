@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2023 Google Research. All Rights Reserved.
+# =============================================================================
+# Copyright 2023 Google Research (main, core work; original source)
+# Copyright 2023 Emanuele Ballarin <emanuele@ballarin.cc> (minor edits; maintainance)
+# All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +17,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""PyTorch implementation of the Lion optimizer."""
+"""Implementation of the Lion optimizer."""
+from typing import Callable
+from typing import Optional
+from typing import Tuple
+
 import torch
 from torch.optim.optimizer import Optimizer
 
@@ -22,7 +29,13 @@ from torch.optim.optimizer import Optimizer
 class Lion(Optimizer):
     r"""Implements Lion algorithm."""
 
-    def __init__(self, params, lr=1e-4, betas=(0.9, 0.99), weight_decay=0.0):
+    def __init__(
+        self,
+        params,
+        lr: float = 1e-4,
+        betas: Tuple[float, float] = (0.9, 0.99),
+        weight_decay: float = 0.0,
+    ):
         """Initialize the hyperparameters.
 
         Args:
@@ -34,17 +47,17 @@ class Lion(Optimizer):
           weight_decay (float, optional): weight decay coefficient (default: 0)
         """
 
-        if 0.0 > lr:
-            raise ValueError("Invalid learning rate: {}".format(lr))
+        if lr < 0.0:
+            raise ValueError(f"Invalid learning rate: {lr}")
         if not 0.0 <= betas[0] < 1.0:
-            raise ValueError("Invalid beta parameter at index 0: {}".format(betas[0]))
+            raise ValueError(f"Invalid beta parameter at index 0: {betas[0]}")
         if not 0.0 <= betas[1] < 1.0:
-            raise ValueError("Invalid beta parameter at index 1: {}".format(betas[1]))
+            raise ValueError(f"Invalid beta parameter at index 1: {betas[1]}")
         defaults = dict(lr=lr, betas=betas, weight_decay=weight_decay)
         super().__init__(params, defaults)
 
     @torch.no_grad()
-    def step(self, closure=None):
+    def step(self, closure: Optional[Callable] = None):
         """Performs a single optimization step.
 
         Args:
@@ -52,7 +65,7 @@ class Lion(Optimizer):
             and returns the loss.
 
         Returns:
-          the loss.
+          loss
         """
         loss = None
         if closure is not None:
@@ -64,23 +77,19 @@ class Lion(Optimizer):
                 if p.grad is None:
                     continue
 
-                # Perform stepweight decay
                 p.data.mul_(1 - group["lr"] * group["weight_decay"])
 
                 grad = p.grad
                 state = self.state[p]
                 # State initialization
                 if len(state) == 0:
-                    # Exponential moving average of gradient values
                     state["exp_avg"] = torch.zeros_like(p)
 
                 exp_avg = state["exp_avg"]
                 beta1, beta2 = group["betas"]
 
-                # Weight update
                 update = exp_avg * beta1 + grad * (1 - beta1)
                 p.add_(torch.sign(update), alpha=-group["lr"])
-                # Decay the momentum running average coefficient
                 exp_avg.mul_(beta2).add_(grad, alpha=1 - beta2)
 
         return loss
