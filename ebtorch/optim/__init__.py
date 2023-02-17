@@ -23,18 +23,15 @@
 # Imports (specific)
 from .adan import Adan
 from .custom import ralah_optim
-from .hcgd import HCAdam
-from .hcgd import HCGD
+from .lion import Lion
 from .lookahead import Lookahead
-from .madgrad import MADGRAD
 from .radam import RAdam
 from .sam import SAM
 
 # Deletions (from .)
 del adan
 del custom
-del hcgd
+del lion
 del lookahead
-del madgrad
 del radam
 del sam

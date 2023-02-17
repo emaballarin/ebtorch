@@ -62,10 +62,8 @@ del beta_reco_bce
 # Deletions (from .optim)
 del Adan
 del ralah_optim
-del HCAdam
-del HCGD
+del Lion
 del Lookahead
-del MADGRAD
 del RAdam
 del SAM
 
