@@ -64,6 +64,7 @@ from .utils import *
 del adaptiveio
 del architectures
 del convolutional_flatten
+del coordconv
 del debuglayers
 del fieldtransform
 del kwta
