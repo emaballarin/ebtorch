@@ -62,7 +62,7 @@ class AddCoords(nn.Module):
     def __init__(self: ACM, rank: int, with_r: bool = False) -> None:
         # __init__ arguments validation
         if rank not in (1, 2, 3):
-            raise ValueError(_error_rank_in_123 + f" Got {self.rank}.")
+            raise ValueError(_error_rank_in_123 + f" Got {rank}.")
 
         # Actual initialization
         super(AddCoords, self).__init__()
@@ -75,7 +75,7 @@ class AddCoords(nn.Module):
         :return:
         """
         if self.rank == 1:
-            batch_size_shape, channel_in_shape, dim_x = input_tensor.shape
+            batch_size_shape, _, dim_x = input_tensor.shape
             xx_range: torch.Tensor = torch.arange(
                 dim_x, dtype=torch.int32, device=input_tensor.device
             )
@@ -99,7 +99,7 @@ class AddCoords(nn.Module):
                 out: torch.Tensor = torch.cat([out, rr], dim=1)
 
         elif self.rank == 2:
-            batch_size_shape, channel_in_shape, dim_y, dim_x = input_tensor.shape
+            batch_size_shape, _, dim_y, dim_x = input_tensor.shape
             xx_ones: torch.Tensor = torch.ones(
                 [1, 1, 1, dim_x], dtype=torch.int32, device=input_tensor.device
             )
@@ -151,7 +151,7 @@ class AddCoords(nn.Module):
                 out: torch.Tensor = torch.cat([out, rr], dim=1)
 
         elif self.rank == 3:
-            batch_size_shape, channel_in_shape, dim_z, dim_y, dim_x = input_tensor.shape
+            batch_size_shape, _, dim_z, dim_y, dim_x = input_tensor.shape
             xx_ones: torch.Tensor = torch.ones(
                 [1, 1, 1, 1, dim_x], dtype=torch.int32, device=input_tensor.device
             )
