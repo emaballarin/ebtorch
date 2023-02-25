@@ -32,6 +32,9 @@ del ArgMaxLayer
 del BrokenReLU
 del CausalConv1d
 del ConvolutionalFlattenLayer
+del CoordConv1d
+del CoordConv2d
+del CoordConv3d
 del FCBlock
 del FCBlockLegacy
 del NNEnsemble
@@ -49,6 +52,7 @@ del ReshapeLayer
 del SERLU
 del SGRUHCell
 del SmeLU
+del SinLU
 del VariationalDropout
 del field_transform
 del mishlayer_init

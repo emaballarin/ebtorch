@@ -35,6 +35,9 @@ from .architectures import pixelwise_bce_mean
 from .architectures import pixelwise_bce_sum
 from .architectures import SGRUHCell
 from .convolutional_flatten import ConvolutionalFlattenLayer
+from .coordconv import CoordConv1d
+from .coordconv import CoordConv2d
+from .coordconv import CoordConv3d
 from .debuglayers import ProbePrintLayer
 from .fieldtransform import FieldTransform
 from .functional import field_transform
@@ -53,6 +56,7 @@ from .nnsemble import NNEnsemble
 from .reshapelayers import FlatChannelize2DLayer
 from .reshapelayers import ReshapeLayer
 from .serlu import SERLU
+from .sinlu import SinLU
 from .smelu import SmeLU
 from .utils import *
 
@@ -68,6 +72,7 @@ del mish
 del nnsemble
 del reshapelayers
 del serlu
+del sinlu
 del smelu
 
 # Deletions (from .functional)
