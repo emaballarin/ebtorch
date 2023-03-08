@@ -21,9 +21,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # Imports
-from .adaptiveio import AdaptiveInput
-from .adaptiveio import AdaptiveLogSoftmaxWithLoss
-from .adaptiveio import VariationalDropout
 from .architectures import ArgMaxLayer
 from .architectures import beta_reco_bce
 from .architectures import BinarizeLayer
@@ -61,7 +58,6 @@ from .smelu import SmeLU
 from .utils import *
 
 # Deletions (from .)
-del adaptiveio
 del architectures
 del convolutional_flatten
 del coordconv
