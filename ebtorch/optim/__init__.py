@@ -21,6 +21,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # Imports (specific)
+from .adahessian import AdaHessian
 from .adan import Adan
 from .custom import ralah_optim
 from .lion import Lion
@@ -35,3 +36,4 @@ del lion
 del lookahead
 del radam
 del sam
+del adahessian

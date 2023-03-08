@@ -64,12 +64,13 @@ del BinarizeLayer
 del beta_reco_bce
 
 # Deletions (from .optim)
+del AdaHessian
 del Adan
-del ralah_optim
 del Lion
 del Lookahead
 del RAdam
 del SAM
+del ralah_optim
 
 # Deletions (from .logging)
 del AverageMeter
