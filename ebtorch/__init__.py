@@ -26,8 +26,6 @@ from .nn import *
 from .optim import *
 
 # Deletions (from .nn)
-del AdaptiveInput
-del AdaptiveLogSoftmaxWithLoss
 del ArgMaxLayer
 del BrokenReLU
 del CausalConv1d
@@ -53,7 +51,6 @@ del SERLU
 del SGRUHCell
 del SmeLU
 del SinLU
-del VariationalDropout
 del field_transform
 del mishlayer_init
 del mishpulse

@@ -62,9 +62,9 @@ class AdaHessian(torch.optim.Optimizer):
         n_samples=1,
         average_conv_kernel=False,
     ):
-        if 0.0 > lr:
+        if lr < 0.0:
             raise ValueError(f"Invalid learning rate: {lr}")
-        if 0.0 > lr:
+        if eps < 0.0:
             raise ValueError(f"Invalid epsilon value: {eps}")
         if not 0.0 <= betas[0] < 1.0:
             raise ValueError(f"Invalid beta parameter at index 0: {betas[0]}")
