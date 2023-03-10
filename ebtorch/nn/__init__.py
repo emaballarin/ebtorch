@@ -44,6 +44,10 @@ from .functional import mishpulse_symmy
 from .kwta import BrokenReLU
 from .kwta import KWTA1d
 from .kwta import KWTA2d
+from .laplacenet import MultiSolvePoissonTensor
+from .laplacenet import PoissonNetCifar
+from .laplacenet import SolvePoisson
+from .laplacenet import SolvePoissonTensor
 from .lmu import LMUCell
 from .mish import Mish
 from .mish import mishlayer_init
@@ -64,6 +68,7 @@ del coordconv
 del debuglayers
 del fieldtransform
 del kwta
+del laplacenet
 del lmu
 del mish
 del nnsemble

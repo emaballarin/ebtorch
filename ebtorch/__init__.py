@@ -41,6 +41,10 @@ del FlatChannelize2DLayer
 del GaussianReparameterizerSampler
 del KWTA1d
 del KWTA2d
+del MultiSolvePoissonTensor
+del PoissonNetCifar
+del SolvePoisson
+del SolvePoissonTensor
 del LMUCell
 del Mish
 del MishPulse
