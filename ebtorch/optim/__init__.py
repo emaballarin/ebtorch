@@ -30,10 +30,10 @@ from .radam import RAdam
 from .sam import SAM
 
 # Deletions (from .)
+del adahessian
 del adan
 del custom
 del lion
 del lookahead
 del radam
 del sam
-del adahessian

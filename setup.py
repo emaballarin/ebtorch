@@ -64,7 +64,7 @@ check_dependencies()
 
 setup(
     name="ebtorch",
-    version="0.8.1",
+    version="0.8.2",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",

@@ -22,8 +22,9 @@
 
 # LIST OF REQUIREMENTS:
 advertorch>=0.2.3
+fastprogress>=1.0.3
 nengolib
-numpy>=1.20
+numpy>=1.23.5
 requests>=2.25
 torch>=1.10
 torchattacks>=3.3

@@ -49,9 +49,9 @@ def lattice_edges(
 
     # Index of valid neighbors
     i_valid = (
-        (0 <= neighbors[:, 0])
+        (neighbors[:, 0] >= 0)
         * (neighbors[:, 0] < image_height)
-        * (0 <= neighbors[:, 1])
+        * (neighbors[:, 1] >= 0)
         * (neighbors[:, 1] < image_width)
     )
 

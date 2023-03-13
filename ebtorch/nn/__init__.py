@@ -31,6 +31,10 @@ from .architectures import GaussianReparameterizerSampler
 from .architectures import pixelwise_bce_mean
 from .architectures import pixelwise_bce_sum
 from .architectures import SGRUHCell
+from .conv2drp import BatchNorm2dRP
+from .conv2drp import Conv2dRP
+from .conv2drp import Dropout2dRP
+from .conv2drp import patch_rp_train_network
 from .convolutional_flatten import ConvolutionalFlattenLayer
 from .coordconv import CoordConv1d
 from .coordconv import CoordConv2d
@@ -63,6 +67,7 @@ from .utils import *
 
 # Deletions (from .)
 del architectures
+del conv2drp
 del convolutional_flatten
 del coordconv
 del debuglayers
@@ -85,12 +90,15 @@ del AdverApply
 del AutoClipper
 del TA2ATAdapter
 del argser_f
-del emplace_kv
 del argsink
 del download_gdrive
+del emplace_kv
 del gather_model_repr
 del model_reqgrad
 del model_reqgrad_
+del patchify_2d
+del patchify_batch
+del patchify_dataset
 del store_repr_autohook
 del store_repr_fx
 del store_repr_hook

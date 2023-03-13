@@ -27,42 +27,46 @@ from .optim import *
 
 # Deletions (from .nn)
 del ArgMaxLayer
+del BatchNorm2dRP
+del BinarizeLayer
 del BrokenReLU
 del CausalConv1d
+del Conv2dRP
 del ConvolutionalFlattenLayer
 del CoordConv1d
 del CoordConv2d
 del CoordConv3d
+del Dropout2dRP
 del FCBlock
 del FCBlockLegacy
-del NNEnsemble
 del FieldTransform
 del FlatChannelize2DLayer
 del GaussianReparameterizerSampler
 del KWTA1d
 del KWTA2d
-del MultiSolvePoissonTensor
-del PoissonNetCifar
-del SolvePoisson
-del SolvePoissonTensor
 del LMUCell
 del Mish
 del MishPulse
 del MishPulseSymmY
+del MultiSolvePoissonTensor
+del NNEnsemble
+del PoissonNetCifar
 del ProbePrintLayer
 del ReshapeLayer
 del SERLU
 del SGRUHCell
-del SmeLU
 del SinLU
+del SmeLU
+del SolvePoisson
+del SolvePoissonTensor
+del beta_reco_bce
 del field_transform
 del mishlayer_init
 del mishpulse
 del mishpulse_symmy
+del patch_rp_train_network
 del pixelwise_bce_mean
 del pixelwise_bce_sum
-del BinarizeLayer
-del beta_reco_bce
 
 # Deletions (from .optim)
 del AdaHessian

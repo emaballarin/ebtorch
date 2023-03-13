@@ -29,6 +29,9 @@ from .onlyutils import argser_f
 from .onlyutils import argsink
 from .onlyutils import download_gdrive
 from .onlyutils import emplace_kv
+from .patches import patchify_2d
+from .patches import patchify_batch
+from .patches import patchify_dataset
 from .reprutils import gather_model_repr
 from .reprutils import model_reqgrad
 from .reprutils import model_reqgrad_
@@ -40,4 +43,5 @@ from .reprutils import store_repr_hook
 del adverutils
 del autoclip
 del onlyutils
+del patches
 del reprutils
