@@ -281,8 +281,7 @@ class PoissonBasicBlock(nn.Module):
         if in_planes < out_planes:
             if (out_planes - in_planes) % 2:
                 raise ValueError(
-                    "For now, planes may vary by even numbers only: in_planes = %d, out_planes = %d"
-                    % (in_planes, out_planes)
+                    f"For now, planes may vary by even numbers only: in_planes = {in_planes}, out_planes = {out_planes}"
                 )
             pad = (out_planes - in_planes) // 2
             shortcut = F.pad(
@@ -293,8 +292,7 @@ class PoissonBasicBlock(nn.Module):
             shortcut = x
         else:
             raise ValueError(
-                "For now, planes may only increase with layers: in_planes = %d, out_planes = %d"
-                % (in_planes, out_planes)
+                f"For now, planes may only increase with layers: in_planes = {in_planes}, out_planes = {out_planes}"
             )
 
         return self.activation_fx(out + shortcut)

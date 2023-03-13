@@ -52,6 +52,7 @@ def check_dependencies():
 
 DEPENDENCY_PACKAGE_NAMES = [
     "advertorch",
+    "fastprogress",
     "nengolib",
     "numpy",
     "requests",
@@ -64,11 +65,11 @@ check_dependencies()
 
 setup(
     name="ebtorch",
-    version="0.8.2",
+    version="0.8.3",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",
-    description="Collection of PyTorch additions, extensions, utilities, uses and abuses... for personal use.",
+    description="Collection of PyTorch additions, extensions, utilities, uses and abuses",
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
     keywords=["Deep Learning", "Machine Learning"],
