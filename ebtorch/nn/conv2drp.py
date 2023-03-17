@@ -198,8 +198,6 @@ def patch_rp_train_network(
                 layer.patch_rp_train(resume_usual_after)
                 layer.eval()
 
-            layers_master_bar.main_bar.comment = "RP-training compatible layers..."
-
     # POST | Whole network
     net.train(_train_toggle_status)  # Restore training value
 
