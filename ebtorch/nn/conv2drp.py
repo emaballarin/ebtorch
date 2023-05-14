@@ -8,13 +8,12 @@ from typing import Tuple
 from typing import Union
 
 import torch
-from fastprogress import master_bar
-from fastprogress import progress_bar
 from torch.nn.common_types import _size_2_t
 from torch.nn.modules.batchnorm import BatchNorm2d
 from torch.nn.modules.conv import Conv2d
 from torch.nn.modules.dropout import Dropout2d
 from torch.nn.parameter import Parameter
+from tqdm.auto import tqdm
 
 
 class BatchNorm2dRP(BatchNorm2d):
@@ -30,7 +29,7 @@ class Conv2dRP(Conv2d):
 
     # Parent __init__
     def __init__(
-        self,
+        self,  # NOSONAR
         in_channels: int,
         out_channels: int,
         kernel_size: _size_2_t,
@@ -44,6 +43,8 @@ class Conv2dRP(Conv2d):
         dtype: Optional[Any] = None,
         # Additional arguments
         patches_stride: Optional[_size_2_t] = None,
+        patches_online_sampling_ratio: float = 1.0,
+        patches_online_trimming_target: int = 1,
         track_inputs: bool = False,
     ) -> None:
         # Default argument substitution
@@ -67,8 +68,10 @@ class Conv2dRP(Conv2d):
 
         # Additional member variables
         self.patches_stride: _size_2_t = patches_stride
+        self.patches_online_sampling_ratio: float = patches_online_sampling_ratio
+        self.patches_online_trimming_target: int = patches_online_trimming_target
         self.is_tracking_inputs: bool = track_inputs
-        self.inputs: List[torch.Tensor] = []
+        # self.inputs: List[torch.Tensor] = []
 
     # Additional private methods
 
@@ -158,14 +161,15 @@ def patch_rp_train_network(
     net.eval()  # Do not track statistics
     with torch.no_grad():  # Do not track gradients
         # Iterate over all layers in the network
-        layers_master_bar = master_bar(
+        for layer in tqdm(
             [
                 _lay
                 for _lay in net.modules()
                 if isinstance(_lay, (BatchNorm2dRP, Conv2dRP, Dropout2dRP))
-            ]
-        )
-        for layer in layers_master_bar:
+            ],
+            leave=False,
+            desc="RP-training network",
+        ):
             # PREPARATION | Case 1: BatchNorm2d layer
             if isinstance(layer, BatchNorm2dRP):
                 layer.running_mean = torch.zeros_like(layer.running_mean)
@@ -184,10 +188,10 @@ def patch_rp_train_network(
 
             # DATA PASS | All cases
             if isinstance(layer, (BatchNorm2dRP, Conv2dRP, Dropout2dRP)):
-                for batched_datapoint in progress_bar(data, parent=layers_master_bar):
+                for batched_datapoint in tqdm(
+                    data, leave=True, desc=f"RP-training layer {layer}"
+                ):
                     _ = net(batched_datapoint[0])
-                    layers_master_bar.child.comment = "RP-training layer..."
-                layers_master_bar.write(f"RP-trained layer {layer}.")
 
             # POST | Case 1; Case 2
             if isinstance(layer, (BatchNorm2dRP, Dropout2dRP)):

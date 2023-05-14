@@ -52,12 +52,12 @@ def check_dependencies():
 
 DEPENDENCY_PACKAGE_NAMES = [
     "advertorch",
-    "fastprogress",
     "nengolib",
     "numpy",
     "requests",
     "torch",
     "torchattacks",
+    "tqdm",
 ]
 
 check_dependencies()
