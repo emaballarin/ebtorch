@@ -29,6 +29,8 @@
 # SPDX-License-Identifier: MIT
 # SPDX-License-Identifier: Apache-2.0
 # IMPORTS
+import math
+
 import torch
 import torch.nn.functional as F
 from torch import Tensor
@@ -122,3 +124,9 @@ def smelu(x_input: Tensor, beta: float = 2.0) -> Tensor:
         torch.div(torch.pow(torch.add(x_input, beta), 2), 4.0 * beta),
         F.relu(x_input),
     )
+
+
+@torch.jit.script
+def serf(x: Tensor) -> Tensor:
+    """Applies the Scaled ERror Function, element-wise."""
+    return torch.erf(x / math.sqrt(2.0))  # type: ignore

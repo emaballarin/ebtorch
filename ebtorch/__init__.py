@@ -53,6 +53,7 @@ del NNEnsemble
 del PoissonNetCifar
 del ProbePrintLayer
 del ReshapeLayer
+del ScaledERF
 del SERLU
 del SGRUHCell
 del SinLU

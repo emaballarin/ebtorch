@@ -60,6 +60,7 @@ from .mish import MishPulseSymmY
 from .nnsemble import NNEnsemble
 from .reshapelayers import FlatChannelize2DLayer
 from .reshapelayers import ReshapeLayer
+from .serf import ScaledERF
 from .serlu import SERLU
 from .sinlu import SinLU
 from .smelu import SmeLU
@@ -81,9 +82,11 @@ del reshapelayers
 del serlu
 del sinlu
 del smelu
+del serf
 
 # Deletions (from .functional)
 # del mish  # (already done by chance!)
+# del serf  # (already done by chance!)
 
 # Deletions (from .utils)
 del AdverApply
