@@ -11,9 +11,9 @@
 #                      Licensed according to the MIT License.
 #
 # ==============================================================================
+from collections.abc import Callable
+from collections.abc import Iterable
 from copy import deepcopy
-from typing import Callable
-from typing import Iterable
 from typing import Tuple
 
 import numpy as np

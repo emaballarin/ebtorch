@@ -13,8 +13,8 @@
 #
 # ==============================================================================
 # For type-annotation
+from collections.abc import Callable
 from typing import Any
-from typing import Callable
 from typing import List
 from typing import Optional
 from typing import Union

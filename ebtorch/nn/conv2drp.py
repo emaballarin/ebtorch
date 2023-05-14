@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from collections.abc import Generator
 from typing import Any
-from typing import Generator
 from typing import List
 from typing import Optional
 from typing import Tuple
