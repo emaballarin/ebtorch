@@ -24,6 +24,7 @@
 from .adahessian import AdaHessian
 from .adan import Adan
 from .custom import ralah_optim
+from .custom import wfneal
 from .lion import Lion
 from .lookahead import Lookahead
 from .radam import RAdam

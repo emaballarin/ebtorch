@@ -25,10 +25,14 @@ from collections.abc import Iterable
 from typing import Tuple
 from typing import Union
 
+import torch as th
+import torch.optim
 from torch import Tensor
 
 from .lookahead import Lookahead
 from .radam import RAdam
+
+# ==============================================================================
 
 
 def ralah_optim(
@@ -56,3 +60,61 @@ def ralah_optim(
         la_alpha=la_alpha,
         pullback_momentum=la_pullback_momentum,
     )
+
+
+# ==============================================================================
+
+
+def wfneal(
+    optim: torch.optim.Optimizer,
+    lr: float,
+    epochs: int,
+    magic_fraction: float = 0.56,
+    verbose: bool = False,
+) -> Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LRScheduler, int]:
+    # Durations
+    steady_epochs: int = int((epochs - 2) * magic_fraction)
+    anneal_epochs: int = epochs - 2 - steady_epochs
+
+    # Seethrough early stopping
+    stes_epoch: int = epochs - max(20, int(anneal_epochs / 4)) - 1
+
+    # Prepare optim
+    for grp in optim.param_groups:
+        grp["lr"] = lr
+
+    # Schedulers
+    warmup_scheduler = th.optim.lr_scheduler.LinearLR(
+        optimizer=optim,
+        start_factor=0.5,
+        end_factor=1.0,
+        total_iters=2,
+        last_epoch=-1,
+        verbose=verbose,
+    )
+    steady_scheduler = th.optim.lr_scheduler.ConstantLR(
+        optimizer=optim,
+        factor=1.0,
+        total_iters=steady_epochs,
+        last_epoch=-1,
+        verbose=verbose,
+    )
+    anneal_scheduler = th.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer=optim,
+        T_max=anneal_epochs,
+        eta_min=lr * 1e-4,
+        last_epoch=-1,
+        verbose=verbose,
+    )
+
+    # Prepare scheduler
+    sched = th.optim.lr_scheduler.SequentialLR(
+        optim,
+        schedulers=[warmup_scheduler, steady_scheduler, anneal_scheduler],
+        milestones=[2, 2 + steady_epochs],
+        last_epoch=-1,
+        verbose=verbose,
+    )
+
+    # Return
+    return optim, sched, stes_epoch

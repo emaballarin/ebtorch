@@ -77,6 +77,7 @@ del Lookahead
 del RAdam
 del SAM
 del ralah_optim
+del wfneal
 
 # Deletions (from .logging)
 del AverageMeter
