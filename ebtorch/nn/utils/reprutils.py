@@ -153,7 +153,7 @@ def store_repr_autohook(
                 named_layers is not None and name in named_layers
             ) or named_layers is None:
                 handle: RemovableHandle = mod.register_forward_hook(
-                    partial(
+                    partial(  # type: ignore
                         store_repr_hook,
                         representation_list,
                         starting_indices,

@@ -151,7 +151,7 @@ class AdaHessian(torch.optim.Optimizer):
             h_zs = torch.autograd.grad(
                 grads,
                 params,
-                grad_outputs=zs,  # Expected type mismatch!
+                grad_outputs=zs,  # type: ignore
                 only_inputs=True,
                 retain_graph=i < self.n_samples - 1,
             )

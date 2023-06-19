@@ -23,8 +23,6 @@
 # Imports (specific)
 from .inner_functional import field_transform
 from .inner_functional import mish
-from .inner_functional import mishpulse
-from .inner_functional import mishpulse_symmy
 from .inner_functional import serf
 from .inner_functional import serlu
 from .inner_functional import smelu

@@ -2,11 +2,6 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright 2019-* Yana Hasson <yana.hasson.inria@gmail.com>
-# Copyright 2019-* Linxi (Jim) Fan <jimfanspire@gmail.com>
-#
-# ==============================================================================
-#
 # Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
 # All Rights Reserved. Unless otherwise explicitly stated.
 #
@@ -38,9 +33,10 @@ def read(fname):
         return f.read().strip()
 
 
-def check_dependencies():
-    missing_dependencies = []
-    for package_name in DEPENDENCY_PACKAGE_NAMES:
+def check_dependencies(dependencies: list[str]):
+    missing_dependencies: list[str] = []
+    package_name: str
+    for package_name in dependencies:
         try:
             __import__(package_name)
         except ImportError:
@@ -50,9 +46,8 @@ def check_dependencies():
         warnings.warn(f"Missing dependencies: {missing_dependencies}")
 
 
-DEPENDENCY_PACKAGE_NAMES = [
+DEPENDENCY_PACKAGE_NAMES: list[str] = [
     "advertorch",
-    "nengolib",
     "numpy",
     "requests",
     "torch",
@@ -60,12 +55,14 @@ DEPENDENCY_PACKAGE_NAMES = [
     "tqdm",
 ]
 
-check_dependencies()
+check_dependencies(DEPENDENCY_PACKAGE_NAMES)
+
+PACKAGENAME: str = "ebtorch"
 
 
 setup(
-    name="ebtorch",
-    version="0.8.6",
+    name=PACKAGENAME,
+    version="0.9.0",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",
@@ -74,7 +71,9 @@ setup(
     long_description_content_type="text/markdown",
     keywords=["Deep Learning", "Machine Learning"],
     license="Apache-2.0",
-    packages=[package for package in find_packages() if package.startswith("ebtorch")],
+    packages=[
+        package for package in find_packages() if package.startswith(PACKAGENAME)
+    ],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",

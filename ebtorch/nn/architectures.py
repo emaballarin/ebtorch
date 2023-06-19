@@ -283,7 +283,7 @@ def _gauss_reparameterize_sample(
                 f"Device mismatch among 'z_mu' ({device}) and 'z_log_var' ({z_log_var.device})!"
             )
     return z_mu.to(device) + torch.randn_like(z_mu).to(device) * torch.exp(
-        z_log_var * 0.5
+        z_log_var * 0.5  # type: ignore
     ).to(device)
 
 
@@ -413,3 +413,17 @@ class BinarizeLayer(nn.Module):
 
     def forward(self, x: Tensor) -> Tensor:
         return (x > self.threshold).float()  # (...): th.Tensor
+
+
+class InnerProduct(nn.Module):
+    """
+    Compute row-wise dot-product of two batches of tensors (vectors).
+    (https://github.com/UnconsciousBias/ublib/blob/master/ublib/torch.py)
+    """
+
+    def __init__(self, dim=1):
+        super(InnerProduct, self).__init__()
+        self.dim = dim
+
+    def forward(self, a, b):
+        return torch.bmm(a.unsqueeze(self.dim), b.unsqueeze(self.dim + 1)).squeeze()

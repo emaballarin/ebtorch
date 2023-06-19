@@ -28,6 +28,7 @@ from .architectures import CausalConv1d
 from .architectures import FCBlock
 from .architectures import FCBlockLegacy
 from .architectures import GaussianReparameterizerSampler
+from .architectures import InnerProduct
 from .architectures import pixelwise_bce_mean
 from .architectures import pixelwise_bce_sum
 from .architectures import SGRUHCell
@@ -43,8 +44,6 @@ from .debuglayers import ProbePrintLayer
 from .fieldtransform import FieldTransform
 from .functional import field_transform
 from .functional import mish
-from .functional import mishpulse
-from .functional import mishpulse_symmy
 from .kwta import BrokenReLU
 from .kwta import KWTA1d
 from .kwta import KWTA2d
@@ -52,11 +51,8 @@ from .laplacenet import MultiSolvePoissonTensor
 from .laplacenet import PoissonNetCifar
 from .laplacenet import SolvePoisson
 from .laplacenet import SolvePoissonTensor
-from .lmu import LMUCell
 from .mish import Mish
 from .mish import mishlayer_init
-from .mish import MishPulse
-from .mish import MishPulseSymmY
 from .nnsemble import NNEnsemble
 from .reshapelayers import FlatChannelize2DLayer
 from .reshapelayers import ReshapeLayer
@@ -75,7 +71,6 @@ del debuglayers
 del fieldtransform
 del kwta
 del laplacenet
-del lmu
 del mish
 del nnsemble
 del reshapelayers

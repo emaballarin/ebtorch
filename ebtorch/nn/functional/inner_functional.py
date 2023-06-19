@@ -34,8 +34,6 @@ import math
 import torch
 import torch.nn.functional as F
 from torch import Tensor
-from torch.overrides import handle_torch_function
-from torch.overrides import has_torch_function_unary
 
 
 # FUNCTIONS
@@ -74,38 +72,12 @@ def mish(x_input: Tensor) -> Tensor:
 
 
 @torch.jit.script
-def mishpulse(x_input: Tensor) -> Tensor:
-    """
-    Applies the mishpulse function element-wise:
-    mishpulse(x) = -sign(x) * mish(-abs(x) + 0.6361099463262276) + step(x)
-    """
-    if has_torch_function_unary(x_input):
-        return handle_torch_function(mish, (x_input,), x_input)
-
-    return -torch.sign(x_input) * mish(
-        -torch.abs(x_input) + 0.6361099463262276
-    ) + torch.heaviside(x_input, values=torch.tensor([0.0]))
-
-
-@torch.jit.script
-def mishpulse_symmy(x_input: Tensor) -> Tensor:
-    """
-    Applies the mishpulse function, adapted to be y-symmetric, element-wise:
-    mishpulse_symmy(x) = -sign(x) * (mish(-abs(x) + 1.127332431855187) - 1)
-    """
-    if has_torch_function_unary(x_input):
-        return handle_torch_function(mish, (x_input,), x_input)
-
-    return -torch.sign(x_input) * (mish(-torch.abs(x_input) + 1.127332431855187) - 1.0)
-
-
-@torch.jit.script
 def serlu(x_input: Tensor, lambd: float = 1.07862, alph: float = 2.90427) -> Tensor:
     """
     Applies the SERLU function element-wise,
     defined after [Zhang & Li, 2018]
     """
-    return torch.where(
+    return torch.where(  # type: ignore
         x_input >= 0.0,
         torch.mul(x_input, lambd),
         torch.mul(torch.mul(x_input, torch.exp(x_input)), lambd * alph),
@@ -119,7 +91,7 @@ def smelu(x_input: Tensor, beta: float = 2.0) -> Tensor:
     defined after [Shamir & Ling, 2022]
     """
     assert beta >= 0
-    return torch.where(
+    return torch.where(  # type: ignore
         torch.abs(x_input) <= beta,
         torch.div(torch.pow(torch.add(x_input, beta), 2), 4.0 * beta),
         F.relu(x_input),

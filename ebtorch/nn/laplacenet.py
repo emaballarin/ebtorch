@@ -146,7 +146,7 @@ class SolvePoisson(nn.Module):
         center_conductances = torch.exp(self.log_resistances).flatten()
 
         mat_z_off_diagonal = torch.sparse_coo_tensor(
-            (self.edges_center, self.edges_neighbor),
+            (self.edges_center, self.edges_neighbor),  # type: ignore
             center_conductances[self.edges_center]
             + center_conductances[self.edges_neighbor],
             (image_width * image_height, image_width * image_height),

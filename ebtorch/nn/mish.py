@@ -36,60 +36,7 @@ from typing import Union
 import torch
 from torch import nn
 
-from .functional import mishpulse as fmishpulse
-from .functional import mishpulse_symmy as fmishpulse_symmy
-
-# Operations on floats and ints
-# Tensors and NN-related
-
-
-# CLASSES
-
-
 Mish = nn.Mish
-
-
-class MishPulse(nn.Module):
-    """
-    Applies the mishpulse function element-wise:
-    mishpulse(x) = -sign(x) * mish(-abs(x) + 0.6361099463262276) + step(x)
-    Shape:
-        - Input: (N, *) where * means, any number of additional
-            dimensions
-        - Output: (N, *), same shape as the input
-    Examples:
-        >>> m = MishPulse()
-        >>> x_input = torch.randn(2)
-        >>> output = m(input)
-    """
-
-    def __init__(self):  # skipcq: PYL-W0235
-        super().__init__()
-
-    def forward(self, x_input):  # skipcq: PYL-R0201
-        return fmishpulse(x_input)
-
-
-class MishPulseSymmY(nn.Module):
-    """
-    Applies the mishpulse function, adapted to be y-symmetric, element-wise:
-    mishpulse_symmy(x) = -sign(x) * (mish(-abs(x) + 1.127332431855187) - 1)
-    Shape:
-        - Input: (N, *) where * means, any number of additional
-            dimensions
-        - Output: (N, *), same shape as the input
-    Examples:
-        >>> m = MishPulseSymmY()
-        >>> x_input = torch.randn(2)
-        >>> output = m(input)
-    """
-
-    def __init__(self):  # skipcq: PYL-W0235
-        super().__init__()
-
-    def forward(self, x_input):  # skipcq: PYL-R0201
-        return fmishpulse_symmy(x_input)
-
 
 # Adapted from Federico Andres Lois' mish_init.py GitHub Gist
 # (cfr.: https://gist.github.com/redknightlois/b5d36fd2ae306cb8b3484c1e3bcce253)

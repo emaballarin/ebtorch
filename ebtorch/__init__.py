@@ -42,12 +42,10 @@ del FCBlockLegacy
 del FieldTransform
 del FlatChannelize2DLayer
 del GaussianReparameterizerSampler
+del InnerProduct
 del KWTA1d
 del KWTA2d
-del LMUCell
 del Mish
-del MishPulse
-del MishPulseSymmY
 del MultiSolvePoissonTensor
 del NNEnsemble
 del PoissonNetCifar
@@ -63,8 +61,6 @@ del SolvePoissonTensor
 del beta_reco_bce
 del field_transform
 del mishlayer_init
-del mishpulse
-del mishpulse_symmy
 del patch_rp_train_network
 del pixelwise_bce_mean
 del pixelwise_bce_sum

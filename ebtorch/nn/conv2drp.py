@@ -161,7 +161,7 @@ def patch_rp_train_network(
     net.eval()  # Do not track statistics
     with torch.no_grad():  # Do not track gradients
         # Iterate over all layers in the network
-        for layer in tqdm(
+        for layer in tqdm(  # type: ignore
             [
                 _lay
                 for _lay in net.modules()
@@ -188,7 +188,7 @@ def patch_rp_train_network(
 
             # DATA PASS | All cases
             if isinstance(layer, (BatchNorm2dRP, Conv2dRP, Dropout2dRP)):
-                for batched_datapoint in tqdm(
+                for batched_datapoint in tqdm(  # type: ignore
                     data, leave=True, desc=f"RP-training layer {layer}"
                 ):
                     _ = net(batched_datapoint[0])
