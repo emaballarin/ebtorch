@@ -70,6 +70,7 @@ del AdaHessian
 del Adan
 del Lion
 del Lookahead
+del Lookaround
 del RAdam
 del SAM
 del ralah_optim

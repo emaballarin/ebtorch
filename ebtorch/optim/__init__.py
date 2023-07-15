@@ -27,6 +27,7 @@ from .custom import ralah_optim
 from .custom import wfneal
 from .lion import Lion
 from .lookahead import Lookahead
+from .lookaround import Lookaround
 from .radam import RAdam
 from .sam import SAM
 
@@ -36,5 +37,6 @@ del adan
 del custom
 del lion
 del lookahead
+del lookaround
 del radam
 del sam
