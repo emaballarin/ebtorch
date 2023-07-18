@@ -65,11 +65,11 @@ def _sgd(
 
 def _parcheck(lr, required, momentum, weight_decay, nesterov, dampening):
     if lr is not required and lr < 0.0:
-        raise ValueError("Invalid learning rate: {}".format(lr))
+        raise ValueError(f"Invalid learning rate: {lr}")
     if momentum < 0.0:
-        raise ValueError("Invalid momentum value: {}".format(momentum))
+        raise ValueError(f"Invalid momentum value: {momentum}")
     if weight_decay < 0.0:
-        raise ValueError("Invalid weight_decay value: {}".format(weight_decay))
+        raise ValueError(f"Invalid weight_decay value: {weight_decay}")
     if nesterov and (momentum <= 0 or dampening != 0):
         raise ValueError("Nesterov momentum requires a momentum and zero dampening")
 
@@ -86,7 +86,7 @@ class Lookaround(Optimizer):
         weight_decay=0,
         nesterov=False,
         *,
-        maximize=False
+        maximize=False,
     ):
         _parcheck(lr, required, momentum, weight_decay, nesterov, dampening)
         defaults = dict(
