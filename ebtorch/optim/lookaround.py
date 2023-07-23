@@ -85,7 +85,6 @@ class Lookaround(Optimizer):
         frequence=1,
         weight_decay=0,
         nesterov=False,
-        *,
         maximize=False,
     ):
         _parcheck(lr, required, momentum, weight_decay, nesterov, dampening)

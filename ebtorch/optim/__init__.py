@@ -21,6 +21,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # Imports (specific)
+from .adabound import AdaBound
 from .adahessian import AdaHessian
 from .adan import Adan
 from .custom import ralah_optim
@@ -40,3 +41,4 @@ del lookahead
 del lookaround
 del radam
 del sam
+del adabound
