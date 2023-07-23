@@ -24,6 +24,7 @@
 from .adabound import AdaBound
 from .adahessian import AdaHessian
 from .adan import Adan
+from .autowu import AutoWU
 from .custom import ralah_optim
 from .custom import wfneal
 from .lion import Lion
@@ -37,6 +38,7 @@ del adahessian
 del adan
 del custom
 del lion
+del autowu
 del lookahead
 del lookaround
 del radam
