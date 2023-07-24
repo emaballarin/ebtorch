@@ -149,7 +149,7 @@ class Regressor(torch.nn.Module):
         return pred_dist
 
 
-class AutoWU(object):
+class AutoWU:
     """Automatic LR scheduler using GP regression of diagnostics.
 
     Args:
@@ -257,7 +257,7 @@ class AutoWU(object):
         """Adjust LR when needed."""
         self.last_step += 1
 
-        scheduler_args = tuple()
+        scheduler_args: tuple = ()
 
         time_to_cooldown = (
             self.last_step
