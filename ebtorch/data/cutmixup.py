@@ -387,7 +387,7 @@ class FastCollateMixup(Mixup):
         if half:
             batch_size //= 2
         output = torch.zeros((batch_size, *batch[0][0].shape), dtype=torch.uint8)
-        if self.mode == "elem" or self.mode == "half":
+        if self.mode in ("elem", "half"):
             lam = self._mix_elem_collate(output, batch, half=half)
         elif self.mode == "pair":
             lam = self._mix_pair_collate(output, batch)
