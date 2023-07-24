@@ -21,9 +21,19 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # Imports (wildcard)
+from .data import *
 from .logging import *
 from .nn import *
 from .optim import *
+
+# Deletions (from .data)
+del FastCollateMixup
+del Mixup
+del cifarhundred_dataloader_dispatcher
+del cifarten_dataloader_dispatcher
+del fashionmnist_dataloader_dispatcher
+del imagenette_dataloader_dispatcher
+del mnist_dataloader_dispatcher
 
 # Deletions (from .nn)
 del ArgMaxLayer

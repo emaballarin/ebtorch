@@ -19,4 +19,5 @@ numpy>=1.24
 requests>=2.25
 torch>=2
 torchattacks>=3.3
+torchvision>=0.15
 tqdm>=4.65

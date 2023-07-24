@@ -38,10 +38,12 @@ def check_dependencies(dependencies: list[str]):
 
 DEPENDENCY_PACKAGE_NAMES: list[str] = [
     "advertorch",
+    "gpytorch",
     "numpy",
     "requests",
     "torch",
     "torchattacks",
+    "torchvision",
     "tqdm",
 ]
 
@@ -52,7 +54,7 @@ PACKAGENAME: str = "ebtorch"
 
 setup(
     name=PACKAGENAME,
-    version="0.9.5",
+    version="0.9.6",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",
@@ -65,7 +67,7 @@ setup(
         package for package in find_packages() if package.startswith(PACKAGENAME)
     ],
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Environment :: Console",
         "Programming Language :: Python :: 3",
