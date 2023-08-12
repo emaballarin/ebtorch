@@ -26,6 +26,7 @@ from .adahessian import AdaHessian
 from .adan import Adan
 from .autowu import AutoWU
 from .custom import ralah_optim
+from .custom import tricyc1c
 from .custom import wfneal
 from .lion import Lion
 from .lookahead import Lookahead

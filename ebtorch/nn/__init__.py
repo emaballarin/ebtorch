@@ -23,6 +23,8 @@ from .architectures import InnerProduct
 from .architectures import pixelwise_bce_mean
 from .architectures import pixelwise_bce_sum
 from .architectures import SGRUHCell
+from .architectures_resnets_dm import PreActResNet
+from .architectures_resnets_dm import WideResNet
 from .conv2drp import BatchNorm2dRP
 from .conv2drp import Conv2dRP
 from .conv2drp import Dropout2dRP
@@ -55,6 +57,7 @@ from .utils import *
 
 # Deletions (from .)
 del architectures
+del architectures_resnets_dm
 del conv2drp
 del convolutional_flatten
 del coordconv

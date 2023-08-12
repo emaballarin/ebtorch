@@ -87,6 +87,7 @@ del SAM
 del AdaBound
 del ralah_optim
 del wfneal
+del tricyc1c
 
 # Deletions (from .logging)
 del AverageMeter

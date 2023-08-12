@@ -118,3 +118,33 @@ def wfneal(
 
     # Return
     return optim, sched, stes_epoch
+
+
+def tricyc1c(
+    optim: torch.optim.Optimizer,
+    min_lr: float,
+    max_lr: float,
+    up_frac: float,
+    total_steps: int,
+) -> Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LRScheduler]:
+    """One-cycle, cyclical (triangular) learning rate scheduler."""
+    # Compute durations
+    up_steps = int(up_frac * total_steps)
+    down_steps = int(total_steps) - up_steps
+
+    # Prepare optim
+    for grp in optim.param_groups:
+        grp["lr"] = min_lr
+
+    sched = torch.optim.lr_scheduler.CyclicLR(
+        optim,
+        base_lr=min_lr,
+        max_lr=max_lr,
+        step_size_up=up_steps,
+        step_size_down=down_steps,
+        cycle_momentum=False,
+        mode="triangular",
+    )
+
+    # Return
+    return optim, sched
