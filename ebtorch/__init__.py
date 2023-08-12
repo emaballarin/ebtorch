@@ -34,6 +34,8 @@ del cifarten_dataloader_dispatcher
 del fashionmnist_dataloader_dispatcher
 del imagenette_dataloader_dispatcher
 del mnist_dataloader_dispatcher
+del data_prep_dispatcher_1ch
+del data_prep_dispatcher_3ch
 
 # Deletions (from .nn)
 del ArgMaxLayer
