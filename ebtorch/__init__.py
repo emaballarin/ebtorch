@@ -68,6 +68,8 @@ del SinLU
 del SmeLU
 del SolvePoisson
 del SolvePoissonTensor
+del WideResNet
+del PreActResNet
 del beta_reco_bce
 del field_transform
 del mishlayer_init
