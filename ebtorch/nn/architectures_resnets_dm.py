@@ -53,6 +53,8 @@ def _auto_pad_to_same(argself: nn.Module, argx: torch.Tensor) -> torch.Tensor:
     """Auto-pad input `argx` to obtain the same effect as `padding='same'`."""
     if argself.padding > 0:
         return F.pad(argx, (argself.padding,) * 4)
+    else:
+        return argx
 
 
 def _auto_cuda_mean_handler(argself: nn.Module, argx: torch.Tensor) -> torch.Tensor:
