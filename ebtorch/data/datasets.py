@@ -35,6 +35,7 @@ def _dataloader_dispatcher(
     batch_size_train: Optional[int] = None,
     batch_size_test: Optional[int] = None,
     cuda_accel: bool = False,
+    shuffle_test: bool = False,
     dataset_kwargs: Optional[dict] = None,
     dataloader_kwargs: Optional[dict] = None,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
@@ -108,14 +109,14 @@ def _dataloader_dispatcher(
     testloader = DataLoader(
         dataset=testset,
         batch_size=batch_size_test,
-        shuffle=False,
+        shuffle=shuffle_test,
         **cuda_args,
         **dataloader_kwargs,
     )
     test_on_train_loader = DataLoader(
         dataset=trainset,
         batch_size=batch_size_test,
-        shuffle=False,
+        shuffle=shuffle_test,
         **cuda_args,
         **dataloader_kwargs,
     )
@@ -128,6 +129,7 @@ def mnist_dataloader_dispatcher(
     batch_size_train: Optional[int] = None,
     batch_size_test: Optional[int] = None,
     cuda_accel: bool = False,
+    shuffle_test: bool = False,
     dataset_kwargs: Optional[dict] = None,
     dataloader_kwargs: Optional[dict] = None,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
@@ -137,6 +139,7 @@ def mnist_dataloader_dispatcher(
         batch_size_train=batch_size_train,
         batch_size_test=batch_size_test,
         cuda_accel=cuda_accel,
+        shuffle_test=shuffle_test,
         dataset_kwargs=dataset_kwargs,
         dataloader_kwargs=dataloader_kwargs,
     )
@@ -147,6 +150,7 @@ def fashionmnist_dataloader_dispatcher(
     batch_size_train: Optional[int] = None,
     batch_size_test: Optional[int] = None,
     cuda_accel: bool = False,
+    shuffle_test: bool = False,
     dataset_kwargs: Optional[dict] = None,
     dataloader_kwargs: Optional[dict] = None,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
@@ -156,6 +160,7 @@ def fashionmnist_dataloader_dispatcher(
         batch_size_train=batch_size_train,
         batch_size_test=batch_size_test,
         cuda_accel=cuda_accel,
+        shuffle_test=shuffle_test,
         dataset_kwargs=dataset_kwargs,
         dataloader_kwargs=dataloader_kwargs,
     )
@@ -166,6 +171,7 @@ def cifarten_dataloader_dispatcher(
     batch_size_train: Optional[int] = None,
     batch_size_test: Optional[int] = None,
     cuda_accel: bool = False,
+    shuffle_test: bool = False,
     dataset_kwargs: Optional[dict] = None,
     dataloader_kwargs: Optional[dict] = None,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
@@ -175,6 +181,7 @@ def cifarten_dataloader_dispatcher(
         batch_size_train=batch_size_train,
         batch_size_test=batch_size_test,
         cuda_accel=cuda_accel,
+        shuffle_test=shuffle_test,
         dataset_kwargs=dataset_kwargs,
         dataloader_kwargs=dataloader_kwargs,
     )
@@ -185,6 +192,7 @@ def cifarhundred_dataloader_dispatcher(
     batch_size_train: Optional[int] = None,
     batch_size_test: Optional[int] = None,
     cuda_accel: bool = False,
+    shuffle_test: bool = False,
     dataset_kwargs: Optional[dict] = None,
     dataloader_kwargs: Optional[dict] = None,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
@@ -194,6 +202,7 @@ def cifarhundred_dataloader_dispatcher(
         batch_size_train=batch_size_train,
         batch_size_test=batch_size_test,
         cuda_accel=cuda_accel,
+        shuffle_test=shuffle_test,
         dataset_kwargs=dataset_kwargs,
         dataloader_kwargs=dataloader_kwargs,
     )
@@ -204,6 +213,7 @@ def imagenette_dataloader_dispatcher(
     batch_size_train: int = 64,
     batch_size_test: int = 128,
     cuda_accel: bool = False,
+    shuffle_test: bool = False,
     dataset_kwargs: Optional[dict] = None,
     dataloader_kwargs: Optional[dict] = None,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
@@ -252,7 +262,7 @@ def imagenette_dataloader_dispatcher(
     test_dl: DataLoader = DataLoader(
         dataset=test_ds,
         batch_size=batch_size_test,
-        shuffle=False,
+        shuffle=shuffle_test,
         **cuda_kwargs,
         **dataloader_kwargs,
     )
@@ -260,7 +270,7 @@ def imagenette_dataloader_dispatcher(
     tot_dl: DataLoader = DataLoader(
         dataset=train_ds,
         batch_size=batch_size_test,
-        shuffle=False,
+        shuffle=shuffle_test,
         **cuda_kwargs,
         **dataloader_kwargs,
     )
