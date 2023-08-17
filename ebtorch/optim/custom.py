@@ -148,3 +148,36 @@ def tricyc1c(
 
     # Return
     return optim, sched
+
+
+def epochwise_onecycle(
+    optim: torch.optim.Optimizer,
+    init_lr: float,
+    max_lr: float,
+    final_lr: float,
+    up_frac: float,
+    total_steps: int,
+) -> Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LRScheduler]:
+    """Epochwise OneCycleLR learning rate scheduler."""
+
+    # Prepare optim
+    for grp in optim.param_groups:
+        grp["lr"] = init_lr
+
+    sched = torch.optim.lr_scheduler.OneCycleLR(
+        optimizer=optim,
+        max_lr=max_lr,
+        total_steps=total_steps,
+        epochs=total_steps,
+        steps_per_epoch=1,
+        pct_start=up_frac,
+        anneal_strategy="cos",
+        cycle_momentum=False,
+        div_factor=max_lr / init_lr,
+        final_div_factor=init_lr / final_lr,
+        three_phase=False,
+        verbose=False,
+    )
+
+    # Return
+    return optim, sched

@@ -54,7 +54,7 @@ PACKAGENAME: str = "ebtorch"
 
 setup(
     name=PACKAGENAME,
-    version="0.10.2",
+    version="0.11.0",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",

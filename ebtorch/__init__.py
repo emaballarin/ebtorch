@@ -92,6 +92,7 @@ del AdaBound
 del ralah_optim
 del wfneal
 del tricyc1c
+del epochwise_onecycle
 
 # Deletions (from .logging)
 del AverageMeter
