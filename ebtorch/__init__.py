@@ -93,6 +93,7 @@ del ralah_optim
 del wfneal
 del tricyc1c
 del epochwise_onecycle
+del onecycle_lincos
 
 # Deletions (from .logging)
 del AverageMeter
