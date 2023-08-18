@@ -157,6 +157,7 @@ def epochwise_onecycle(
     final_lr: float,
     up_frac: float,
     total_steps: int,
+    verbose: bool = False,
 ) -> Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LRScheduler]:
     """Epochwise OneCycleLR learning rate scheduler."""
 
@@ -176,7 +177,57 @@ def epochwise_onecycle(
         div_factor=max_lr / init_lr,
         final_div_factor=init_lr / final_lr,
         three_phase=False,
-        verbose=False,
+        verbose=verbose,
+    )
+
+    # Return
+    return optim, sched
+
+
+def onecycle_lincos(
+    optim: torch.optim.Optimizer,
+    init_lr: float,
+    max_lr: float,
+    final_lr: float,
+    up_frac: float,
+    total_steps: int,
+    verbose: bool = False,
+) -> Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LRScheduler]:
+    """Epochwise OneCycleLR learning rate scheduler, with linear warmup and cosine annealing."""
+
+    # Compute constants
+    warmup_lr_ratio = init_lr / max_lr
+    warmup_steps = int(up_frac * total_steps)
+    anneal_steps = total_steps - warmup_steps
+
+    # Prepare optim
+    for grp in optim.param_groups:
+        grp["lr"] = max_lr
+
+    # Schedulers
+    warmup_scheduler = th.optim.lr_scheduler.LinearLR(
+        optimizer=optim,
+        start_factor=warmup_lr_ratio,
+        end_factor=1.0,
+        total_iters=warmup_steps,
+        last_epoch=-1,
+        verbose=verbose,
+    )
+    anneal_scheduler = th.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer=optim,
+        T_max=anneal_steps,
+        eta_min=final_lr,
+        last_epoch=-1,
+        verbose=verbose,
+    )
+
+    # Prepare scheduler
+    sched = th.optim.lr_scheduler.SequentialLR(
+        optim,
+        schedulers=[warmup_scheduler, anneal_scheduler],
+        milestones=[warmup_steps],
+        last_epoch=-1,
+        verbose=verbose,
     )
 
     # Return
