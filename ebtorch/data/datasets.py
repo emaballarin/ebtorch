@@ -26,7 +26,7 @@ from torchvision.transforms import ToTensor
 
 
 data_root_literal: str = "../datasets/"
-cuda_args_true: dict = {"num_workers": 8, "pin_memory": True}
+cuda_args_true: dict = {"pin_memory": True}
 
 
 def _dataloader_dispatcher(
