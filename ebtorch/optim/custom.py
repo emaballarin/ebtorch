@@ -274,43 +274,55 @@ def expneal(
         grp["lr"] = max_lr
 
     # Schedulers
-    wusch1 = th.optim.lr_scheduler.ConstantLR(
-        optimizer=optim,
-        factor=init_lr / max_lr,
-        total_iters=warmup_steps,
-        verbose=verbose,
-    )
-    wusch2 = th.optim.lr_scheduler.ExponentialLR(
+    warmup_scheduler_ch1 = th.optim.lr_scheduler.ExponentialLR(
         optimizer=optim,
         gamma=(max_lr / init_lr) ** (1.0 / warmup_steps),
+        last_epoch=-1,
         verbose=verbose,
     )
-
-    warmup_scheduler = torch.optim.lr_scheduler.ChainedScheduler(
-        schedulers=[wusch1, wusch2]
-    )
-
-    steady_scheduler = th.optim.lr_scheduler.ConstantLR(
+    steady_scheduler_ch1 = th.optim.lr_scheduler.ConstantLR(
         optimizer=optim,
         factor=1,
         total_iters=steady_steps,
+        last_epoch=-1,
         verbose=verbose,
     )
-
-    anneal_scheduler = th.optim.lr_scheduler.CosineAnnealingLR(
+    anneal_scheduler_ch1 = th.optim.lr_scheduler.CosineAnnealingLR(
         optimizer=optim,
         T_max=anneal_steps,
         eta_min=final_lr,
+        last_epoch=-1,
+        verbose=verbose,
+    )
+    warmup_scheduler_ch2 = th.optim.lr_scheduler.ConstantLR(
+        optimizer=optim,
+        factor=init_lr / max_lr,
+        total_iters=warmup_steps,
+        last_epoch=-1,
+        verbose=verbose,
+    )
+    constneal_scheduler_ch2 = th.optim.lr_scheduler.ConstantLR(
+        optimizer=optim,
+        factor=1,
+        total_iters=(total_steps - warmup_steps),
+        last_epoch=-1,
         verbose=verbose,
     )
 
-    # Prepare scheduler
-    sched = th.optim.lr_scheduler.SequentialLR(
+    # Prepare schedulers
+    sched_ch1 = th.optim.lr_scheduler.SequentialLR(
         optimizer=optim,
-        schedulers=[warmup_scheduler, steady_scheduler, anneal_scheduler],
+        schedulers=[warmup_scheduler_ch1, steady_scheduler_ch1, anneal_scheduler_ch1],
         milestones=[warmup_steps, warmup_steps + steady_steps],
         verbose=verbose,
     )
+    sched_ch2 = th.optim.lr_scheduler.SequentialLR(
+        optimizer=optim,
+        schedulers=[warmup_scheduler_ch2, constneal_scheduler_ch2],
+        milestones=[warmup_steps],
+        verbose=verbose,
+    )
+    sched = th.optim.lr_scheduler.ChainedScheduler(schedulers=[sched_ch1, sched_ch2])
 
     # Return
     return optim, sched
