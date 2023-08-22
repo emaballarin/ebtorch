@@ -280,13 +280,9 @@ def expneal(
         verbose=verbose,
     )
 
-    # Prepare optim (post-warmup)
-    for grp in optim.param_groups:
-        grp["lr"] = max_lr
-
     steady_scheduler = th.optim.lr_scheduler.ConstantLR(
         optimizer=optim,
-        factor=1,
+        factor=max_lr / init_lr,
         total_iters=steady_steps,
         verbose=verbose,
     )
@@ -305,10 +301,6 @@ def expneal(
         milestones=[warmup_steps, warmup_steps + steady_steps],
         verbose=verbose,
     )
-
-    # Prepare optim (pre-run)
-    for grp in optim.param_groups:
-        grp["lr"] = init_lr
 
     # Return
     return optim, sched
