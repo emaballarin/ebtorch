@@ -277,13 +277,15 @@ def expneal(
     warmup_scheduler = th.optim.lr_scheduler.ExponentialLR(
         optimizer=optim,
         gamma=(max_lr / init_lr) ** (1.0 / warmup_steps),
+        last_epoch=total_steps,
         verbose=verbose,
     )
 
     steady_scheduler = th.optim.lr_scheduler.ConstantLR(
         optimizer=optim,
-        factor=1.0,
+        factor=max_lr / init_lr,
         total_iters=steady_steps,
+        last_epoch=total_steps,
         verbose=verbose,
     )
 
