@@ -26,6 +26,7 @@ from .adahessian import AdaHessian
 from .adan import Adan
 from .autowu import AutoWU
 from .custom import epochwise_onecycle
+from .custom import expneal
 from .custom import onecycle_lincos
 from .custom import ralah_optim
 from .custom import tricyc1c

@@ -232,3 +232,75 @@ def onecycle_lincos(
 
     # Return
     return optim, sched
+
+
+def expneal(
+    optim: torch.optim.Optimizer,
+    init_lr: float,
+    max_lr: float,
+    final_lr: float,
+    up_frac: float,
+    steady_frac: float,
+    total_steps: int,
+    verbose: bool = False,
+) -> Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LRScheduler]:
+    """Exponential warmup and cosine annealing LR scheduler."""
+
+    # Sanity checks
+    if init_lr < 0.0:
+        raise ValueError("Initial LR must be non-negative")
+    if max_lr < 0.0:
+        raise ValueError("Maximum LR must be non-negative")
+    if final_lr < 0.0:
+        raise ValueError("Final LR must be non-negative")
+    if up_frac < 0.0:
+        raise ValueError("Fraction of steps for LR increase must be non-negative")
+    if steady_frac < 0.0:
+        raise ValueError("Fraction of steps for LR steady must be non-negative")
+    if total_steps < 0:
+        raise ValueError("Total number of steps must be non-negative")
+    if up_frac + steady_frac > 1.0:
+        raise ValueError(
+            "Sum of (warmup + steady) fractions of steps must be at most 1.0 (and usually less)"
+        )
+
+    # Compute constants
+    warmup_steps = int(up_frac * total_steps)
+    steady_steps = int(steady_frac * total_steps)
+    anneal_steps = total_steps - warmup_steps - steady_steps
+
+    # Prepare optim
+    for grp in optim.param_groups:
+        grp["lr"] = init_lr
+
+    # Schedulers
+    warmup_scheduler = th.optim.lr_scheduler.ExponentialLR(
+        optimizer=optim,
+        gamma=(max_lr / init_lr) ** (1.0 / warmup_steps),
+        verbose=verbose,
+    )
+
+    steady_scheduler = th.optim.lr_scheduler.ConstantLR(
+        optimizer=optim,
+        factor=1.0,
+        total_iters=steady_steps,
+        verbose=verbose,
+    )
+
+    anneal_scheduler = th.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer=optim,
+        T_max=anneal_steps,
+        eta_min=final_lr,
+        verbose=verbose,
+    )
+
+    # Prepare scheduler
+    sched = th.optim.lr_scheduler.SequentialLR(
+        optimizer=optim,
+        schedulers=[warmup_scheduler, steady_scheduler, anneal_scheduler],
+        milestones=[warmup_steps, warmup_steps + steady_steps],
+        verbose=verbose,
+    )
+
+    # Return
+    return optim, sched

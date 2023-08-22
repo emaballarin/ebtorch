@@ -22,6 +22,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Imports (wildcard)
 from .data import *
+from .distributed import *
 from .logging import *
 from .nn import *
 from .optim import *
@@ -36,6 +37,10 @@ del imagenette_dataloader_dispatcher
 del mnist_dataloader_dispatcher
 del data_prep_dispatcher_1ch
 del data_prep_dispatcher_3ch
+
+# Deletions (from .distributed)
+del slurm_nccl_env
+del reduce_accumulate_keepalive
 
 # Deletions (from .nn)
 del ArgMaxLayer
@@ -94,6 +99,7 @@ del wfneal
 del tricyc1c
 del epochwise_onecycle
 del onecycle_lincos
+del expneal
 
 # Deletions (from .logging)
 del AverageMeter
