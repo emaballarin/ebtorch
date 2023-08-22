@@ -248,20 +248,20 @@ def expneal(
 
     # Sanity checks
     if init_lr < 0.0:
-        raise ValueError("Initial LR must be non-negative")
+        raise ValueError("Initial LR must be >= 0")
     if max_lr < 0.0:
-        raise ValueError("Maximum LR must be non-negative")
+        raise ValueError("Maximum LR must be >= 0")
     if final_lr < 0.0:
-        raise ValueError("Final LR must be non-negative")
-    if up_frac < 0.0:
-        raise ValueError("Fraction of steps for LR increase must be non-negative")
-    if steady_frac < 0.0:
-        raise ValueError("Fraction of steps for LR steady must be non-negative")
+        raise ValueError("Final LR must be >= 0")
+    if up_frac < 0.0 or up_frac > 1.0:
+        raise ValueError("Fraction of steps for LR increase must be >= 0 and <= 1")
+    if steady_frac < 0.0 or steady_frac > 1.0:
+        raise ValueError("Fraction of steps for LR steady must be >= 0 and <= 1")
     if total_steps < 0:
         raise ValueError("Total number of steps must be non-negative")
     if up_frac + steady_frac > 1.0:
         raise ValueError(
-            "Sum of (warmup + steady) fractions of steps must be at most 1.0 (and usually less)"
+            "Sum of (warmup + steady) fractions of steps must be at most 1.0 (usually less)"
         )
 
     # Compute constants
@@ -271,18 +271,28 @@ def expneal(
 
     # Prepare optim (pre-warmup)
     for grp in optim.param_groups:
-        grp["lr"] = init_lr
+        grp["lr"] = max_lr
 
     # Schedulers
-    warmup_scheduler = th.optim.lr_scheduler.ExponentialLR(
+    wusch1 = th.optim.lr_scheduler.ConstantLR(
+        optimizer=optim,
+        factor=init_lr / max_lr,
+        total_iters=warmup_steps,
+        verbose=verbose,
+    )
+    wusch2 = th.optim.lr_scheduler.ExponentialLR(
         optimizer=optim,
         gamma=(max_lr / init_lr) ** (1.0 / warmup_steps),
         verbose=verbose,
     )
 
+    warmup_scheduler = torch.optim.lr_scheduler.ChainedScheduler(
+        schedulers=[wusch1, wusch2]
+    )
+
     steady_scheduler = th.optim.lr_scheduler.ConstantLR(
         optimizer=optim,
-        factor=max_lr / init_lr,
+        factor=1,
         total_iters=steady_steps,
         verbose=verbose,
     )
