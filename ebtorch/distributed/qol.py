@@ -20,10 +20,10 @@ __all__ = ["reduce_accumulate_keepalive"]
 
 
 def reduce_accumulate_keepalive(
-    reduction_tensor: Tensor, accumulator: Union[int, float], acc_rank: int
+    reduction_tensor: Tensor, accumulator: Union[int, float]
 ):
     dist.barrier()
-    dist.reduce(reduction_tensor, dst=acc_rank, op=dist.ReduceOp.SUM)
+    dist.all_reduce(reduction_tensor, op=dist.ReduceOp.SUM)
     dist.barrier()
     accumulator += reduction_tensor.item()
     reduction_tensor.zero_()
