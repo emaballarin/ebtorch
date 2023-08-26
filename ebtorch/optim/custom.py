@@ -234,95 +234,51 @@ def onecycle_lincos(
     return optim, sched
 
 
-def expneal(
+def onecycle_linlin(
     optim: torch.optim.Optimizer,
     init_lr: float,
     max_lr: float,
     final_lr: float,
     up_frac: float,
-    steady_frac: float,
     total_steps: int,
     verbose: bool = False,
 ) -> Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LRScheduler]:
-    """Exponential warmup and cosine annealing LR scheduler."""
-
-    # Sanity checks
-    if init_lr < 0.0:
-        raise ValueError("Initial LR must be >= 0")
-    if max_lr < 0.0:
-        raise ValueError("Maximum LR must be >= 0")
-    if final_lr < 0.0:
-        raise ValueError("Final LR must be >= 0")
-    if up_frac < 0.0 or up_frac > 1.0:
-        raise ValueError("Fraction of steps for LR increase must be >= 0 and <= 1")
-    if steady_frac < 0.0 or steady_frac > 1.0:
-        raise ValueError("Fraction of steps for LR steady must be >= 0 and <= 1")
-    if total_steps < 0:
-        raise ValueError("Total number of steps must be non-negative")
-    if up_frac + steady_frac > 1.0:
-        raise ValueError(
-            "Sum of (warmup + steady) fractions of steps must be at most 1.0 (usually less)"
-        )
+    """Epochwise OneCycleLR learning rate scheduler, with linear warmup and linear annealing."""
 
     # Compute constants
     warmup_steps = int(up_frac * total_steps)
-    steady_steps = int(steady_frac * total_steps)
-    anneal_steps = total_steps - warmup_steps - steady_steps
+    anneal_steps = total_steps - warmup_steps
 
-    # Prepare optim (pre-warmup)
+    # Prepare optim
     for grp in optim.param_groups:
         grp["lr"] = max_lr
 
     # Schedulers
-    warmup_scheduler_ch1 = th.optim.lr_scheduler.ExponentialLR(
+    warmup_scheduler = th.optim.lr_scheduler.LinearLR(
         optimizer=optim,
-        gamma=(max_lr / init_lr) ** (1.0 / warmup_steps),
-        last_epoch=-1,
-        verbose=verbose,
-    )
-    steady_scheduler_ch1 = th.optim.lr_scheduler.ConstantLR(
-        optimizer=optim,
-        factor=1,
-        total_iters=steady_steps,
-        last_epoch=-1,
-        verbose=verbose,
-    )
-    anneal_scheduler_ch1 = th.optim.lr_scheduler.CosineAnnealingLR(
-        optimizer=optim,
-        T_max=anneal_steps,
-        eta_min=final_lr,
-        last_epoch=-1,
-        verbose=verbose,
-    )
-    warmup_scheduler_ch2 = th.optim.lr_scheduler.ConstantLR(
-        optimizer=optim,
-        factor=init_lr / max_lr,
+        start_factor=init_lr / max_lr,
+        end_factor=1.0,
         total_iters=warmup_steps,
         last_epoch=-1,
         verbose=verbose,
     )
-    constneal_scheduler_ch2 = th.optim.lr_scheduler.ConstantLR(
+    anneal_scheduler = th.optim.lr_scheduler.LinearLR(
         optimizer=optim,
-        factor=1,
-        total_iters=(total_steps - warmup_steps),
+        start_factor=1.0,
+        end_factor=final_lr / max_lr,
+        total_iters=anneal_steps,
         last_epoch=-1,
         verbose=verbose,
     )
 
-    # Prepare schedulers
-    sched_ch1 = th.optim.lr_scheduler.SequentialLR(
-        optimizer=optim,
-        schedulers=[warmup_scheduler_ch1, steady_scheduler_ch1, anneal_scheduler_ch1],
-        milestones=[warmup_steps, warmup_steps + steady_steps],
-        verbose=verbose,
-    )
-    sched_ch2 = th.optim.lr_scheduler.SequentialLR(
-        optimizer=optim,
-        schedulers=[warmup_scheduler_ch2, constneal_scheduler_ch2],
+    # Prepare scheduler
+    sched = th.optim.lr_scheduler.SequentialLR(
+        optim,
+        schedulers=[warmup_scheduler, anneal_scheduler],
         milestones=[warmup_steps],
+        last_epoch=-1,
         verbose=verbose,
     )
-    sched = th.optim.lr_scheduler.ChainedScheduler(schedulers=[sched_ch1, sched_ch2])
 
     # Return
     return optim, sched

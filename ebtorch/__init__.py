@@ -99,7 +99,7 @@ del wfneal
 del tricyc1c
 del epochwise_onecycle
 del onecycle_lincos
-del expneal
+del onecycle_linlin
 
 # Deletions (from .logging)
 del AverageMeter
