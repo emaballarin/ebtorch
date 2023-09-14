@@ -19,6 +19,7 @@ from .onlyutils import argser_f
 from .onlyutils import argsink
 from .onlyutils import download_gdrive
 from .onlyutils import emplace_kv
+from .onlyutils import subset_state_dict
 from .patches import patchify_2d
 from .patches import patchify_batch
 from .patches import patchify_dataset

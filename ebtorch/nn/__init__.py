@@ -85,6 +85,7 @@ del argser_f
 del argsink
 del download_gdrive
 del emplace_kv
+del subset_state_dict
 del gather_model_repr
 del model_reqgrad
 del model_reqgrad_

@@ -101,3 +101,10 @@ def argsink(*args) -> None:
     """Make static analysis happy and memory lighter :)"""
     _: Tuple[Any, ...] = args
     del _
+
+
+def subset_state_dict(d: dict, subset_key: str) -> dict:
+    return {
+        key[(len(subset_key) + 1) :]: d[key]
+        for key in (key for key in d.keys() if key.startswith(subset_key))
+    }
