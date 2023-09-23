@@ -9,7 +9,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: ChanTsune/release-with-commit@latest
+      - uses: ChanTsune/release-with-commit@v2.8.1
         with:
           regexp: ".*"
           regexp_options: "us"
