@@ -9,9 +9,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: ChanTsune/release-with-commit@v2.8.0
+      - uses: ChanTsune/release-with-commit@latest
         with:
-          regexp: "(.*)"
+          regexp: ".*"
           regexp_options: "us"
           release_name: "Release: $1"
           tag_name: "tag:$1"
