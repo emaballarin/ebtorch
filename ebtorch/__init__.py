@@ -88,7 +88,6 @@ del pixelwise_bce_sum
 del AdaHessian
 del Adan
 del Lion
-del AutoWU
 del Lookahead
 del Lookaround
 del RAdam
