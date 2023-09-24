@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+    - family-names: "Ballarin"
+        given-names: "Emanuele"
+        orcid: "https://orcid.org/0000-0003-3673-0665"
+title: "ebtorch"
+url: "https://github.com/emaballarin/ebtorch"
