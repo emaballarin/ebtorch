@@ -674,13 +674,13 @@ class DeepRBL(nn.Module):
         self._build_rblinear()
         self.module_battery.append(copy.deepcopy(self.act_fx))
         if self.batchnorm:
-            self.module_battery.append(nn.BatchNorm1d(num_features=1))
+            self.module_battery.append(nn.BatchNorm1d(num_features=self.features))
 
     def _build_final_block(self) -> None:
         self._build_rblinear()
         self.module_battery.append(copy.deepcopy(self.act_final_fx))
         if self._all_layers_internal and self.batchnorm:
-            self.module_battery.append(nn.BatchNorm1d(num_features=1))
+            self.module_battery.append(nn.BatchNorm1d(num_features=self.features))
 
     def forward(self, x: Tensor) -> Tensor:
         for module_idx in enumerate(self.module_battery):
