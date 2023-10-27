@@ -27,7 +27,6 @@ from typing import Optional
 from typing import Union
 
 import torch
-import torch as th
 from torch import nn
 from torch import Tensor
 from torch.nn import functional as F
@@ -64,7 +63,7 @@ def beta_reco_bce(
 # Utility functions
 def _rbm_mask_generator(
     size: int, ood_width: int = 0, dens: float = 1.0, rand_diag: bool = False
-) -> th.Tensor:
+) -> torch.Tensor:
     """
     Generate a random band matrix mask.
     """
@@ -77,14 +76,14 @@ def _rbm_mask_generator(
     if dens < 0 or dens > 1:
         raise ValueError("Out-of-diagonal band density must be in [0, 1]")
 
-    mask: Tensor = th.logical_or(th.diag(th.rand(size) <= dens), (not rand_diag) * th.eye(size))  # type: ignore
+    mask: Tensor = torch.logical_or(torch.diag(torch.rand(size) <= dens), (not rand_diag) * torch.eye(size))  # type: ignore
     for i in range(ood_width):
         offset: int = i + 1
-        mask: Tensor = th.logical_or(
-            mask, th.diag(th.rand(size - offset) <= dens, diagonal=offset)  # type: ignore
+        mask: Tensor = torch.logical_or(
+            mask, torch.diag(torch.rand(size - offset) <= dens, diagonal=offset)  # type: ignore
         )
-        mask: Tensor = th.logical_or(
-            mask, th.diag(th.rand(size - offset) <= dens, diagonal=-offset)  # type: ignore
+        mask: Tensor = torch.logical_or(
+            mask, torch.diag(torch.rand(size - offset) <= dens, diagonal=-offset)  # type: ignore
         )
 
     return mask
@@ -543,13 +542,13 @@ class RBLinear(nn.Linear):
         # Instantiate masks
         self.w_mask: Tensor = _rbm_mask_generator(
             size=features, ood_width=ood_width, dens=dens, rand_diag=rand_diag
-        )
+        ).to(self.weight.device)
 
         if self.bias is not None:
             if rand_bias:
-                self.b_mask: Tensor = th.rand_like(self.bias) <= dens  # type: ignore
+                self.b_mask: Tensor = (torch.rand_like(self.bias) <= dens).to(self.bias.device)  # type: ignore
             else:
-                self.b_mask: Tensor = th.ones_like(self.bias, dtype=th.bool)  # type: ignore
+                self.b_mask: Tensor = torch.ones_like(self.bias, dtype=torch.bool).to(self.bias.device)  # type: ignore
         else:
             self.b_mask = None
 
@@ -559,7 +558,7 @@ class RBLinear(nn.Linear):
 
     def _mask_and_hook(self) -> None:
         # Mask weight and bias
-        with th.no_grad():
+        with torch.no_grad():
             self.weight *= self.w_mask
             if self.bias is not None:
                 self.bias *= self.b_mask
@@ -590,6 +589,15 @@ class RBLinear(nn.Linear):
             self._reset_parameters()
         else:
             super().reset_parameters()
+
+    def _recast_masks_to_device(self) -> None:
+        self.w_mask = self.w_mask.to(self.weight.device)
+        if self.bias is not None:
+            self.b_mask = self.b_mask.to(self.bias.device)
+
+    def to(self, *args, **kwargs):
+        super().to(*args, **kwargs)
+        self._recast_masks_to_device()
 
     def extra_repr(self) -> str:
         return f"in_features={self.in_features}, out_features={self.out_features}, bias={self.bias is not None},\
