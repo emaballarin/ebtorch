@@ -573,6 +573,10 @@ class RBLinear(nn.Linear):
             )
             self.hook_handles.append(b_handle)
 
+        # Register masks as buffers
+        self.register_buffer(name="w_mask", tensor=self.w_mask, persistent=True)
+        self.register_buffer(name="b_mask", tensor=self.b_mask, persistent=True)
+
     def _reset_parameters(self) -> None:
         # Remove existing hooks, if any
         for handle in self.hook_handles:
@@ -594,10 +598,6 @@ class RBLinear(nn.Linear):
         self.w_mask = self.w_mask.to(self.weight.device)
         if self.bias is not None:
             self.b_mask = self.b_mask.to(self.bias.device)
-
-    def to(self, *args, **kwargs):
-        super().to(*args, **kwargs)
-        self._recast_masks_to_device()
 
     def extra_repr(self) -> str:
         return f"in_features={self.in_features}, out_features={self.out_features}, bias={self.bias is not None},\
