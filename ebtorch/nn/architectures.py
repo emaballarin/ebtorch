@@ -540,17 +540,19 @@ class RBLinear(nn.Linear):
         self.rand_bias = rand_bias
 
         # Instantiate masks
-        self.w_mask: Tensor = _rbm_mask_generator(
+        _w_mask: Tensor = _rbm_mask_generator(
             size=features, ood_width=ood_width, dens=dens, rand_diag=rand_diag
         ).to(self.weight.device)
+        self.register_buffer(name="w_mask", tensor=_w_mask, persistent=True)
 
         if self.bias is not None:
             if rand_bias:
-                self.b_mask: Tensor = (torch.rand_like(self.bias) <= dens).to(self.bias.device)  # type: ignore
+                _b_mask: Tensor = (torch.rand_like(self.bias) <= dens).to(self.bias.device)  # type: ignore
             else:
-                self.b_mask: Tensor = torch.ones_like(self.bias, dtype=torch.bool).to(self.bias.device)  # type: ignore
+                _b_mask: Tensor = torch.ones_like(self.bias, dtype=torch.bool).to(self.bias.device)  # type: ignore
         else:
-            self.b_mask = None
+            _b_mask = None  # type: ignore
+        self.register_buffer(name="b_mask", tensor=_b_mask, persistent=True)
 
         # Mask and hook weight and bias
         self.hook_handles: List[RemovableHandle] = []
@@ -572,10 +574,6 @@ class RBLinear(nn.Linear):
                 _masked_gradient_hook_factory(self.b_mask)
             )
             self.hook_handles.append(b_handle)
-
-        # Register masks as buffers
-        self.register_buffer(name="w_mask", tensor=self.w_mask, persistent=True)
-        self.register_buffer(name="b_mask", tensor=self.b_mask, persistent=True)
 
     def _reset_parameters(self) -> None:
         # Remove existing hooks, if any
