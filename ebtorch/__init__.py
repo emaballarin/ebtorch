@@ -83,6 +83,8 @@ del mishlayer_init
 del patch_rp_train_network
 del pixelwise_bce_mean
 del pixelwise_bce_sum
+del RBLinear
+del DeepRBL
 
 # Deletions (from .optim)
 del AdaHessian

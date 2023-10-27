@@ -16,12 +16,14 @@ from .architectures import ArgMaxLayer
 from .architectures import beta_reco_bce
 from .architectures import BinarizeLayer
 from .architectures import CausalConv1d
+from .architectures import DeepRBL
 from .architectures import FCBlock
 from .architectures import FCBlockLegacy
 from .architectures import GaussianReparameterizerSampler
 from .architectures import InnerProduct
 from .architectures import pixelwise_bce_mean
 from .architectures import pixelwise_bce_sum
+from .architectures import RBLinear
 from .architectures import SGRUHCell
 from .architectures_resnets_dm import PreActResNet
 from .architectures_resnets_dm import WideResNet

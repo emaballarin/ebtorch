@@ -21,14 +21,17 @@
 # SPDX-License-Identifier: Apache-2.0
 # IMPORTS
 import copy
+from typing import Callable
 from typing import List
 from typing import Optional
 from typing import Union
 
 import torch
+import torch as th
 from torch import nn
 from torch import Tensor
 from torch.nn import functional as F
+from torch.utils.hooks import RemovableHandle
 
 # CUSTOM TYPES
 realnum = Union[float, int]
@@ -56,6 +59,60 @@ def beta_reco_bce(
     kldiv = (beta * (torch.pow(mu, 2) + torch.exp(sigma) - sigma - 1)).sum()
     pwbce = pixelwise_bce_sum(input_reco, input_orig)
     return pwbce + kldiv
+
+
+# Utility functions
+def _rbm_mask_generator(
+    size: int, ood_width: int = 0, dens: float = 1.0, rand_diag: bool = False
+) -> th.Tensor:
+    """
+    Generate a random band matrix mask.
+    """
+
+    # Check if arguments are valid
+    if ood_width < 0:
+        raise ValueError("Out-of-diagonal band width must be non-negative")
+    if ood_width > size - 1:
+        raise ValueError("Out-of-diagonal band width must be less than size - 1")
+    if dens < 0 or dens > 1:
+        raise ValueError("Out-of-diagonal band density must be in [0, 1]")
+
+    mask: Tensor = th.logical_or(th.diag(th.rand(size) <= dens), (not rand_diag) * th.eye(size))  # type: ignore
+    for i in range(ood_width):
+        offset: int = i + 1
+        mask: Tensor = th.logical_or(
+            mask, th.diag(th.rand(size - offset) <= dens, diagonal=offset)  # type: ignore
+        )
+        mask: Tensor = th.logical_or(
+            mask, th.diag(th.rand(size - offset) <= dens, diagonal=-offset)  # type: ignore
+        )
+
+    return mask
+
+
+def _masked_gradient_hook_factory(
+    mask: Union[Tensor, None]
+) -> Callable[[Union[Tensor, None]], Union[Tensor, None]]:
+    """
+    Return a backward hook that masks the gradient with the given mask.
+    """
+
+    def _masked_gradient_hook(grad: Union[Tensor, None]) -> Union[Tensor, None]:
+        """
+        Backward hook that masks the gradient with nonlocal variable `mask`.
+        """
+
+        if grad is None or mask is None:
+            return grad
+
+        if grad.shape != mask.shape:
+            raise ValueError(
+                f"Gradient shape {grad.shape} is not equal to mask shape {mask.shape}"
+            )
+
+        return grad * mask
+
+    return _masked_gradient_hook
 
 
 # Fully-Connected Block, New version
@@ -412,7 +469,7 @@ class BinarizeLayer(nn.Module):
         self.threshold: float = threshold
 
     def forward(self, x: Tensor) -> Tensor:
-        return (x > self.threshold).float()  # (...): th.Tensor
+        return (x > self.threshold).float()  # type: ignore
 
 
 class InnerProduct(nn.Module):
@@ -427,3 +484,204 @@ class InnerProduct(nn.Module):
 
     def forward(self, a, b):
         return torch.bmm(a.unsqueeze(self.dim), b.unsqueeze(self.dim + 1)).squeeze()
+
+
+# ------------------------------------------------------------------------------
+class RBLinear(nn.Linear):
+    """
+    Random Band Linear Layer
+    """
+
+    __constants__ = [
+        "features",
+        "in_features",
+        "out_features",
+        "w_mask",
+        "b_mask",
+        "ood_width",
+        "dens",
+        "rand_diag",
+        "rand_bias",
+    ]
+
+    features: int
+    w_mask: Tensor
+    b_mask: Union[Tensor, None]
+    ood_width: int
+    dens: float
+    rand_diag: bool
+    rand_bias: bool
+
+    def __init__(
+        self,
+        features: int,
+        ood_width: int = 0,
+        dens: float = 1.0,
+        rand_diag: bool = False,
+        bias: bool = True,
+        rand_bias: bool = False,
+        device=None,
+        dtype=None,
+    ) -> None:
+        # Call to parent constructor
+        self._is_parent_initialized = False
+        super().__init__(
+            in_features=features,
+            out_features=features,
+            bias=bias,
+            device=device,
+            dtype=dtype,
+        )
+        self._is_parent_initialized = True
+
+        # Save arguments for extra_repr (only)
+        self.ood_width = ood_width
+        self.dens = dens
+        self.rand_diag = rand_diag
+        self.rand_bias = rand_bias
+
+        # Instantiate masks
+        self.w_mask: Tensor = _rbm_mask_generator(
+            size=features, ood_width=ood_width, dens=dens, rand_diag=rand_diag
+        )
+
+        if self.bias is not None:
+            if rand_bias:
+                self.b_mask: Tensor = th.rand_like(self.bias) <= dens  # type: ignore
+            else:
+                self.b_mask: Tensor = th.ones_like(self.bias, dtype=th.bool)  # type: ignore
+        else:
+            self.b_mask = None
+
+        # Mask and hook weight and bias
+        self.hook_handles: List[RemovableHandle] = []
+        self._mask_and_hook()
+
+    def _mask_and_hook(self) -> None:
+        # Mask weight and bias
+        with th.no_grad():
+            self.weight *= self.w_mask
+            if self.bias is not None:
+                self.bias *= self.b_mask
+
+        # Register hooks for masked weight and bias
+        self.hook_handles.clear()
+        w_handle = self.weight.register_hook(_masked_gradient_hook_factory(self.w_mask))
+        self.hook_handles.append(w_handle)
+        if self.bias is not None:
+            b_handle = self.bias.register_hook(
+                _masked_gradient_hook_factory(self.b_mask)
+            )
+            self.hook_handles.append(b_handle)
+
+    def _reset_parameters(self) -> None:
+        # Remove existing hooks, if any
+        for handle in self.hook_handles:
+            handle.remove()
+
+        # Call to parent method
+        super().reset_parameters()
+
+        # Re-mask and re-hook weight and bias
+        self._mask_and_hook()
+
+    def reset_parameters(self) -> None:
+        if self._is_parent_initialized:
+            self._reset_parameters()
+        else:
+            super().reset_parameters()
+
+    def extra_repr(self) -> str:
+        return f"in_features={self.in_features}, out_features={self.out_features}, bias={self.bias is not None},\
+         ood_width={self.ood_width}, dens={self.dens}, rand_diag={self.rand_diag}, rand_bias={self.rand_bias}"
+
+
+class DeepRBL(nn.Module):
+    """
+    Deep (homogeneous) Random Band Linear Network
+    """
+
+    def __init__(
+        self,
+        features: int,
+        depth: int = 1,
+        act_fx: Union[nn.Module, Callable] = nn.Identity(),
+        act_final_fx: Optional[Union[nn.Module, Callable]] = None,
+        batchnorm: bool = False,
+        ood_width: int = 0,
+        dens: float = 1.0,
+        rand_diag: bool = False,
+        bias: bool = True,
+        rand_bias: bool = False,
+        device=None,
+        dtype=None,
+    ) -> None:
+        super().__init__()
+
+        # Sanitize unsanitized arguments
+        if depth <= 0:
+            raise ValueError("Network depth must be positive")
+
+        # Set default arguments
+        self._all_layers_internal = False
+        if act_final_fx is None:
+            act_final_fx = act_fx
+            self._all_layers_internal = True
+
+        # Store arguments
+        self.features: int = features
+        self.depth: int = depth
+        self.act_fx: Union[nn.Module, Callable] = act_fx
+        self.act_final_fx: Union[nn.Module, Callable] = act_final_fx
+        self.batchnorm: bool = batchnorm
+        self.ood_width: int = ood_width
+        self.dens: float = dens
+        self.rand_diag: bool = rand_diag
+        self.bias: bool = bias
+        self.rand_bias: bool = rand_bias
+        self.device = device
+        self.dtype = dtype
+
+        # Start with an empty module list
+        self.module_battery = nn.ModuleList(modules=None)
+
+        # Build the network
+        for _ in range(depth - 1):
+            self._build_internal_block()
+        self._build_final_block()
+
+    def _build_rblinear(self) -> None:
+        self.module_battery.append(
+            RBLinear(
+                features=self.features,
+                ood_width=self.ood_width,
+                dens=self.dens,
+                rand_diag=self.rand_diag,
+                bias=self.bias,
+                rand_bias=self.rand_bias,
+                device=self.device,
+                dtype=self.dtype,
+            )
+        )
+
+    def _build_internal_block(self) -> None:
+        self._build_rblinear()
+        self.module_battery.append(copy.deepcopy(self.act_fx))
+        if self.batchnorm:
+            self.module_battery.append(nn.BatchNorm1d(num_features=1))
+
+    def _build_final_block(self) -> None:
+        self._build_rblinear()
+        self.module_battery.append(copy.deepcopy(self.act_final_fx))
+        if self._all_layers_internal and self.batchnorm:
+            self.module_battery.append(nn.BatchNorm1d(num_features=1))
+
+    def forward(self, x: Tensor) -> Tensor:
+        for module_idx in enumerate(self.module_battery):
+            x = self.module_battery[module_idx[0]](x)
+        return x
+
+    def reset_parameters(self) -> None:
+        for module in self.modules():
+            if module is not self and hasattr(module, "reset_parameters"):
+                module.reset_parameters()
