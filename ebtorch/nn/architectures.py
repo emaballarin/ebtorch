@@ -109,7 +109,7 @@ def _masked_gradient_hook_factory(
                 f"Gradient shape {grad.shape} is not equal to mask shape {mask.shape}"
             )
 
-        return grad * mask
+        return grad * mask.to(grad.device)
 
     return _masked_gradient_hook
 
