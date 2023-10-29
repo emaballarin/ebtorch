@@ -114,6 +114,47 @@ def _masked_gradient_hook_factory(
     return _masked_gradient_hook
 
 
+# ResNet-related functions
+def build_resblock(
+    block_builder: Callable[
+        [], Union[nn.Module, Callable[[Tensor], Tensor]]
+    ] = lambda: nn.Identity(),
+    shortcut_builder: Callable[
+        [], Union[nn.Module, Callable[[Tensor], Tensor]]
+    ] = lambda: nn.Identity(),
+    postall_builder: Callable[
+        [], Union[nn.Module, Callable[[Tensor], Tensor]]
+    ] = lambda: nn.Identity(),
+) -> nn.Module:
+    return ResBlock(block_builder(), shortcut_builder(), postall_builder())
+
+
+def build_repeated_sequential(
+    depth: int, rep_builder: Callable[[int], nn.Module]
+) -> nn.Sequential:
+    repeated: nn.Sequential = nn.Sequential()
+    i: int
+    for i in range(depth):
+        repeated.append(rep_builder(i))
+    return repeated
+
+
+def build_homogeneous_resnet(
+    depth: int,
+    block_builder: Callable[[...], Union[nn.Module, Callable[[Tensor], Tensor]]],
+    shortcut_builder: Callable[
+        [...], Union[nn.Module, Callable[[Tensor], Tensor]]
+    ] = lambda: nn.Identity(),
+    postall_builder: Callable[
+        [...], Union[nn.Module, Callable[[Tensor], Tensor]]
+    ] = lambda: nn.Identity(),
+) -> nn.Sequential:
+    return build_repeated_sequential(
+        depth,
+        lambda i: build_resblock(block_builder, shortcut_builder, postall_builder),
+    )
+
+
 # Fully-Connected Block, New version
 # Joint work with Davide Roznowicz (https://github.com/DavideRoznowicz)
 class FCBlock(nn.Module):
@@ -598,8 +639,7 @@ class RBLinear(nn.Linear):
             self.b_mask = self.b_mask.to(self.bias.device)
 
     def extra_repr(self) -> str:
-        return f"in_features={self.in_features}, out_features={self.out_features}, bias={self.bias is not None},\
-         ood_width={self.ood_width}, dens={self.dens}, rand_diag={self.rand_diag}, rand_bias={self.rand_bias}"
+        return f"in_features={self.in_features}, out_features={self.out_features}, bias={self.bias is not None}, ood_width={self.ood_width}, dens={self.dens}, rand_diag={self.rand_diag}, rand_bias={self.rand_bias}"
 
 
 class DeepRBL(nn.Module):
@@ -691,3 +731,20 @@ class DeepRBL(nn.Module):
         for module in self.modules():
             if module is not self and hasattr(module, "reset_parameters"):
                 module.reset_parameters()
+
+
+# Residual block
+class ResBlock(nn.Module):
+    def __init__(
+        self,
+        block: Union[nn.Module, Callable[[Tensor], Tensor]],
+        shortcut: Union[nn.Module, Callable[[Tensor], Tensor]] = nn.Identity(),
+        postall: Union[nn.Module, Callable[[Tensor], Tensor]] = nn.Identity(),
+    ) -> None:
+        super().__init__()
+        self.block: Union[nn.Module, Callable[[Tensor], Tensor]] = block
+        self.shtct: Union[nn.Module, Callable[[Tensor], Tensor]] = shortcut
+        self.postl: Union[nn.Module, Callable[[Tensor], Tensor]] = postall
+
+    def forward(self, x: Tensor) -> Tensor:
+        return self.postl(self.shtct(x) + self.block(x))

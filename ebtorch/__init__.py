@@ -85,6 +85,10 @@ del pixelwise_bce_mean
 del pixelwise_bce_sum
 del RBLinear
 del DeepRBL
+del build_resblock
+del build_repeated_sequential
+del build_homogeneous_resnet
+del ResBlock
 
 # Deletions (from .optim)
 del AdaHessian
