@@ -30,19 +30,26 @@ from .custom import onecycle_linlin
 from .custom import ralah_optim
 from .custom import tricyc1c
 from .custom import wfneal
+from .lamb import Lamb
 from .lion import Lion
 from .lookahead import Lookahead
 from .lookaround import Lookaround
+from .poptims import AdamP
+from .poptims import SGDP
 from .radam import RAdam
 from .sam import SAM
+from .schedcos import CosineLRScheduler
 
 # Deletions (from .)
+del adabound
 del adahessian
 del adan
 del custom
+del lamb
 del lion
 del lookahead
 del lookaround
+del poptims
 del radam
 del sam
-del adabound
+del schedcos

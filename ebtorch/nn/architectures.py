@@ -114,21 +114,6 @@ def _masked_gradient_hook_factory(
     return _masked_gradient_hook
 
 
-# ResNet-related functions
-def build_resblock(
-    block_builder: Callable[
-        [], Union[nn.Module, Callable[[Tensor], Tensor]]
-    ] = lambda: nn.Identity(),
-    shortcut_builder: Callable[
-        [], Union[nn.Module, Callable[[Tensor], Tensor]]
-    ] = lambda: nn.Identity(),
-    postall_builder: Callable[
-        [], Union[nn.Module, Callable[[Tensor], Tensor]]
-    ] = lambda: nn.Identity(),
-) -> nn.Module:
-    return ResBlock(block_builder(), shortcut_builder(), postall_builder())
-
-
 def build_repeated_sequential(
     depth: int, rep_builder: Callable[[int], nn.Module]
 ) -> nn.Sequential:
@@ -137,22 +122,6 @@ def build_repeated_sequential(
     for i in range(depth):
         repeated.append(rep_builder(i))
     return repeated
-
-
-def build_homogeneous_resnet(
-    depth: int,
-    block_builder: Callable[[...], Union[nn.Module, Callable[[Tensor], Tensor]]],
-    shortcut_builder: Callable[
-        [...], Union[nn.Module, Callable[[Tensor], Tensor]]
-    ] = lambda: nn.Identity(),
-    postall_builder: Callable[
-        [...], Union[nn.Module, Callable[[Tensor], Tensor]]
-    ] = lambda: nn.Identity(),
-) -> nn.Sequential:
-    return build_repeated_sequential(
-        depth,
-        lambda i: build_resblock(block_builder, shortcut_builder, postall_builder),
-    )
 
 
 # Fully-Connected Block, New version

@@ -32,15 +32,15 @@ del FastCollateMixup
 del Mixup
 del cifarhundred_dataloader_dispatcher
 del cifarten_dataloader_dispatcher
+del data_prep_dispatcher_1ch
+del data_prep_dispatcher_3ch
 del fashionmnist_dataloader_dispatcher
 del imagenette_dataloader_dispatcher
 del mnist_dataloader_dispatcher
-del data_prep_dispatcher_1ch
-del data_prep_dispatcher_3ch
 
 # Deletions (from .distributed)
-del slurm_nccl_env
 del reduce_accumulate_keepalive
+del slurm_nccl_env
 
 # Deletions (from .nn)
 del ArgMaxLayer
@@ -53,6 +53,7 @@ del ConvolutionalFlattenLayer
 del CoordConv1d
 del CoordConv2d
 del CoordConv3d
+del DeepRBL
 del Dropout2dRP
 del FCBlock
 del FCBlockLegacy
@@ -66,45 +67,46 @@ del Mish
 del MultiSolvePoissonTensor
 del NNEnsemble
 del PoissonNetCifar
+del PreActResNet
 del ProbePrintLayer
+del RBLinear
+del ResBlock
 del ReshapeLayer
-del ScaledERF
 del SERLU
 del SGRUHCell
+del ScaledERF
 del SinLU
 del SmeLU
 del SolvePoisson
 del SolvePoissonTensor
 del WideResNet
-del PreActResNet
 del beta_reco_bce
+del build_repeated_sequential
 del field_transform
 del mishlayer_init
 del patch_rp_train_network
 del pixelwise_bce_mean
 del pixelwise_bce_sum
-del RBLinear
-del DeepRBL
-del build_resblock
-del build_repeated_sequential
-del build_homogeneous_resnet
-del ResBlock
 
 # Deletions (from .optim)
+del AdaBound
 del AdaHessian
+del AdamP
 del Adan
+del CosineLRScheduler
+del Lamb
 del Lion
 del Lookahead
 del Lookaround
 del RAdam
 del SAM
-del AdaBound
-del ralah_optim
-del wfneal
-del tricyc1c
+del SGDP
 del epochwise_onecycle
 del onecycle_lincos
 del onecycle_linlin
+del ralah_optim
+del tricyc1c
+del wfneal
 
 # Deletions (from .logging)
 del AverageMeter
