@@ -211,8 +211,10 @@ class CosineLRScheduler(_Scheduler):
             initialize=initialize,
         )
 
-        assert t_initial > 0
-        assert lr_min >= 0
+        if t_initial <= 0:
+            raise ValueError(f"Expected positive `t_initial`, got {t_initial}")
+        if lr_min < 0:
+            raise ValueError(f"Expected positive `lr_min`, got {lr_min}")
         if t_initial == 1 and cycle_mul == 1 and cycle_decay == 1:
             warnings.warn(
                 "Cosine annealing scheduler will have no effect on the learning "
