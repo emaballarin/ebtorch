@@ -27,6 +27,7 @@ from .adan import Adan
 from .custom import epochwise_onecycle
 from .custom import onecycle_lincos
 from .custom import onecycle_linlin
+from .custom import onecycle_linlin_updown
 from .custom import ralah_optim
 from .custom import tricyc1c
 from .custom import wfneal
