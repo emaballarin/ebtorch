@@ -36,6 +36,8 @@ from typing import Union
 import torch
 from torch import nn
 
+__all__ = ["Mish", "mishlayer_init"]
+
 Mish = nn.Mish
 
 # Adapted from Federico Andres Lois' mish_init.py GitHub Gist

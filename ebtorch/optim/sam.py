@@ -25,6 +25,8 @@
 # SPDX-License-Identifier: Apache-2.0
 import torch
 
+__all__ = ["SAM"]
+
 
 class SAM(torch.optim.Optimizer):
     def __init__(

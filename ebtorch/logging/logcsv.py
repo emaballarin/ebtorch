@@ -16,6 +16,8 @@ import csv
 from pathlib import Path
 from typing import Union
 
+__all__ = ["LogCSV"]
+
 
 class LogCSV:
     def __init__(

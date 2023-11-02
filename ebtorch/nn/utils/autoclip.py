@@ -24,6 +24,8 @@ from typing import Union
 import numpy as np
 import torch.nn.utils as thutils
 
+__all__ = ["AutoClipper"]
+
 realnum = Union[float, int]
 
 

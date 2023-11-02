@@ -40,6 +40,8 @@ import torch.nn.functional as F
 from torch.optim.optimizer import Optimizer
 from torch.optim.optimizer import required
 
+__all__ = ["SGDP", "AdamP"]
+
 
 def _channel_view(x: torch.Tensor) -> torch.Tensor:
     return x.reshape(x.size(0), -1)

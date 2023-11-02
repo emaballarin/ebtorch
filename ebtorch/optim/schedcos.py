@@ -34,6 +34,8 @@ from typing import Optional
 
 import torch
 
+__all__ = ["CosineLRScheduler"]
+
 
 class _Scheduler(abc.ABC):
     """Parameter Scheduler Base Class

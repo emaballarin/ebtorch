@@ -21,6 +21,11 @@
 # SPDX-License-Identifier: Apache-2.0
 from torch import nn
 
+__all__ = [
+    "ReshapeLayer",
+    "FlatChannelize2DLayer",
+]
+
 
 class ReshapeLayer(nn.Module):
     def __init__(self, shape: tuple):

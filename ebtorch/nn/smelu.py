@@ -18,7 +18,7 @@ from torch import Tensor
 from .functional import smelu as fsmelu
 
 
-# CLASSES
+__all__ = ["SmeLU"]
 
 
 class SmeLU(nn.Module):

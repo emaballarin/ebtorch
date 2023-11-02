@@ -21,6 +21,8 @@
 # SPDX-License-Identifier: Apache-2.0
 from torch import nn
 
+__all__ = ["ProbePrintLayer"]
+
 
 class ProbePrintLayer(nn.Module):
     def __init__(self, also_value: bool = False):

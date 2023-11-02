@@ -25,6 +25,8 @@ import math
 import torch
 from torch import nn
 
+__all__ = ["ConvolutionalFlattenLayer"]
+
 
 class ConvolutionalFlattenLayer(nn.Module):
     """

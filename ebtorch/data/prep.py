@@ -43,6 +43,12 @@ def data_prep_dispatcher_1ch(
     if dataset == "mnist":
         mean: float = 0.1307
         std: float = 0.3081
+    elif dataset == "fashionmnist":
+        mean: float = 0.2860
+        std: float = 0.3530
+    elif dataset == "kmnist":
+        mean: float = 0.1918
+        std: float = 0.3483
     else:
         raise ValueError("Invalid dataset.")
     if post_flatten:

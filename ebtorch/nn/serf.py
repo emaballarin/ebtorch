@@ -25,6 +25,8 @@ from torch import Tensor
 
 from .functional import serf as fserf
 
+__all__ = ["ScaledERF"]
+
 
 class ScaledERF(torch.nn.Module):
     """Scaled ERror Function."""

@@ -32,6 +32,23 @@ from torch import Tensor
 from torch.nn import functional as F
 from torch.utils.hooks import RemovableHandle
 
+__all__ = [
+    "pixelwise_bce_sum",
+    "pixelwise_bce_mean",
+    "beta_reco_bce",
+    "FCBlock",
+    "CausalConv1d",
+    "build_repeated_sequential",
+    "GaussianReparameterizerSampler",
+    "SGRUHCell",
+    "ArgMaxLayer",
+    "BinarizeLayer",
+    "InnerProduct",
+    "RBLinear",
+    "DeepRBL",
+    "ResBlock",
+]
+
 # CUSTOM TYPES
 realnum = Union[float, int]
 

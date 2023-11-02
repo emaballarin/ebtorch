@@ -16,6 +16,7 @@ from torchvision.datasets import CIFAR100
 from torchvision.datasets import DatasetFolder
 from torchvision.datasets import FashionMNIST
 from torchvision.datasets import ImageFolder
+from torchvision.datasets import KMNIST
 from torchvision.datasets import MNIST
 from torchvision.transforms import CenterCrop
 from torchvision.transforms import Compose
@@ -23,6 +24,15 @@ from torchvision.transforms import RandomHorizontalFlip
 from torchvision.transforms import RandomResizedCrop
 from torchvision.transforms import Resize
 from torchvision.transforms import ToTensor
+
+__all__ = [
+    "mnist_dataloader_dispatcher",
+    "fashionmnist_dataloader_dispatcher",
+    "kmnist_dataloader_dispatcher",
+    "cifarten_dataloader_dispatcher",
+    "cifarhundred_dataloader_dispatcher",
+    "imagenette_dataloader_dispatcher",
+]
 
 
 data_root_literal: str = "../datasets/"
@@ -49,6 +59,13 @@ def _dataloader_dispatcher(
 
     elif dataset == "fashionmnist":
         dataset_fx = FashionMNIST
+        if batch_size_train is None:
+            batch_size_train: int = 256
+        if batch_size_test is None:
+            batch_size_test: int = 512
+
+    elif dataset == "kmnist":
+        dataset_fx = KMNIST
         if batch_size_train is None:
             batch_size_train: int = 256
         if batch_size_test is None:
@@ -160,6 +177,29 @@ def fashionmnist_dataloader_dispatcher(
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
     return _dataloader_dispatcher(
         dataset="fashionmnist",
+        data_root=data_root,
+        batch_size_train=batch_size_train,
+        batch_size_test=batch_size_test,
+        cuda_accel=cuda_accel,
+        unshuffle_train=unshuffle_train,
+        shuffle_test=shuffle_test,
+        dataset_kwargs=dataset_kwargs,
+        dataloader_kwargs=dataloader_kwargs,
+    )
+
+
+def kmnist_dataloader_dispatcher(
+    data_root: str = data_root_literal,
+    batch_size_train: Optional[int] = None,
+    batch_size_test: Optional[int] = None,
+    cuda_accel: bool = False,
+    unshuffle_train: bool = False,
+    shuffle_test: bool = False,
+    dataset_kwargs: Optional[dict] = None,
+    dataloader_kwargs: Optional[dict] = None,
+) -> Tuple[DataLoader, DataLoader, DataLoader]:
+    return _dataloader_dispatcher(
+        dataset="kmnist",
         data_root=data_root,
         batch_size_train=batch_size_train,
         batch_size_test=batch_size_test,

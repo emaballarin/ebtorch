@@ -21,6 +21,14 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
+__all__ = [
+    "SolvePoisson",
+    "SolvePoissonTensor",
+    "MultiSolvePoissonTensor",
+    "PoissonBasicBlock",
+    "PoissonNetCifar",
+]
+
 
 def lattice_edges(
     image_height: int, image_width: int

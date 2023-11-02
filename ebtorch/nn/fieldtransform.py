@@ -36,7 +36,7 @@ from torch import Tensor
 from .functional import field_transform as ffield_transform
 
 
-# CLASSES
+__all__ = ["FieldTransform"]
 
 
 class FieldTransform(nn.Module):

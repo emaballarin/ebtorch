@@ -39,6 +39,8 @@ import math
 import torch
 from torch.optim import Optimizer
 
+__all__ = ["Lamb"]
+
 
 class Lamb(Optimizer):
     """Implements a pure pytorch variant of FuseLAMB (NvLamb variant) optimizer from apex.optimizers.FusedLAMB

@@ -25,6 +25,8 @@ from typing import Tuple
 import torch
 from torch.optim.optimizer import Optimizer
 
+__all__ = ["Lion"]
+
 
 class Lion(Optimizer):
     r"""Implements Lion algorithm."""

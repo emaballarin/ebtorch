@@ -27,7 +27,7 @@ from torch import Tensor
 from .functional import serlu as fserlu
 
 
-# CLASSES
+__all__ = ["SERLU"]
 
 
 class SERLU(nn.Module):

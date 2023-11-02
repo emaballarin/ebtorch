@@ -24,8 +24,7 @@ import torch.nn.functional as F
 from torch import Tensor
 from torch.nn import Module
 
-# For neural network layers and tensor functions
-
+__all__ = ["KWTA1d", "KWTA2d", "BrokenReLU"]
 
 # Custom type-annotation types
 realnum = Union[float, int]

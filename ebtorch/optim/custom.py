@@ -32,6 +32,17 @@ from torch import Tensor
 from .lookahead import Lookahead
 from .radam import RAdam
 
+__all__ = [
+    "ralah_optim",
+    "wfneal",
+    "tricyc1c",
+    "epochwise_onecycle",
+    "onecycle_lincos",
+    "onecycle_linlin",
+    "onecycle_linlin_updown",
+]
+
+
 # ==============================================================================
 
 
@@ -282,3 +293,29 @@ def onecycle_linlin(
 
     # Return
     return optim, sched
+
+
+def onecycle_linlin_updown(
+    optim: torch.optim.Optimizer,
+    init_lr: float,
+    max_lr: float,
+    final_lr: float,
+    up_steps: int,
+    down_steps: int,
+    verbose: bool = False,
+) -> Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LRScheduler]:
+    """
+    Epochwise OneCycleLR learning rate scheduler, with linear warmup and linear annealing.
+    Up/Down steps parameterization.
+    """
+    total_steps: int = up_steps + down_steps
+    up_frac: float = up_steps / total_steps
+    return onecycle_linlin(
+        optim=optim,
+        init_lr=init_lr,
+        max_lr=max_lr,
+        final_lr=final_lr,
+        up_frac=up_frac,
+        total_steps=total_steps,
+        verbose=verbose,
+    )

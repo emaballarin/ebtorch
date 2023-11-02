@@ -37,6 +37,8 @@ from functorch import vmap
 from torch import nn as thnn
 from torch.optim.swa_utils import AveragedModel
 
+__all__ = ["NNEnsemble"]
+
 
 # Custom types
 T = TypeVar("T", bound="NNEnsemble")

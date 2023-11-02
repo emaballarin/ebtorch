@@ -21,6 +21,8 @@
 # IMPORTS:
 from typing import Union
 
+__all__ = ["AverageMeter"]
+
 # TYPE HINTS:
 realnum = Union[float, int]
 

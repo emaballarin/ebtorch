@@ -33,6 +33,15 @@ from torch import Tensor
 from torch.nn import Module
 from torch.utils.hooks import RemovableHandle
 
+__all__ = [
+    "store_repr_fx",
+    "store_repr_hook",
+    "store_repr_autohook",
+    "gather_model_repr",
+    "model_reqgrad",
+    "model_reqgrad_",
+]
+
 
 def store_repr_fx(
     representation: Tensor,
