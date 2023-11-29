@@ -47,6 +47,7 @@ __all__ = [
     "RBLinear",
     "DeepRBL",
     "ResBlock",
+    "SirenSine",
 ]
 
 # CUSTOM TYPES
@@ -734,3 +735,16 @@ class ResBlock(nn.Module):
 
     def forward(self, x: Tensor) -> Tensor:
         return self.postl(self.shtct(x) + self.block(x))
+
+
+# SIREN-like Sine activation(s)
+class SirenSine(nn.Module):
+    def __init__(self, w0: float = 30.0, learn_w0: bool = False) -> None:
+        super().__init__()
+        if learn_w0:
+            self.w0: nn.Parameter = nn.Parameter(torch.tensor([w0]))
+        else:
+            self.w0: float = w0
+
+    def forward(self, x: Tensor) -> Tensor:
+        return torch.sin(self.w0 * x)

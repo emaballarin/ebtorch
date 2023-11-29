@@ -27,12 +27,9 @@ from .architectures import pixelwise_bce_sum
 from .architectures import RBLinear
 from .architectures import ResBlock
 from .architectures import SGRUHCell
+from .architectures import SirenSine
 from .architectures_resnets_dm import PreActResNet
 from .architectures_resnets_dm import WideResNet
-from .conv2drp import BatchNorm2dRP
-from .conv2drp import Conv2dRP
-from .conv2drp import Dropout2dRP
-from .conv2drp import patch_rp_train_network
 from .convolutional_flatten import ConvolutionalFlattenLayer
 from .coordconv import CoordConv1d
 from .coordconv import CoordConv2d
@@ -62,7 +59,6 @@ from .utils import *
 # Deletions (from .)
 del architectures
 del architectures_resnets_dm
-del conv2drp
 del convolutional_flatten
 del coordconv
 del debuglayers

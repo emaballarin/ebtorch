@@ -44,17 +44,14 @@ del slurm_nccl_env
 
 # Deletions (from .nn)
 del ArgMaxLayer
-del BatchNorm2dRP
 del BinarizeLayer
 del BrokenReLU
 del CausalConv1d
-del Conv2dRP
 del ConvolutionalFlattenLayer
 del CoordConv1d
 del CoordConv2d
 del CoordConv3d
 del DeepRBL
-del Dropout2dRP
 del FCBlock
 del FCBlockLegacy
 del FieldTransform
@@ -76,6 +73,7 @@ del SERLU
 del SGRUHCell
 del ScaledERF
 del SinLU
+del SirenSine
 del SmeLU
 del SolvePoisson
 del SolvePoissonTensor
@@ -84,7 +82,6 @@ del beta_reco_bce
 del build_repeated_sequential
 del field_transform
 del mishlayer_init
-del patch_rp_train_network
 del pixelwise_bce_mean
 del pixelwise_bce_sum
 
