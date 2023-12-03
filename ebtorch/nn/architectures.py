@@ -24,6 +24,7 @@ import copy
 from typing import Callable
 from typing import List
 from typing import Optional
+from typing import Tuple
 from typing import Union
 
 import torch
@@ -48,6 +49,9 @@ __all__ = [
     "DeepRBL",
     "ResBlock",
     "SirenSine",
+    "BasicAE",
+    "BasicVAE",
+    "Clamp",
 ]
 
 # CUSTOM TYPES
@@ -486,7 +490,8 @@ class ArgMaxLayer(nn.Module):
     def __init__(self) -> None:
         super().__init__()
 
-    def forward(self, x: Tensor) -> Tensor:  # Do not make static!
+    # Do not make static!
+    def forward(self, x: Tensor) -> Tensor:  # skipcq: PYL-R0201
         return torch.argmax(x, dim=1)
 
 
@@ -511,6 +516,16 @@ class InnerProduct(nn.Module):
 
     def forward(self, a, b):
         return torch.bmm(a.unsqueeze(self.dim), b.unsqueeze(self.dim + 1)).squeeze()
+
+
+class Clamp(nn.Module):
+    def __init__(self, cmin: float = 0.0, cmax: float = 1.0) -> None:
+        super().__init__()
+        self.min: float = cmin
+        self.max: float = cmax
+
+    def forward(self, x: Tensor) -> Tensor:
+        return x.clamp(self.min, self.max)
 
 
 # ------------------------------------------------------------------------------
@@ -748,3 +763,68 @@ class SirenSine(nn.Module):
 
     def forward(self, x: Tensor) -> Tensor:
         return torch.sin(self.w0 * x)
+
+
+# AutoEncoder scaffolds
+class BasicAE(nn.Module):
+    def __init__(
+        self,
+        encoder: nn.Module,
+        decoder: nn.Module,
+        extract_z: bool = False,
+    ) -> None:
+        super().__init__()
+        self.encoder: nn.Module = encoder
+        self.decoder: nn.Module = decoder
+        self.extract_z: bool = extract_z
+
+    def forward(self, x: Tensor) -> Union[Tensor, Tuple[Tensor, Tensor]]:
+        z: Tensor = self.encoder(x)
+        y: Tensor = self.decoder(z)
+        if self.extract_z:
+            return y, z
+        else:
+            return y
+
+
+class BasicVAE(nn.Module):
+    def __init__(
+        self,
+        encoder: nn.Module,
+        mean_neck: nn.Module,
+        logvar_neck: nn.Module,
+        decoder: nn.Module,
+        extract_z: bool = False,
+        extract_mv: bool = False,
+    ) -> None:
+        super().__init__()
+        self.encoder: nn.Module = encoder
+        self.mean_neck: nn.Module = mean_neck
+        self.logvar_neck: nn.Module = logvar_neck
+        self.grps: GaussianReparameterizerSampler = GaussianReparameterizerSampler()
+        self.decoder: nn.Module = decoder
+        self.extract_z: bool = extract_z
+        self.extract_mv: bool = extract_mv
+
+    def forward(
+        self, x: Tensor
+    ) -> Union[
+        Tensor,
+        Tuple[Tensor, Tensor],
+        Tuple[Tensor, Tensor, Tensor],
+        Tuple[Tensor, Tensor, Tensor, Tensor],
+    ]:
+        shared: Tensor = self.encoder(x)
+        mean: Tensor = self.mean_neck(shared)
+        logvar: Tensor = self.logvar_neck(shared)
+        z: Tensor = self.grps(mean, logvar)
+        y: Tensor = self.decoder(z)
+
+        if self.extract_z and self.extract_mv:
+            return y, z, mean, logvar
+        elif self.extract_z:
+            return y, z
+        elif self.extract_mv:
+            return y, mean, logvar
+        else:
+            return y

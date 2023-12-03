@@ -37,6 +37,7 @@ del data_prep_dispatcher_3ch
 del fashionmnist_dataloader_dispatcher
 del imagenette_dataloader_dispatcher
 del mnist_dataloader_dispatcher
+del kmnist_dataloader_dispatcher
 
 # Deletions (from .distributed)
 del reduce_accumulate_keepalive
@@ -44,9 +45,12 @@ del slurm_nccl_env
 
 # Deletions (from .nn)
 del ArgMaxLayer
+del BasicAE
+del BasicVAE
 del BinarizeLayer
 del BrokenReLU
 del CausalConv1d
+del Clamp
 del ConvolutionalFlattenLayer
 del CoordConv1d
 del CoordConv2d
@@ -101,6 +105,7 @@ del SGDP
 del epochwise_onecycle
 del onecycle_lincos
 del onecycle_linlin
+del onecycle_linlin_updown
 del ralah_optim
 del tricyc1c
 del wfneal

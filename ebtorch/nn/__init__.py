@@ -13,10 +13,13 @@
 # ------------------------------------------------------------------------------
 # Imports
 from .architectures import ArgMaxLayer
+from .architectures import BasicAE
+from .architectures import BasicVAE
 from .architectures import beta_reco_bce
 from .architectures import BinarizeLayer
 from .architectures import build_repeated_sequential
 from .architectures import CausalConv1d
+from .architectures import Clamp
 from .architectures import DeepRBL
 from .architectures import FCBlock
 from .architectures import FCBlockLegacy
