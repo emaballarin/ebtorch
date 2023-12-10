@@ -41,6 +41,7 @@ from .debuglayers import ProbePrintLayer
 from .fieldtransform import FieldTransform
 from .functional import field_transform
 from .functional import mish
+from .functional import oldtranspose
 from .kwta import BrokenReLU
 from .kwta import KWTA1d
 from .kwta import KWTA2d
@@ -86,6 +87,7 @@ del AutoClipper
 del TA2ATAdapter
 del argser_f
 del argsink
+del no_op
 del download_gdrive
 del emplace_kv
 del subset_state_dict

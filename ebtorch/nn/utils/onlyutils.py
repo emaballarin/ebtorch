@@ -34,6 +34,7 @@ __all__ = [
     "emplace_kv",
     "download_gdrive",
     "argsink",
+    "no_op",
     "subset_state_dict",
 ]
 
@@ -116,3 +117,10 @@ def subset_state_dict(d: dict, subset_key: str) -> dict:
         key[(len(subset_key) + 1) :]: d[key]
         for key in (key for key in d.keys() if key.startswith(subset_key))
     }
+
+
+def no_op() -> None:
+    """
+    A function that does nothing, by design.
+    """
+    pass

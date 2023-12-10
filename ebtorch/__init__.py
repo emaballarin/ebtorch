@@ -88,6 +88,7 @@ del field_transform
 del mishlayer_init
 del pixelwise_bce_mean
 del pixelwise_bce_sum
+del oldtranspose
 
 # Deletions (from .optim)
 del AdaBound

@@ -21,7 +21,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # IMPORTS
 import copy
-from typing import Callable
+from collections.abc import Callable
 from typing import List
 from typing import Optional
 from typing import Tuple

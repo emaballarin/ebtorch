@@ -41,6 +41,7 @@ __all__ = [
     "serlu",
     "smelu",
     "serf",
+    "oldtranspose",
 ]
 
 
@@ -110,3 +111,16 @@ def smelu(x_input: Tensor, beta: float = 2.0) -> Tensor:
 def serf(x: Tensor) -> Tensor:
     """Applies the Scaled ERror Function, element-wise."""
     return torch.erf(x / math.sqrt(2.0))  # type: ignore
+
+
+def oldtranspose(x: Tensor) -> Tensor:
+    """
+    Transpose a tensor along all dimensions, emulating x.T.
+
+    Args:
+        x: Tensor to be transposed.
+
+    Returns:
+        Transposed of x.
+    """
+    return x.permute(*torch.arange(x.ndim - 1, -1, -1))
