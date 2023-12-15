@@ -52,6 +52,7 @@ __all__ = [
     "BasicAE",
     "BasicVAE",
     "Clamp",
+    "SwiGLU",
 ]
 
 # CUSTOM TYPES
@@ -828,3 +829,20 @@ class BasicVAE(nn.Module):
             return y, mean, logvar
         else:
             return y
+
+
+class SwiGLU(nn.Module):
+    def __init__(
+        self,
+        dim: int,
+        hidden_dim: int,
+        bias: bool = False,
+    ):
+        super().__init__()
+
+        self.w1: nn.Linear = nn.Linear(dim, hidden_dim, bias=bias)
+        self.w2: nn.Linear = nn.Linear(hidden_dim, dim, bias=bias)
+        self.w3: nn.Linear = nn.Linear(dim, hidden_dim, bias=bias)
+
+    def forward(self, x):
+        return self.w2(F.silu(self.w1(x)) * self.w3(x))

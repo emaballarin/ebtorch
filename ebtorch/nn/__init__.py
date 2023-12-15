@@ -31,6 +31,7 @@ from .architectures import RBLinear
 from .architectures import ResBlock
 from .architectures import SGRUHCell
 from .architectures import SirenSine
+from .architectures import SwiGLU
 from .architectures_resnets_dm import PreActResNet
 from .architectures_resnets_dm import WideResNet
 from .convolutional_flatten import ConvolutionalFlattenLayer

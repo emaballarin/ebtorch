@@ -81,6 +81,7 @@ del SirenSine
 del SmeLU
 del SolvePoisson
 del SolvePoissonTensor
+del SwiGLU
 del WideResNet
 del beta_reco_bce
 del build_repeated_sequential
