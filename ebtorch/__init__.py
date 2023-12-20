@@ -47,6 +47,7 @@ del slurm_nccl_env
 del ArgMaxLayer
 del BasicAE
 del BasicVAE
+del beta_gaussian_kldiv
 del BinarizeLayer
 del BrokenReLU
 del CausalConv1d
@@ -65,6 +66,8 @@ del InnerProduct
 del KWTA1d
 del KWTA2d
 del Mish
+del multilasso
+del multiridge
 del MultiSolvePoissonTensor
 del NNEnsemble
 del PoissonNetCifar
@@ -82,6 +85,7 @@ del SmeLU
 del SolvePoisson
 del SolvePoissonTensor
 del SwiGLU
+del TupleDecouple
 del WideResNet
 del beta_reco_bce
 del build_repeated_sequential

@@ -33,6 +33,8 @@ from torch import Tensor
 from torch.nn import functional as F
 from torch.utils.hooks import RemovableHandle
 
+from .penalties import beta_gaussian_kldiv
+
 __all__ = [
     "pixelwise_bce_sum",
     "pixelwise_bce_mean",
@@ -53,6 +55,7 @@ __all__ = [
     "BasicVAE",
     "Clamp",
     "SwiGLU",
+    "TupleDecouple",
 ]
 
 # CUSTOM TYPES
@@ -78,7 +81,7 @@ def beta_reco_bce(
     sigma: Tensor,
     beta: float = 0.5,
 ):
-    kldiv = (beta * (torch.pow(mu, 2) + torch.exp(sigma) - sigma - 1)).sum()
+    kldiv = beta_gaussian_kldiv(mu, sigma, beta)
     pwbce = pixelwise_bce_sum(input_reco, input_orig)
     return pwbce + kldiv
 
@@ -846,3 +849,19 @@ class SwiGLU(nn.Module):
 
     def forward(self, x):
         return self.w2(F.silu(self.w1(x)) * self.w3(x))
+
+
+class TupleDecouple(nn.Module):
+    def __init__(self, module: nn.Module, idx: int = 0) -> None:
+        super().__init__()
+        self.module: nn.Module = module
+        self.idx: int = idx
+
+    def forward(self, xtuple: Tuple[Tensor, ...]) -> Tuple[Tensor, ...]:
+        return tuple(
+            (
+                *xtuple[: self.idx],
+                self.module(xtuple[self.idx]),
+                *xtuple[self.idx + 1 :],
+            )
+        )

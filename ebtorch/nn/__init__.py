@@ -32,6 +32,7 @@ from .architectures import ResBlock
 from .architectures import SGRUHCell
 from .architectures import SirenSine
 from .architectures import SwiGLU
+from .architectures import TupleDecouple
 from .architectures_resnets_dm import PreActResNet
 from .architectures_resnets_dm import WideResNet
 from .convolutional_flatten import ConvolutionalFlattenLayer
@@ -53,6 +54,9 @@ from .laplacenet import SolvePoissonTensor
 from .mish import Mish
 from .mish import mishlayer_init
 from .nnsemble import NNEnsemble
+from .penalties import beta_gaussian_kldiv
+from .penalties import multilasso
+from .penalties import multiridge
 from .reshapelayers import FlatChannelize2DLayer
 from .reshapelayers import ReshapeLayer
 from .serf import ScaledERF
@@ -72,6 +76,7 @@ del kwta
 del laplacenet
 del mish
 del nnsemble
+del penalties
 del reshapelayers
 del serlu
 del sinlu
@@ -86,6 +91,7 @@ del serf
 del AdverApply
 del AutoClipper
 del TA2ATAdapter
+del eval_model_on_test
 del argser_f
 del argsink
 del no_op

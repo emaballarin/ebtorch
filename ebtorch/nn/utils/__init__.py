@@ -15,6 +15,7 @@
 from .adverutils import AdverApply
 from .adverutils import TA2ATAdapter
 from .autoclip import AutoClipper
+from .evalutils import eval_model_on_test
 from .onlyutils import argser_f
 from .onlyutils import argsink
 from .onlyutils import download_gdrive
@@ -34,6 +35,7 @@ from .reprutils import store_repr_hook
 # Deletions (from .)
 del adverutils
 del autoclip
+del evalutils
 del onlyutils
 del patches
 del reprutils
