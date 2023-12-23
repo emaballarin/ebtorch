@@ -92,11 +92,13 @@ del AdverApply
 del AutoClipper
 del TA2ATAdapter
 del eval_model_on_test
+del extract_conv_filters
 del argser_f
 del argsink
 del no_op
 del download_gdrive
 del emplace_kv
+del show_filters
 del subset_state_dict
 del gather_model_repr
 del model_reqgrad
@@ -107,3 +109,11 @@ del patchify_dataset
 del store_repr_autohook
 del store_repr_fx
 del store_repr_hook
+del petroff_2021_color
+del tableau10_color
+del petroff_2021_cycler
+del tableau10_cycler
+del petroff_2021_cmap
+del tableau10_cmap
+del set_petroff_2021_colors
+del set_tableau10_colors

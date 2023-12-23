@@ -38,6 +38,7 @@ def check_dependencies(dependencies: list[str]):
 
 DEPENDENCY_PACKAGE_NAMES: list[str] = [
     "advertorch",
+    "matplotlib",
     "numpy",
     "requests",
     "torch",
@@ -53,7 +54,7 @@ PACKAGENAME: str = "ebtorch"
 
 setup(
     name=PACKAGENAME,
-    version="0.18.3",
+    version="0.19.0",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",
