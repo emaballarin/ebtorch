@@ -49,6 +49,12 @@ def data_prep_dispatcher_1ch(
     elif dataset == "kmnist":
         mean: float = 0.1918
         std: float = 0.3483
+    elif dataset == "tissuemnist":
+        mean: float = 0.102
+        std: float = 0.08
+    elif dataset == "octmnist":
+        mean: float = 0.1889
+        std: float = 0.1694
     else:
         raise ValueError("Invalid dataset.")
     if post_flatten:
@@ -79,6 +85,9 @@ def data_prep_dispatcher_3ch(
     elif dataset == "imagenet":
         means: Tuple[float, float, float] = (0.485, 0.456, 0.406)
         stds: Tuple[float, float, float] = (0.229, 0.224, 0.225)
+    elif dataset == "pathmnist":
+        means: Tuple[float, float, float] = (0.7405, 0.533, 0.7058)
+        stds: Tuple[float, float, float] = (0.0723, 0.1038, 0.0731)
     else:
         raise ValueError("Invalid dataset.")
     if post_flatten:

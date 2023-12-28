@@ -19,6 +19,9 @@ from .datasets import fashionmnist_dataloader_dispatcher
 from .datasets import imagenette_dataloader_dispatcher
 from .datasets import kmnist_dataloader_dispatcher
 from .datasets import mnist_dataloader_dispatcher
+from .datasets import octmnist_dataloader_dispatcher
+from .datasets import pathmnist_dataloader_dispatcher
+from .datasets import tissuemnist_dataloader_dispatcher
 from .prep import data_prep_dispatcher_1ch
 from .prep import data_prep_dispatcher_3ch
 

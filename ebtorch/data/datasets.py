@@ -10,6 +10,10 @@ import os
 from typing import Optional
 from typing import Tuple
 
+import torch
+from medmnist import OCTMNIST
+from medmnist import PathMNIST
+from medmnist import TissueMNIST
 from torch.utils.data import DataLoader
 from torchvision.datasets import CIFAR10
 from torchvision.datasets import CIFAR100
@@ -32,11 +36,26 @@ __all__ = [
     "cifarten_dataloader_dispatcher",
     "cifarhundred_dataloader_dispatcher",
     "imagenette_dataloader_dispatcher",
+    "pathmnist_dataloader_dispatcher",
+    "octmnist_dataloader_dispatcher",
+    "tissuemnist_dataloader_dispatcher",
 ]
-
 
 data_root_literal: str = "../datasets/"
 cuda_args_true: dict = {"pin_memory": True}
+
+
+def _determine_train_test_args_common(dataset_name: str, is_train: bool) -> dict:
+    if dataset_name in ("pathmnist", "octmnist", "tissuemnist"):
+        if is_train:
+            return {"split": "train"}
+        else:
+            return {"split": "test"}
+    else:
+        if is_train:
+            return {"train": True}
+        else:
+            return {"train": False}
 
 
 def _dataloader_dispatcher(
@@ -85,6 +104,27 @@ def _dataloader_dispatcher(
         if batch_size_test is None:
             batch_size_test: int = 512
 
+    elif dataset == "pathmnist":
+        dataset_fx = PathMNIST
+        if batch_size_train is None:
+            batch_size_train: int = 256
+        if batch_size_test is None:
+            batch_size_test: int = 512
+
+    elif dataset == "octmnist":
+        dataset_fx = OCTMNIST
+        if batch_size_train is None:
+            batch_size_train: int = 256
+        if batch_size_test is None:
+            batch_size_test: int = 512
+
+    elif dataset == "tissuemnist":
+        dataset_fx = TissueMNIST
+        if batch_size_train is None:
+            batch_size_train: int = 256
+        if batch_size_test is None:
+            batch_size_test: int = 512
+
     else:
         raise ValueError("Dataset not supported... yet!")
 
@@ -100,14 +140,14 @@ def _dataloader_dispatcher(
 
     trainset = dataset_fx(
         root=data_root,
-        train=True,
+        **_determine_train_test_args_common(dataset, is_train=True),
         transform=transforms,
         download=True,
         **dataset_kwargs,
     )
     testset = dataset_fx(
         root=data_root,
-        train=False,
+        **_determine_train_test_args_common(dataset, is_train=False),
         transform=transforms,
         download=True,
         **dataset_kwargs,
@@ -257,6 +297,75 @@ def cifarhundred_dataloader_dispatcher(
     )
 
 
+def pathmnist_dataloader_dispatcher(
+    data_root: str = data_root_literal,
+    batch_size_train: Optional[int] = None,
+    batch_size_test: Optional[int] = None,
+    cuda_accel: bool = False,
+    unshuffle_train: bool = False,
+    shuffle_test: bool = False,
+    dataset_kwargs: Optional[dict] = None,
+    dataloader_kwargs: Optional[dict] = None,
+) -> Tuple[DataLoader, DataLoader, DataLoader]:
+    return _dataloader_dispatcher(
+        dataset="pathmnist",
+        data_root=data_root,
+        batch_size_train=batch_size_train,
+        batch_size_test=batch_size_test,
+        cuda_accel=cuda_accel,
+        unshuffle_train=unshuffle_train,
+        shuffle_test=shuffle_test,
+        dataset_kwargs=dataset_kwargs,
+        dataloader_kwargs=dataloader_kwargs,
+    )
+
+
+def octmnist_dataloader_dispatcher(
+    data_root: str = data_root_literal,
+    batch_size_train: Optional[int] = None,
+    batch_size_test: Optional[int] = None,
+    cuda_accel: bool = False,
+    unshuffle_train: bool = False,
+    shuffle_test: bool = False,
+    dataset_kwargs: Optional[dict] = None,
+    dataloader_kwargs: Optional[dict] = None,
+) -> Tuple[DataLoader, DataLoader, DataLoader]:
+    return _dataloader_dispatcher(
+        dataset="octmnist",
+        data_root=data_root,
+        batch_size_train=batch_size_train,
+        batch_size_test=batch_size_test,
+        cuda_accel=cuda_accel,
+        unshuffle_train=unshuffle_train,
+        shuffle_test=shuffle_test,
+        dataset_kwargs=dataset_kwargs,
+        dataloader_kwargs=dataloader_kwargs,
+    )
+
+
+def tissuemnist_dataloader_dispatcher(
+    data_root: str = data_root_literal,
+    batch_size_train: Optional[int] = None,
+    batch_size_test: Optional[int] = None,
+    cuda_accel: bool = False,
+    unshuffle_train: bool = False,
+    shuffle_test: bool = False,
+    dataset_kwargs: Optional[dict] = None,
+    dataloader_kwargs: Optional[dict] = None,
+) -> Tuple[DataLoader, DataLoader, DataLoader]:
+    return _dataloader_dispatcher(
+        dataset="tissuemnist",
+        data_root=data_root,
+        batch_size_train=batch_size_train,
+        batch_size_test=batch_size_test,
+        cuda_accel=cuda_accel,
+        unshuffle_train=unshuffle_train,
+        shuffle_test=shuffle_test,
+        dataset_kwargs=dataset_kwargs,
+        dataloader_kwargs=dataloader_kwargs,
+    )
+
+
 def imagenette_dataloader_dispatcher(
     data_root: str = data_root_literal,
     batch_size_train: int = 64,
@@ -326,3 +435,21 @@ def imagenette_dataloader_dispatcher(
     )
 
     return train_dl, test_dl, tot_dl
+
+
+def _dataloader_mean_std(dataloader: DataLoader, printout: bool = False):
+    mean, std, nsamples = 0.0, 0.0, 0.0
+    with torch.no_grad():
+        for batch in dataloader:
+            data, _ = batch
+            batch_samples = data.size(0)
+            data = data.view(batch_samples, data.size(1), -1)
+            mean += data.mean(2).sum(0)
+            std += data.std(2).sum(0)
+            nsamples += batch_samples
+    mean /= nsamples
+    std /= nsamples
+    if printout:
+        print("Mean: ", mean)
+        print("Std: ", std)
+    return mean, std
