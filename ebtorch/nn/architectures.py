@@ -33,6 +33,7 @@ from torch import Tensor
 from torch.nn import functional as F
 from torch.utils.hooks import RemovableHandle
 
+from .functional import silhouette_score
 from .penalties import beta_gaussian_kldiv
 
 __all__ = [
@@ -56,6 +57,7 @@ __all__ = [
     "Clamp",
     "SwiGLU",
     "TupleDecouple",
+    "SilhouetteScore",
 ]
 
 # CUSTOM TYPES
@@ -865,3 +867,13 @@ class TupleDecouple(nn.Module):
                 *xtuple[self.idx + 1 :],
             )
         )
+
+
+class SilhouetteScore(nn.Module):
+    """
+    Layerized computation of the Silhouette Score.
+    """
+
+    @staticmethod
+    def forward(features: Tensor, labels: Tensor) -> Tensor:
+        return silhouette_score(features, labels)

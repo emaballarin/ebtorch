@@ -20,6 +20,10 @@
 # ==============================================================================
 #
 # SPDX-License-Identifier: Apache-2.0
+#
+# Versioning
+__version__ = "0.20.0"
+
 # Imports (wildcard)
 from .data import *
 from .distributed import *
@@ -89,6 +93,7 @@ del SolvePoisson
 del SolvePoissonTensor
 del SwiGLU
 del TupleDecouple
+del SilhouetteScore
 del WideResNet
 del beta_reco_bce
 del build_repeated_sequential
@@ -97,6 +102,8 @@ del mishlayer_init
 del pixelwise_bce_mean
 del pixelwise_bce_sum
 del oldtranspose
+del silhouette_score
+del cummatmul
 
 # Deletions (from .optim)
 del AdaBound

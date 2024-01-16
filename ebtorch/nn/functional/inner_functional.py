@@ -30,6 +30,10 @@
 # SPDX-License-Identifier: Apache-2.0
 # IMPORTS
 import math
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Union
 
 import torch
 import torch.nn.functional as F
@@ -42,6 +46,8 @@ __all__ = [
     "smelu",
     "serf",
     "oldtranspose",
+    "silhouette_score",
+    "cummatmul",
 ]
 
 
@@ -124,3 +130,71 @@ def oldtranspose(x: Tensor) -> Tensor:
         Transposed of x.
     """
     return x.permute(*torch.arange(x.ndim - 1, -1, -1))
+
+
+def silhouette_score(feats: Tensor, labels: Tensor) -> Union[float, Tensor]:  # NOSONAR
+    if feats.shape[0] != labels.shape[0]:
+        raise ValueError(
+            f"`feats` (shape {feats.shape}) and `labels` (shape {labels.shape}) must have same length"
+        )
+    device, dtype = feats.device, feats.dtype
+    unique_labels: Union[Tensor, Tuple[Tensor, ...]] = torch.unique(labels)
+    num_samples: int = feats.shape[0]
+    if not (1 < len(unique_labels) < num_samples):
+        raise ValueError("The number of unique `labels` must be ∈ (1, `num_samples`)")
+    scores: List[Tensor] = []
+    for l_label in unique_labels:
+        curr_cluster: Tensor = feats[labels == l_label]
+        num_elements: int = len(curr_cluster)
+        if num_elements > 1:
+            intra_cluster_dists: Tensor = torch.cdist(curr_cluster, curr_cluster)
+            mean_intra_dists: Tensor = torch.sum(intra_cluster_dists, dim=1) / (
+                num_elements - 1
+            )
+            dists_to_other_clusters: List[Tensor] = []
+            for other_l in unique_labels:
+                if other_l != l_label:
+                    other_cluster: Tensor = feats[labels == other_l]
+                    inter_cluster_dists: Tensor = torch.cdist(
+                        curr_cluster, other_cluster
+                    )
+                    mean_inter_dists: Tensor = torch.sum(inter_cluster_dists, dim=1) / (
+                        len(other_cluster)
+                    )
+                    dists_to_other_clusters.append(mean_inter_dists)
+            dists_to_other_clusters_t: Tensor = torch.stack(
+                dists_to_other_clusters, dim=1
+            )
+            min_dists: Tensor = torch.min(dists_to_other_clusters_t, dim=1)[0]
+            curr_scores: Tensor = (min_dists - mean_intra_dists) / (
+                torch.maximum(min_dists, mean_intra_dists)
+            )
+        else:
+            curr_scores: Tensor = torch.tensor([0], device=device, dtype=dtype)
+
+        scores.append(curr_scores)
+
+    scores_t: Tensor = torch.cat(scores, dim=0)
+    if len(scores_t) != num_samples:
+        raise ValueError(
+            f"`scores_t` (shape {scores_t.shape}) should have same length as `feats` (shape {feats.shape})"
+        )
+    return torch.mean(scores_t)
+
+
+def cummatmul(
+    input_list: Union[List[Tensor], Tensor], tensorize: Optional[bool] = None
+) -> Union[List[Tensor], Tensor]:
+    if tensorize is None:
+        if isinstance(input_list, Tensor):
+            tensorize = True
+        else:
+            tensorize = False
+    cmm_list: List[Tensor] = [input_list[0]]
+    mat: Tensor
+    for mat in input_list[1:]:
+        cmm_list.append(torch.matmul(cmm_list[-1], mat))
+    if tensorize:
+        return torch.stack(cmm_list)
+    else:
+        return cmm_list

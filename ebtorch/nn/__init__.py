@@ -30,6 +30,7 @@ from .architectures import pixelwise_bce_sum
 from .architectures import RBLinear
 from .architectures import ResBlock
 from .architectures import SGRUHCell
+from .architectures import SilhouetteScore
 from .architectures import SirenSine
 from .architectures import SwiGLU
 from .architectures import TupleDecouple
@@ -41,9 +42,11 @@ from .coordconv import CoordConv2d
 from .coordconv import CoordConv3d
 from .debuglayers import ProbePrintLayer
 from .fieldtransform import FieldTransform
+from .functional import cummatmul
 from .functional import field_transform
 from .functional import mish
 from .functional import oldtranspose
+from .functional import silhouette_score
 from .kwta import BrokenReLU
 from .kwta import KWTA1d
 from .kwta import KWTA2d
