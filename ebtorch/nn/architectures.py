@@ -859,12 +859,10 @@ class TupleDecouple(nn.Module):
         self.idx: int = idx
 
     def forward(self, xtuple: Tuple[Tensor, ...]) -> Tuple[Tensor, ...]:
-        return tuple(
-            (
-                *xtuple[: self.idx],
-                self.module(xtuple[self.idx]),
-                *xtuple[self.idx + 1 :],
-            )
+        return (
+            *xtuple[: self.idx],
+            self.module(xtuple[self.idx]),
+            *xtuple[self.idx + 1 :],
         )
 
 

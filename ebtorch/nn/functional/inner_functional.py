@@ -188,11 +188,7 @@ def silhouette_score(feats: Tensor, labels: Tensor) -> Union[float, Tensor]:  # 
 def cummatmul(
     input_list: Union[List[Tensor], Tensor], tensorize: Optional[bool] = None
 ) -> Union[List[Tensor], Tensor]:
-    if tensorize is None:
-        if isinstance(input_list, Tensor):
-            tensorize = True
-        else:
-            tensorize = False
+    tensorize = isinstance(input_list, Tensor) if tensorize is None else tensorize
     cmm_list: List[Tensor] = [input_list[0]]
     mat: Tensor
     for mat in input_list[1:]:
