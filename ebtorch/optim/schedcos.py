@@ -254,8 +254,7 @@ class CosineLRScheduler(_Scheduler):
                 )
                 t_i = self.cycle_mul**i * self.t_initial
                 t_curr = (
-                    t
-                    - (1 - self.cycle_mul**i) / (1 - self.cycle_mul) * self.t_initial
+                    t - (1 - self.cycle_mul**i) / (1 - self.cycle_mul) * self.t_initial
                 )
             else:
                 i = t // self.t_initial

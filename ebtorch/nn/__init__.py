@@ -36,17 +36,26 @@ from .architectures import SwiGLU
 from .architectures import TupleDecouple
 from .architectures_resnets_dm import PreActResNet
 from .architectures_resnets_dm import WideResNet
+from .architectures_scattgath import gather_cat
+from .architectures_scattgath import gather_sum
+from .architectures_scattgath import module_rep_deploy
+from .architectures_scattgath import scatter_even_split
+from .architectures_scattgath import scatter_replicate
+from .architectures_scattgath import ScatterGatherModule
 from .convolutional_flatten import ConvolutionalFlattenLayer
 from .coordconv import CoordConv1d
 from .coordconv import CoordConv2d
 from .coordconv import CoordConv3d
 from .debuglayers import ProbePrintLayer
 from .fieldtransform import FieldTransform
+from .functional import bisided_thresholding
 from .functional import cummatmul
 from .functional import field_transform
+from .functional import logit_to_prob
 from .functional import mish
 from .functional import oldtranspose
 from .functional import silhouette_score
+from .functional import tensor_replicate
 from .kwta import BrokenReLU
 from .kwta import KWTA1d
 from .kwta import KWTA2d
@@ -71,6 +80,7 @@ from .utils import *
 # Deletions (from .)
 del architectures
 del architectures_resnets_dm
+del architectures_scattgath
 del convolutional_flatten
 del coordconv
 del debuglayers

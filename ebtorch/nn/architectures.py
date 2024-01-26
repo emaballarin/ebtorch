@@ -171,7 +171,9 @@ class FCBlock(nn.Module):
         error_uneven_size: str = (
             "The length of lists of arguments must be the same across them."
         )
-        error_illegal_dropout: str = "The 'dropout' argument must be either False, a float, or an iterable of floats and/or False."
+        error_illegal_dropout: str = (
+            "The 'dropout' argument must be either False, a float, or an iterable of floats and/or False."
+        )
 
         # Default cases
         if bias is None:
@@ -391,7 +393,6 @@ class GaussianReparameterizerSampler(nn.Module):
 
 
 class SGRUHCell(nn.Module):
-
     """
     Stateful (i.e. implicit hidden state) GRU HyperCell (i.e. arbitrary
     time-order and depth) with ReadIn and ReadOut custom heads
@@ -812,9 +813,7 @@ class BasicVAE(nn.Module):
         self.extract_z: bool = extract_z
         self.extract_mv: bool = extract_mv
 
-    def forward(
-        self, x: Tensor
-    ) -> Union[
+    def forward(self, x: Tensor) -> Union[
         Tensor,
         Tuple[Tensor, Tensor],
         Tuple[Tensor, Tensor, Tensor],

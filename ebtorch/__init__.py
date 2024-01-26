@@ -104,6 +104,15 @@ del pixelwise_bce_sum
 del oldtranspose
 del silhouette_score
 del cummatmul
+del tensor_replicate
+del gather_cat
+del gather_sum
+del module_rep_deploy
+del scatter_even_split
+del scatter_replicate
+del ScatterGatherModule
+del logit_to_prob
+del bisided_thresholding
 
 # Deletions (from .optim)
 del AdaBound

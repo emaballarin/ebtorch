@@ -48,6 +48,9 @@ __all__ = [
     "oldtranspose",
     "silhouette_score",
     "cummatmul",
+    "tensor_replicate",
+    "logit_to_prob",
+    "bisided_thresholding",
 ]
 
 
@@ -198,3 +201,22 @@ def cummatmul(
         return torch.stack(cmm_list)
     else:
         return cmm_list
+
+
+def tensor_replicate(x: Tensor, ntimes: int, dim: int) -> Tensor:
+    return x.unsqueeze(dim).expand(*x.shape[:dim], ntimes, *x.shape[dim:])
+
+
+def logit_to_prob(logit: Tensor) -> Tensor:
+    return torch.exp(logit) / torch.exp(logit).sum()
+
+
+def bisided_thresholding(x: Tensor, thresh_ile: float) -> Tensor:
+    lq = min(thresh_ile, 1 - thresh_ile)
+    return torch.where(
+        x > torch.quantile(x, 1 - lq),
+        torch.ones_like(x),
+        torch.where(
+            x < torch.quantile(x, lq), -torch.ones_like(x), torch.zeros_like(x)
+        ),
+    )
