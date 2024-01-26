@@ -119,10 +119,10 @@ class Lookahead(Optimizer):
                     param_state["cached_params"].copy_(p.data)
                     if self.pullback_momentum == "pullback":
                         internal_momentum = self.optimizer.state[p]["momentum_buffer"]
-                        self.optimizer.state[p]["momentum_buffer"] = (
-                            internal_momentum.mul_(self.la_alpha).add_(
-                                1.0 - self.la_alpha, param_state["cached_mom"]
-                            )
+                        self.optimizer.state[p][
+                            "momentum_buffer"
+                        ] = internal_momentum.mul_(self.la_alpha).add_(
+                            1.0 - self.la_alpha, param_state["cached_mom"]
                         )
                         param_state["cached_mom"] = self.optimizer.state[p][
                             "momentum_buffer"
