@@ -43,6 +43,10 @@ from .architectures_scattgath import scatter_even_split
 from .architectures_scattgath import scatter_replicate
 from .architectures_scattgath import ScatterGatherModule
 from .convolutional_flatten import ConvolutionalFlattenLayer
+from .convstems import convnext_stem
+from .convstems import convstem_block
+from .convstems import MetaAILayerNorm
+from .convstems import smallconv_featurizer
 from .coordconv import CoordConv1d
 from .coordconv import CoordConv2d
 from .coordconv import CoordConv3d
@@ -82,6 +86,7 @@ del architectures
 del architectures_resnets_dm
 del architectures_scattgath
 del convolutional_flatten
+del convstems
 del coordconv
 del debuglayers
 del fieldtransform

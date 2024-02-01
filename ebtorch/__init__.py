@@ -113,6 +113,10 @@ del scatter_replicate
 del ScatterGatherModule
 del logit_to_prob
 del bisided_thresholding
+del convstem_block
+del convnext_stem
+del smallconv_featurizer
+del MetaAILayerNorm
 
 # Deletions (from .optim)
 del AdaBound
