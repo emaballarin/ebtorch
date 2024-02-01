@@ -58,7 +58,6 @@ def convnext_stem(
     padding: int = 0,
     normalize: bool = True,
 ) -> nn.Sequential:
-
     stem_block: nn.ModuleList = nn.ModuleList(
         [nn.Conv2d(in_channels, out_channels, kernel_size, kernel_size, padding)]
     )
@@ -75,7 +74,6 @@ def convstem_block(
     out_channels: int,
     normalize: bool = True,
 ) -> nn.Sequential:
-
     stem_block: nn.ModuleList = nn.ModuleList(
         [nn.Conv2d(in_channels, post_conv_channels, 3, 2, 1, bias=False)]
     )
@@ -93,7 +91,6 @@ def smallconv_featurizer(
     out_channels: int,
     pool: bool = True,
 ):
-
     stem_block: nn.ModuleList = nn.ModuleList(
         [nn.Conv2d(in_channels, out_channels, 3), nn.ReLU()]
     )
