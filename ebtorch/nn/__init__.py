@@ -22,7 +22,6 @@ from .architectures import CausalConv1d
 from .architectures import Clamp
 from .architectures import DeepRBL
 from .architectures import FCBlock
-from .architectures import FCBlockLegacy
 from .architectures import GaussianReparameterizerSampler
 from .architectures import InnerProduct
 from .architectures import pixelwise_bce_mean
@@ -135,3 +134,5 @@ del petroff_2021_cmap
 del tableau10_cmap
 del set_petroff_2021_colors
 del set_tableau10_colors
+del repr_sizes_flat_adapter
+del repr_fx_flat_adapter

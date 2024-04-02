@@ -65,7 +65,6 @@ del CoordConv2d
 del CoordConv3d
 del DeepRBL
 del FCBlock
-del FCBlockLegacy
 del FieldTransform
 del FlatChannelize2DLayer
 del GaussianReparameterizerSampler

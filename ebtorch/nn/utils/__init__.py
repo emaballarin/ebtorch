@@ -38,6 +38,8 @@ from .patches import patchify_dataset
 from .reprutils import gather_model_repr
 from .reprutils import model_reqgrad
 from .reprutils import model_reqgrad_
+from .reprutils import repr_fx_flat_adapter
+from .reprutils import repr_sizes_flat_adapter
 from .reprutils import store_repr_autohook
 from .reprutils import store_repr_fx
 from .reprutils import store_repr_hook
