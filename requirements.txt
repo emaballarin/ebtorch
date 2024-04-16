@@ -13,12 +13,12 @@
 # ------------------------------------------------------------------------------
 
 # LIST OF REQUIREMENTS:
-advertorch>=0.2.3
+advertorch>=0.2.4
 matplotlib>=3.8
 medmnist>=2.2.3
 numpy>=1.24
 requests>=2.25
 torch>=2
-torchattacks>=3.3
+torchattacks>=3.5.1
 torchvision>=0.15
 tqdm>=4.65
