@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright 2023-* Emanuele Ballarin <emanuele@ballarin.cc>
+# Copyright 2024 Emanuele Ballarin <emanuele@ballarin.cc>
 # All Rights Reserved. Unless otherwise explicitly stated.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

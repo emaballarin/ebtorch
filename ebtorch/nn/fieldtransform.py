@@ -29,7 +29,8 @@
 # SPDX-License-Identifier: MIT
 # SPDX-License-Identifier: Apache-2.0
 # IMPORTS
-# Tensors and NN-related
+from typing import Union
+
 from torch import nn
 from torch import Tensor
 
@@ -42,15 +43,15 @@ __all__ = ["FieldTransform"]
 class FieldTransform(nn.Module):
     def __init__(
         self,
-        pre_sum: float = 0.0,
-        mult_div: float = 1.0,
-        post_sum: float = 0.0,
+        pre_sum: Union[float, Tensor] = 0.0,
+        mult_div: Union[float, Tensor] = 1.0,
+        post_sum: Union[float, Tensor] = 0.0,
         div_not_mul: bool = False,
     ):
         super().__init__()
-        self.pre_sum: float = pre_sum
-        self.mult_div: float = mult_div
-        self.post_sum: float = post_sum
+        self.pre_sum: Union[float, Tensor] = pre_sum
+        self.mult_div: Union[float, Tensor] = mult_div
+        self.post_sum: Union[float, Tensor] = post_sum
         self.div_not_mul: bool = div_not_mul
 
     def forward(self, x_input: Tensor) -> Tensor:

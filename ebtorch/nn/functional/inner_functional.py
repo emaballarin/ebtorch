@@ -59,9 +59,9 @@ __all__ = [
 
 def field_transform(
     x_input: Tensor,
-    pre_sum: float = 0.0,
-    mult_div: float = 1.0,
-    post_sum: float = 0.0,
+    pre_sum: Union[float, Tensor] = 0.0,
+    mult_div: Union[float, Tensor] = 1.0,
+    post_sum: Union[float, Tensor] = 0.0,
     div_not_mul: bool = False,
 ) -> Tensor:
     if div_not_mul:

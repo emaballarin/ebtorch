@@ -6,7 +6,7 @@
 #                      Licensed according to the MIT License.
 #                      [orig. code: https://github.com/a-rahimi/laplace-net ]
 #
-# Copyright (c) 2023-* Emanuele Ballarin <emanuele@ballarin.cc> (minor edits)
+# Copyright (c) 2024 Emanuele Ballarin <emanuele@ballarin.cc> (minor edits)
 #                      All Rights Reserved.
 #                      Licensed according to the MIT License.
 #

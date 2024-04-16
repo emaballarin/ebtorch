@@ -40,6 +40,7 @@ __all__ = [
     "pixelwise_bce_sum",
     "pixelwise_bce_mean",
     "beta_reco_bce",
+    "beta_reco_bce_splitout",
     "FCBlock",
     "CausalConv1d",
     "build_repeated_sequential",
@@ -58,6 +59,10 @@ __all__ = [
     "SwiGLU",
     "TupleDecouple",
     "SilhouetteScore",
+    "Concatenate",
+    "DuplexLinearNeck",
+    "SharedDuplexLinearNeck",
+    "GaussianReparameterizerSamplerLegacy",
 ]
 
 # CUSTOM TYPES
@@ -81,11 +86,24 @@ def beta_reco_bce(
     input_orig: Tensor,
     mu: Tensor,
     sigma: Tensor,
-    beta: float = 0.5,
+    beta: float = 1.0,
 ):
     kldiv = beta_gaussian_kldiv(mu, sigma, beta)
     pwbce = pixelwise_bce_sum(input_reco, input_orig)
     return pwbce + kldiv
+
+
+@torch.jit.script
+def beta_reco_bce_splitout(
+    input_reco: Tensor,
+    input_orig: Tensor,
+    mu: Tensor,
+    sigma: Tensor,
+    beta: float = 1.0,
+):
+    kldiv = beta_gaussian_kldiv(mu, sigma, beta)
+    pwbce = pixelwise_bce_sum(input_reco, input_orig)
+    return pwbce + kldiv, pwbce, kldiv
 
 
 # Utility functions
@@ -368,7 +386,6 @@ class CausalConv1d(nn.Conv1d):
 # Reparameterizer / Sampler for (C)VAEs & co.
 
 
-# Do not make static, regardless of what the linter/analyzer says... ;)
 def _gauss_reparameterize_sample(
     z_mu: Tensor, z_log_var: Tensor, device: Optional[torch.DeviceObjType] = None
 ) -> Tensor:
@@ -383,13 +400,24 @@ def _gauss_reparameterize_sample(
     ).to(device)
 
 
-class GaussianReparameterizerSampler(nn.Module):
+class GaussianReparameterizerSamplerLegacy(nn.Module):
     def __init__(self):  # skipcq: PYL-W0235
         super().__init__()
 
-    # Do not make static!
+    # noinspection PyMethodMayBeStatic
     def forward(self, z_mu: Tensor, z_log_var: Tensor) -> Tensor:  # skipcq: PYL-R0201
         return _gauss_reparameterize_sample(z_mu, z_log_var)
+
+
+class GaussianReparameterizerSampler(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    # noinspection PyMethodMayBeStatic
+    def forward(self, z_mu: torch.Tensor, z_log_var: torch.Tensor) -> torch.Tensor:
+        return z_mu + torch.randn_like(z_mu, device=z_mu.device) * torch.exp(
+            z_log_var * 0.5
+        )
 
 
 class SGRUHCell(nn.Module):
@@ -497,7 +525,7 @@ class ArgMaxLayer(nn.Module):
     def __init__(self) -> None:
         super().__init__()
 
-    # Do not make static!
+    # noinspection PyMethodMayBeStatic
     def forward(self, x: Tensor) -> Tensor:  # skipcq: PYL-R0201
         return torch.argmax(x, dim=1)
 
@@ -874,3 +902,38 @@ class SilhouetteScore(nn.Module):
     @staticmethod
     def forward(features: Tensor, labels: Tensor) -> Tensor:
         return silhouette_score(features, labels)
+
+
+class Concatenate(nn.Module):
+    def __init__(self, dim: int = 1):
+        super().__init__()
+        self.dim: int = dim
+
+    def forward(self, tensors: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]]):
+        return torch.cat(tensors, dim=self.dim)
+
+
+class DuplexLinearNeck(nn.Module):
+    def __init__(self, in_dim: int, latent_dim: int):
+        super().__init__()
+        self.x_to_mu: nn.Linear = nn.Linear(in_dim, latent_dim)
+        self.x_to_log_var: nn.Linear = nn.Linear(in_dim, latent_dim)
+
+    def forward(
+        self, xc: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]]
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        cxc: torch.Tensor = torch.cat(xc, dim=1)
+        return self.x_to_mu(cxc), self.x_to_log_var(cxc)
+
+
+class SharedDuplexLinearNeck(nn.Module):
+    def __init__(self, in_dim: int, latent_dim: int):
+        super().__init__()
+        self.shared_layer: nn.Linear = nn.Linear(in_dim, 2 * latent_dim)
+
+    def forward(
+        self, xc: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]]
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        cxc: torch.Tensor = torch.cat(xc, dim=1)
+        # noinspection PyTypeChecker
+        return torch.chunk(self.shared_layer(cxc), 2, dim=1)

@@ -5,7 +5,6 @@
 # TODO: Do not expose this file to the public API until it is fully functional.
 # ──────────────────────────────────────────────────────────────────────────────
 from collections.abc import Callable
-from copy import deepcopy
 from typing import List
 from typing import Optional
 from typing import Tuple

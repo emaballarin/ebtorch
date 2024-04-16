@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ------------------------------------------------------------------------------
 #
-#  Copyright (c) 2020-2023 Emanuele Ballarin <emanuele@ballarin.cc>
+#  Copyright (c) 2020-2024 Emanuele Ballarin <emanuele@ballarin.cc>
 #  Released under the terms of the MIT License
 #  (see: https://url.ballarin.cc/mitlicense)
 #
@@ -16,31 +16,30 @@ from .architectures import ArgMaxLayer
 from .architectures import BasicAE
 from .architectures import BasicVAE
 from .architectures import beta_reco_bce
+from .architectures import beta_reco_bce_splitout
 from .architectures import BinarizeLayer
 from .architectures import build_repeated_sequential
 from .architectures import CausalConv1d
 from .architectures import Clamp
+from .architectures import Concatenate
 from .architectures import DeepRBL
+from .architectures import DuplexLinearNeck
 from .architectures import FCBlock
 from .architectures import GaussianReparameterizerSampler
+from .architectures import GaussianReparameterizerSamplerLegacy
 from .architectures import InnerProduct
 from .architectures import pixelwise_bce_mean
 from .architectures import pixelwise_bce_sum
 from .architectures import RBLinear
 from .architectures import ResBlock
 from .architectures import SGRUHCell
+from .architectures import SharedDuplexLinearNeck
 from .architectures import SilhouetteScore
 from .architectures import SirenSine
 from .architectures import SwiGLU
 from .architectures import TupleDecouple
 from .architectures_resnets_dm import PreActResNet
 from .architectures_resnets_dm import WideResNet
-from .architectures_scattgath import gather_cat
-from .architectures_scattgath import gather_sum
-from .architectures_scattgath import module_rep_deploy
-from .architectures_scattgath import scatter_even_split
-from .architectures_scattgath import scatter_replicate
-from .architectures_scattgath import ScatterGatherModule
 from .convolutional_flatten import ConvolutionalFlattenLayer
 from .convstems import convnext_stem
 from .convstems import convstem_block
@@ -72,6 +71,7 @@ from .nnsemble import NNEnsemble
 from .penalties import beta_gaussian_kldiv
 from .penalties import multilasso
 from .penalties import multiridge
+from .penalties import var_of_lap
 from .reshapelayers import FlatChannelize2DLayer
 from .reshapelayers import ReshapeLayer
 from .serf import ScaledERF
@@ -83,7 +83,6 @@ from .utils import *
 # Deletions (from .)
 del architectures
 del architectures_resnets_dm
-del architectures_scattgath
 del convolutional_flatten
 del convstems
 del coordconv

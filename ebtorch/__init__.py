@@ -55,6 +55,7 @@ del ArgMaxLayer
 del BasicAE
 del BasicVAE
 del beta_gaussian_kldiv
+del var_of_lap
 del BinarizeLayer
 del BrokenReLU
 del CausalConv1d
@@ -68,6 +69,7 @@ del FCBlock
 del FieldTransform
 del FlatChannelize2DLayer
 del GaussianReparameterizerSampler
+del GaussianReparameterizerSamplerLegacy
 del InnerProduct
 del KWTA1d
 del KWTA2d
@@ -93,8 +95,12 @@ del SolvePoissonTensor
 del SwiGLU
 del TupleDecouple
 del SilhouetteScore
+del Concatenate
+del DuplexLinearNeck
+del SharedDuplexLinearNeck
 del WideResNet
 del beta_reco_bce
+del beta_reco_bce_splitout
 del build_repeated_sequential
 del field_transform
 del mishlayer_init
@@ -104,12 +110,6 @@ del oldtranspose
 del silhouette_score
 del cummatmul
 del tensor_replicate
-del gather_cat
-del gather_sum
-del module_rep_deploy
-del scatter_even_split
-del scatter_replicate
-del ScatterGatherModule
 del logit_to_prob
 del bisided_thresholding
 del convstem_block
@@ -134,6 +134,7 @@ del epochwise_onecycle
 del onecycle_lincos
 del onecycle_linlin
 del onecycle_linlin_updown
+del warmed_up_linneal
 del ralah_optim
 del tricyc1c
 del wfneal

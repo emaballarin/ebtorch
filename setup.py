@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ------------------------------------------------------------------------------
 #
-#  Copyright (c) 2020-2023 Emanuele Ballarin <emanuele@ballarin.cc>
+#  Copyright (c) 2020-2024 Emanuele Ballarin <emanuele@ballarin.cc>
 #  Released under the terms of the MIT License
 #  (see: https://url.ballarin.cc/mitlicense)
 #
@@ -12,7 +12,6 @@
 #
 # ------------------------------------------------------------------------------
 import os
-import warnings
 
 from setuptools import find_packages
 from setuptools import setup
@@ -23,38 +22,11 @@ def read(fname):
         return f.read().strip()
 
 
-def check_dependencies(dependencies: list[str]):
-    missing_dependencies: list[str] = []
-    package_name: str
-    for package_name in dependencies:
-        try:
-            __import__(package_name)
-        except ImportError:
-            missing_dependencies.append(package_name)
-
-    if missing_dependencies:
-        warnings.warn(f"Missing dependencies: {missing_dependencies}")
-
-
-DEPENDENCY_PACKAGE_NAMES: list[str] = [
-    "advertorch",
-    "matplotlib",
-    "numpy",
-    "requests",
-    "torch",
-    "torchattacks",
-    "torchvision",
-    "tqdm",
-]
-
-check_dependencies(DEPENDENCY_PACKAGE_NAMES)
-
 PACKAGENAME: str = "ebtorch"
-
 
 setup(
     name=PACKAGENAME,
-    version="0.22.0",
+    version="0.22.1",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",
@@ -74,6 +46,16 @@ setup(
         "License :: OSI Approved :: Apache Software License",
     ],
     python_requires=">=3.10",
+    install_requires=[
+        "git+https://github.com/BorealisAI/advertorch.git",
+        "matplotlib>=3.8",
+        "numpy>=1.24",
+        "requests>=2.25",
+        "torch>=2",
+        "git+https://github.com/Harry24k/adversarial-attacks-pytorch.git",
+        "torchvision>=0.15",
+        "tqdm>=4.65",
+    ],
     include_package_data=True,
     zip_safe=False,
 )

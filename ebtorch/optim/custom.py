@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright 2023-* Emanuele Ballarin <emanuele@ballarin.cc>
+# Copyright 2024 Emanuele Ballarin <emanuele@ballarin.cc>
 # All Rights Reserved. Unless otherwise explicitly stated.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 from collections.abc import Iterable
+from typing import List
 from typing import Tuple
 from typing import Union
 
@@ -40,6 +41,7 @@ __all__ = [
     "onecycle_lincos",
     "onecycle_linlin",
     "onecycle_linlin_updown",
+    "warmed_up_linneal",
 ]
 
 
@@ -319,3 +321,55 @@ def onecycle_linlin_updown(
         total_steps=total_steps,
         verbose=verbose,
     )
+
+
+def warmed_up_linneal(
+    optim: torch.optim.Optimizer,
+    init_lr: float,
+    steady_lr: float,
+    final_lr: float,
+    warmup_epochs: int,
+    steady_epochs: int,
+    anneal_epochs: int,
+):
+    # Prepare optim
+    for grp in optim.param_groups:
+        grp["lr"] = steady_lr
+
+    milestones: List[int] = [
+        mwue := max(3, warmup_epochs),
+        mwue + max(1, steady_epochs),
+    ]
+
+    # Schedulers
+    warmup_scheduler = torch.optim.lr_scheduler.LinearLR(
+        optimizer=optim,
+        start_factor=init_lr / steady_lr,
+        end_factor=1.0,
+        total_iters=milestones[0],
+        last_epoch=-1,
+    )
+    steady_scheduler = torch.optim.lr_scheduler.ConstantLR(
+        optimizer=optim,
+        factor=1.0,
+        total_iters=milestones[1],
+        last_epoch=-1,
+    )
+    anneal_scheduler = torch.optim.lr_scheduler.LinearLR(
+        optimizer=optim,
+        start_factor=1.0,
+        end_factor=final_lr / steady_lr,
+        total_iters=max(3, anneal_epochs),
+        last_epoch=-1,
+    )
+
+    # Prepare scheduler
+    sched = torch.optim.lr_scheduler.SequentialLR(
+        optim,
+        schedulers=[warmup_scheduler, steady_scheduler, anneal_scheduler],
+        milestones=milestones,
+        last_epoch=-1,
+    )
+
+    # Return
+    return optim, sched

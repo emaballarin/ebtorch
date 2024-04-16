@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ------------------------------------------------------------------------------
 #
-#  Copyright (c) 2020-2023 Emanuele Ballarin <emanuele@ballarin.cc>
+#  Copyright (c) 2020-2024 Emanuele Ballarin <emanuele@ballarin.cc>
 #  Released under the terms of the MIT License
 #  (see: https://url.ballarin.cc/mitlicense)
 #
