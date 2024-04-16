@@ -563,7 +563,7 @@ class Clamp(nn.Module):
         return x.clamp(self.min, self.max)
 
 
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 class RBLinear(nn.Linear):
     """
     Random Band Linear Layer

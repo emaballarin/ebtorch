@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 # Copyright (c) 2020 David Samuel. All Rights Reserved. MIT Licensed.
 #                    [orig. code: https://github.com/davda54/ada-hessian ;
 #                     license text: https://github.com/davda54/ada-hessian/blob/master/LICENSE]
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 # Copyright (c) 2020 Zhewei Yao, Amir Gholami, Sheng Shen, Mustafa Mustafa,
 #                    Kurt Keutzer, Michael W. Mahoney
@@ -15,17 +15,17 @@
 #                     orig. code: https://github.com/amirgholami/ADAHESSIAN;
 #                     license text: https://github.com/amirgholami/ADAHESSIAN/blob/master/LICENSE]
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 #  Copyright (c) 2020-2024 Emanuele Ballarin <emanuele@ballarin.cc>
 #  Released under the terms of the MIT License
 #  (see: https://url.ballarin.cc/mitlicense)
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 # SPDX-License-Identifier: MIT
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 import torch
 
 __all__ = ["AdaHessian"]

@@ -5,7 +5,7 @@
 #  Released under the terms of the MIT License
 #  (see: https://url.ballarin.cc/mitlicense)
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 import os
 from typing import Optional
 from typing import Tuple

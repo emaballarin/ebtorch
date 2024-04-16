@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 #  Copyright (c) 2020-2024 Emanuele Ballarin <emanuele@ballarin.cc>
 #  Released under the terms of the MIT License
 #  (see: https://url.ballarin.cc/mitlicense)
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 # SPDX-License-Identifier: MIT
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 
 # LIST OF REQUIREMENTS:
-advertorch>=0.2.4
+advertorch>=0.2.4  # pip install git+https://github.com/BorealisAI/advertorch.git
 matplotlib>=3.8
 medmnist>=2.2.3
 numpy>=1.24

@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 # Copyright (c) 2017-* The PyTorch Contributors. All Rights Reserved.
 #                      BSD-3 licensed.
 #                      [orig. code: https://github.com/pytorch/examples/blob/master/imagenet/main.py]
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 #  Copyright (c) 2020-2024 Emanuele Ballarin <emanuele@ballarin.cc>
 #  Released under the terms of the MIT License
 #  (see: https://url.ballarin.cc/mitlicense)
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 # SPDX-License-Identifier: BSD-3-Clause
 # SPDX-License-Identifier: MIT
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 # IMPORTS:
 from typing import Union
 

@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 #  Copyright (c) 2020-2024 Emanuele Ballarin <emanuele@ballarin.cc>
 #  Released under the terms of the MIT License
 #  (see: https://url.ballarin.cc/mitlicense)
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 # SPDX-License-Identifier: MIT
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 import os
 
 from setuptools import find_packages
@@ -26,7 +26,7 @@ PACKAGENAME: str = "ebtorch"
 
 setup(
     name=PACKAGENAME,
-    version="0.22.4",
+    version="0.23.0",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",

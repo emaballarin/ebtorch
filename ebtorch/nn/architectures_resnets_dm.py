@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 # Copyright 2020 Deepmind Technologies Limited.
 # Copyright 2023 Cui Jiequan (崔洁全). Minor edits.
 # Copyright 2023 Emanuele Ballarin <emanuele@ballarin.cc>. Minor edits.
@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 """WideResNet and PreActResNet implementations in PyTorch. From DeepMind's original."""
 from typing import List
 from typing import Optional
@@ -28,7 +28,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 
 __all__ = [
     "WideResNet",
@@ -39,14 +39,14 @@ __all__ = [
     "CIFAR100_STD",
 ]
 
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 
 CIFAR10_MEAN: Tuple[float, float, float] = (0.4914, 0.4822, 0.4465)
 CIFAR10_STD: Tuple[float, float, float] = (0.2471, 0.2435, 0.2616)
 CIFAR100_MEAN: Tuple[float, float, float] = (0.5071, 0.4865, 0.4409)
 CIFAR100_STD: Tuple[float, float, float] = (0.2673, 0.2564, 0.2762)
 
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 
 
 def _auto_pad_to_same(argself: nn.Module, argx: torch.Tensor) -> torch.Tensor:
@@ -68,7 +68,7 @@ def _auto_cuda_mean_handler(argself: nn.Module, argx: torch.Tensor) -> torch.Ten
         return (argx - argself.mean) / argself.std
 
 
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 
 
 class _Block(nn.Module):
@@ -211,7 +211,7 @@ class _PreActBlock(nn.Module):
         return out + shortcut
 
 
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 
 
 class WideResNet(nn.Module):

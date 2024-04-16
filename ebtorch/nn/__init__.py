@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 #  Copyright (c) 2020-2024 Emanuele Ballarin <emanuele@ballarin.cc>
 #  Released under the terms of the MIT License
 #  (see: https://url.ballarin.cc/mitlicense)
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 # SPDX-License-Identifier: MIT
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 # Imports
 from .architectures import ArgMaxLayer
 from .architectures import BasicAE
@@ -135,3 +135,5 @@ del set_petroff_2021_colors
 del set_tableau10_colors
 del repr_sizes_flat_adapter
 del repr_fx_flat_adapter
+del act_auto_broadcast
+del broadcast_in_dim

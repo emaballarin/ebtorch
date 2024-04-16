@@ -1,15 +1,14 @@
 name: AutoReleaseOnCommit
 on:
   push:
-    branches:
-      - master
+    branches: [placeholdername]
   workflow_dispatch:
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: ChanTsune/release-with-commit@v2.8.1
+      - uses: ChanTsune/release-with-commit@latest
         with:
           regexp: ".*"
           regexp_options: "us"

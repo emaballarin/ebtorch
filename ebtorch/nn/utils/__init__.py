@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 #  Copyright (c) 2020-2024 Emanuele Ballarin <emanuele@ballarin.cc>
 #  Released under the terms of the MIT License
 #  (see: https://url.ballarin.cc/mitlicense)
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 #
 # SPDX-License-Identifier: MIT
 #
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 # Imports
+from .actab import act_auto_broadcast
+from .actab import broadcast_in_dim
 from .adverutils import AdverApply
 from .adverutils import TA2ATAdapter
 from .autoclip import AutoClipper
@@ -46,6 +48,7 @@ from .reprutils import store_repr_hook
 
 # Deletions (from .)
 del adverutils
+del actab
 del autoclip
 del evalutils
 del onlyutils
