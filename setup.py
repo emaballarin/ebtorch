@@ -26,7 +26,7 @@ PACKAGENAME: str = "ebtorch"
 
 setup(
     name=PACKAGENAME,
-    version="0.22.1",
+    version="0.22.2",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",
@@ -47,12 +47,12 @@ setup(
     ],
     python_requires=">=3.10",
     install_requires=[
-        "git+https://github.com/BorealisAI/advertorch.git",
+        "advertorch @ git+https://github.com/BorealisAI/advertorch.git",
         "matplotlib>=3.8",
         "numpy>=1.24",
         "requests>=2.25",
         "torch>=2",
-        "git+https://github.com/Harry24k/adversarial-attacks-pytorch.git",
+        "tprchattacks @ git+https://github.com/Harry24k/adversarial-attacks-pytorch.git",
         "torchvision>=0.15",
         "tqdm>=4.65",
     ],
