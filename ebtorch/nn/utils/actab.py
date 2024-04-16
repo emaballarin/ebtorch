@@ -41,7 +41,7 @@ def act_auto_broadcast(
             f" {xpar.numel()} and channel size = {channel_size}.",
         )
     torch._check(
-        xpar.ndim == 0 or xpar.ndim == 1,
+        xpar.ndim in (0, 1),
         lambda: f"{act_name}: Expected `{xpar_name}` to be a scalar or 1D tensor, but got: "
         f"ndim = {xpar.ndim}",
     )
@@ -52,7 +52,7 @@ def act_auto_broadcast(
         xpar_ret: torch.Tensor = broadcast_in_dim(
             xpar,
             xin.shape,
-            tuple() if xpar.ndim == 0 else (0 if xin.ndim == 1 else 1,),  # NOSONAR
+            () if xpar.ndim == 0 else (0 if xin.ndim == 1 else 1,),  # NOSONAR
         )
 
     return xpar_ret

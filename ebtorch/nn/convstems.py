@@ -268,4 +268,4 @@ def stem_blocks(  # NOSONAR
         activation: nn.ModuleList = nn.ModuleList(activation)
 
     # Constructing the stem blocks
-    pass
+    ...
