@@ -905,11 +905,13 @@ class SilhouetteScore(nn.Module):
 
 
 class Concatenate(nn.Module):
-    def __init__(self, dim: int = 1):
+    def __init__(self, dim: int = 1, flatten: bool = False):
         super().__init__()
         self.dim: int = dim
+        self.flatten: bool = flatten
 
     def forward(self, tensors: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]]):
+        tensors = [tensor.flatten() for tensor in tensors] if self.flatten else tensors
         return torch.cat(tensors, dim=self.dim)
 
 
