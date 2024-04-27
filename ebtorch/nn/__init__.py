@@ -137,3 +137,5 @@ del repr_sizes_flat_adapter
 del repr_fx_flat_adapter
 del act_auto_broadcast
 del broadcast_in_dim
+del matched_apply
+del tensor_module_matched_apply

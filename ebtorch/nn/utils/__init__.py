@@ -20,6 +20,8 @@ from .autoclip import AutoClipper
 from .evalutils import eval_model_on_test
 from .filtermanip import extract_conv_filters
 from .filtermanip import show_filters
+from .mapply import matched_apply
+from .mapply import tensor_module_matched_apply
 from .onlyutils import argser_f
 from .onlyutils import argsink
 from .onlyutils import download_gdrive
@@ -56,3 +58,4 @@ del patches
 del reprutils
 del filtermanip
 del palettes
+del mapply

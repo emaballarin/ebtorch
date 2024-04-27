@@ -911,7 +911,11 @@ class Concatenate(nn.Module):
         self.flatten: bool = flatten
 
     def forward(self, tensors: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]]):
-        tensors = [tensor.flatten() for tensor in tensors] if self.flatten else tensors
+        tensors = (
+            [tensor.flatten(start_dim=1) for tensor in tensors]
+            if self.flatten
+            else tensors
+        )
         return torch.cat(tensors, dim=self.dim)
 
 
