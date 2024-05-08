@@ -88,6 +88,12 @@ def data_prep_dispatcher_3ch(
     elif dataset == "pathmnist":
         means: Tuple[float, float, float] = (0.7405, 0.533, 0.7058)
         stds: Tuple[float, float, float] = (0.0723, 0.1038, 0.0731)
+    elif dataset == "svhn":
+        means: Tuple[float, float, float] = (0.5, 0.5, 0.5)
+        stds: Tuple[float, float, float] = (0.5, 0.5, 0.5)
+    elif dataset == "tinyimagenet":
+        means: Tuple[float, float, float] = (0.4802, 0.4481, 0.3975)
+        stds: Tuple[float, float, float] = (0.2302, 0.2265, 0.2262)
     else:
         raise ValueError("Invalid dataset.")
     if post_flatten:

@@ -20,5 +20,5 @@ pip install --upgrade --no-deps "requests>=2.28"
 Within [Google Colab](https://colab.research.google.com), it can be installed (together with all missing dependencies) as:
 
 ```jupyter
-!pip install "fire>=0.6" "medmnist>=3" "torchattacks>=3.5.1" "git+https://github.com/BorealisAI/advertorch.git" "ebtorch>=0.23.4" --no-deps
+!pip install "fire>=0.6" "medmnist>=3" "torchattacks>=3.5.1" "git+https://github.com/BorealisAI/advertorch.git" "ebtorch>=0.23.5" --no-deps
 ```

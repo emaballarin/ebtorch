@@ -37,6 +37,10 @@ __all__ = [
     "CIFAR10_STD",
     "CIFAR100_MEAN",
     "CIFAR100_STD",
+    "SVHN_MEAN",
+    "SVHN_STD",
+    "TINY_MEAN",
+    "TINY_STD",
 ]
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -45,6 +49,10 @@ CIFAR10_MEAN: Tuple[float, float, float] = (0.4914, 0.4822, 0.4465)
 CIFAR10_STD: Tuple[float, float, float] = (0.2471, 0.2435, 0.2616)
 CIFAR100_MEAN: Tuple[float, float, float] = (0.5071, 0.4865, 0.4409)
 CIFAR100_STD: Tuple[float, float, float] = (0.2673, 0.2564, 0.2762)
+SVHN_MEAN: Tuple[float, float, float] = (0.5, 0.5, 0.5)
+SVHN_STD: Tuple[float, float, float] = (0.5, 0.5, 0.5)
+TINY_MEAN: Tuple[float, float, float] = (0.4802, 0.4481, 0.3975)
+TINY_STD: Tuple[float, float, float] = (0.2302, 0.2265, 0.2262)
 
 # ──────────────────────────────────────────────────────────────────────────────
 

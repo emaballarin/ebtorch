@@ -45,6 +45,7 @@ del kmnist_dataloader_dispatcher
 del pathmnist_dataloader_dispatcher
 del octmnist_dataloader_dispatcher
 del tissuemnist_dataloader_dispatcher
+del tinyimagenet_dataloader_dispatcher
 
 # Deletions (from .distributed)
 del reduce_accumulate_keepalive

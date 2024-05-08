@@ -24,10 +24,13 @@ from torchvision.datasets import KMNIST
 from torchvision.datasets import MNIST
 from torchvision.transforms import CenterCrop
 from torchvision.transforms import Compose
+from torchvision.transforms import RandomCrop
 from torchvision.transforms import RandomHorizontalFlip
 from torchvision.transforms import RandomResizedCrop
 from torchvision.transforms import Resize
 from torchvision.transforms import ToTensor
+
+from .tinyimagenet import TinyImagenet
 
 __all__ = [
     "mnist_dataloader_dispatcher",
@@ -39,6 +42,7 @@ __all__ = [
     "pathmnist_dataloader_dispatcher",
     "octmnist_dataloader_dispatcher",
     "tissuemnist_dataloader_dispatcher",
+    "tinyimagenet_dataloader_dispatcher",
 ]
 
 data_root_literal: str = "../datasets/"
@@ -47,15 +51,9 @@ cuda_args_true: dict = {"pin_memory": True}
 
 def _determine_train_test_args_common(dataset_name: str, is_train: bool) -> dict:
     if dataset_name in ("pathmnist", "octmnist", "tissuemnist"):
-        if is_train:
-            return {"split": "train"}
-        else:
-            return {"split": "test"}
+        return {"split": "train"} if is_train else {"split": "test"}
     else:
-        if is_train:
-            return {"train": True}
-        else:
-            return {"train": False}
+        return {"train": True} if is_train else {"train": False}
 
 
 def _dataloader_dispatcher(
@@ -71,59 +69,43 @@ def _dataloader_dispatcher(
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
     if dataset == "mnist":
         dataset_fx = MNIST
-        if batch_size_train is None:
-            batch_size_train: int = 256
-        if batch_size_test is None:
-            batch_size_test: int = 512
+        batch_size_train: int = 256 if batch_size_train is None else batch_size_train
+        batch_size_test: int = 512 if batch_size_test is None else batch_size_test
 
     elif dataset == "fashionmnist":
         dataset_fx = FashionMNIST
-        if batch_size_train is None:
-            batch_size_train: int = 256
-        if batch_size_test is None:
-            batch_size_test: int = 512
+        batch_size_train: int = 256 if batch_size_train is None else batch_size_train
+        batch_size_test: int = 512 if batch_size_test is None else batch_size_test
 
     elif dataset == "kmnist":
         dataset_fx = KMNIST
-        if batch_size_train is None:
-            batch_size_train: int = 256
-        if batch_size_test is None:
-            batch_size_test: int = 512
+        batch_size_train: int = 256 if batch_size_train is None else batch_size_train
+        batch_size_test: int = 512 if batch_size_test is None else batch_size_test
 
     elif dataset == "cifar10":
         dataset_fx = CIFAR10
-        if batch_size_train is None:
-            batch_size_train: int = 256
-        if batch_size_test is None:
-            batch_size_test: int = 512
+        batch_size_train: int = 256 if batch_size_train is None else batch_size_train
+        batch_size_test: int = 512 if batch_size_test is None else batch_size_test
 
     elif dataset == "cifar100":
         dataset_fx = CIFAR100
-        if batch_size_train is None:
-            batch_size_train: int = 256
-        if batch_size_test is None:
-            batch_size_test: int = 512
+        batch_size_train: int = 256 if batch_size_train is None else batch_size_train
+        batch_size_test: int = 512 if batch_size_test is None else batch_size_test
 
     elif dataset == "pathmnist":
         dataset_fx = PathMNIST
-        if batch_size_train is None:
-            batch_size_train: int = 256
-        if batch_size_test is None:
-            batch_size_test: int = 512
+        batch_size_train: int = 256 if batch_size_train is None else batch_size_train
+        batch_size_test: int = 512 if batch_size_test is None else batch_size_test
 
     elif dataset == "octmnist":
         dataset_fx = OCTMNIST
-        if batch_size_train is None:
-            batch_size_train: int = 256
-        if batch_size_test is None:
-            batch_size_test: int = 512
+        batch_size_train: int = 256 if batch_size_train is None else batch_size_train
+        batch_size_test: int = 512 if batch_size_test is None else batch_size_test
 
     elif dataset == "tissuemnist":
         dataset_fx = TissueMNIST
-        if batch_size_train is None:
-            batch_size_train: int = 256
-        if batch_size_test is None:
-            batch_size_test: int = 512
+        batch_size_train: int = 256 if batch_size_train is None else batch_size_train
+        batch_size_test: int = 512 if batch_size_test is None else batch_size_test
 
     else:
         raise ValueError("Dataset not supported... yet!")
@@ -133,10 +115,8 @@ def _dataloader_dispatcher(
     transforms = Compose([ToTensor()])
 
     # Address dictionary mutability as default argument
-    if dataset_kwargs is None:
-        dataset_kwargs: dict = {}
-    if dataloader_kwargs is None:
-        dataloader_kwargs: dict = {}
+    dataset_kwargs: dict = {} if dataset_kwargs is None else dataset_kwargs
+    dataloader_kwargs: dict = {} if dataloader_kwargs is None else dataloader_kwargs
 
     trainset = dataset_fx(
         root=data_root,
@@ -153,9 +133,7 @@ def _dataloader_dispatcher(
         **dataset_kwargs,
     )
 
-    cuda_args: dict = {}
-    if cuda_accel:
-        cuda_args: dict = cuda_args_true
+    cuda_args: dict = cuda_args_true if cuda_accel else {}
 
     trainloader = DataLoader(
         dataset=trainset,
@@ -376,8 +354,8 @@ def imagenette_dataloader_dispatcher(
     dataset_kwargs: Optional[dict] = None,
     dataloader_kwargs: Optional[dict] = None,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
-    if dataset_kwargs is None:
-        dataset_kwargs: dict = {}
+
+    dataset_kwargs: dict = {} if dataset_kwargs is None else dataset_kwargs
 
     train_ds: DatasetFolder = ImageFolder(
         root=data_root + "imagenette2-320/train",
@@ -403,12 +381,80 @@ def imagenette_dataloader_dispatcher(
         **dataset_kwargs,
     )
 
-    if dataloader_kwargs is None:
-        dataloader_kwargs: dict = {}
+    # noinspection DuplicatedCode
+    dataloader_kwargs: dict = {} if dataloader_kwargs is None else dataloader_kwargs
+    cuda_kwargs: dict = cuda_args_true if cuda_accel else {}
 
-    cuda_kwargs: dict = {}
-    if cuda_accel:
-        cuda_kwargs: dict = cuda_args_true
+    train_dl: DataLoader = DataLoader(
+        dataset=train_ds,
+        batch_size=batch_size_train,
+        shuffle=(not unshuffle_train),
+        **cuda_kwargs,
+        **dataloader_kwargs,
+    )
+
+    test_dl: DataLoader = DataLoader(
+        dataset=test_ds,
+        batch_size=batch_size_test,
+        shuffle=shuffle_test,
+        **cuda_kwargs,
+        **dataloader_kwargs,
+    )
+
+    tot_dl: DataLoader = DataLoader(
+        dataset=train_ds,
+        batch_size=batch_size_test,
+        shuffle=shuffle_test,
+        **cuda_kwargs,
+        **dataloader_kwargs,
+    )
+
+    return train_dl, test_dl, tot_dl
+
+
+def tinyimagenet_dataloader_dispatcher(
+    data_root: str = data_root_literal,
+    batch_size_train: int = 256,
+    batch_size_test: int = 512,
+    augment_train: bool = True,
+    cuda_accel: bool = False,
+    unshuffle_train: bool = False,
+    shuffle_test: bool = False,
+    dataset_kwargs: Optional[dict] = None,
+    dataloader_kwargs: Optional[dict] = None,
+) -> Tuple[DataLoader, DataLoader, DataLoader]:
+
+    dataset_kwargs: dict = {} if dataset_kwargs is None else dataset_kwargs
+
+    train_ds: TinyImagenet = TinyImagenet(
+        root=data_root,
+        split="train",
+        transform=(
+            Compose(
+                [
+                    RandomCrop(64, padding=4),
+                    RandomHorizontalFlip(),
+                    ToTensor(),
+                ]
+            )
+            if augment_train
+            else Compose([ToTensor()])
+        ),
+        download=True,
+        **dataset_kwargs,
+    )
+
+    test_ds: TinyImagenet = TinyImagenet(
+        root=data_root,
+        split="val",
+        transform=Compose([ToTensor()]),
+        download=True,
+        **dataset_kwargs,
+    )
+
+    # noinspection DuplicatedCode
+    dataloader_kwargs: dict = {} if dataloader_kwargs is None else dataloader_kwargs
+    cuda_kwargs: dict = cuda_args_true if cuda_accel else {}
 
     train_dl: DataLoader = DataLoader(
         dataset=train_ds,
