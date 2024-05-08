@@ -101,6 +101,7 @@ del SharedDuplexLinearNeck
 del WideResNet
 del beta_reco_bce
 del beta_reco_bce_splitout
+del lexsemble
 del build_repeated_sequential
 del field_transform
 del mishlayer_init
@@ -135,6 +136,7 @@ del onecycle_lincos
 del onecycle_linlin
 del onecycle_linlin_updown
 del warmed_up_linneal
+del make_beta_scheduler
 del ralah_optim
 del tricyc1c
 del wfneal

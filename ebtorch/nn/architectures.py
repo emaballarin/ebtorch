@@ -22,6 +22,7 @@
 # IMPORTS
 import copy
 from collections.abc import Callable
+from math import copysign
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -63,10 +64,20 @@ __all__ = [
     "DuplexLinearNeck",
     "SharedDuplexLinearNeck",
     "GaussianReparameterizerSamplerLegacy",
+    "lexsemble",
 ]
 
 # CUSTOM TYPES
 realnum = Union[float, int]
+
+
+# Ensembling functions
+@torch.jit.script
+def lexsemble(x: Tensor, cls_dim: int = -2, ens_dim: int = -1) -> Tensor:
+    out: Tensor = torch.softmax(
+        torch.exp(x).sum(dim=ens_dim), dim=cls_dim - int(copysign(1, cls_dim))
+    )
+    return torch.log(out / (1 - out))
 
 
 # Loss functions

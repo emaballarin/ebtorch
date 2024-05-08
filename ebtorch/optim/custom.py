@@ -21,7 +21,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
+from collections.abc import Callable
 from collections.abc import Iterable
+from math import ceil
 from typing import List
 from typing import Tuple
 from typing import Union
@@ -42,6 +44,7 @@ __all__ = [
     "onecycle_linlin",
     "onecycle_linlin_updown",
     "warmed_up_linneal",
+    "make_beta_scheduler",
 ]
 
 
@@ -373,3 +376,16 @@ def warmed_up_linneal(
 
     # Return
     return optim, sched
+
+
+def make_beta_scheduler(
+    target: float, lag_ratio: float, wu_ratio: float
+) -> Callable[[int, int], float]:
+    def beta_scheduler(step: int, total: int) -> float:
+        if step < (lag_steps := ceil(total * lag_ratio)):
+            return 0.0
+        if step < lag_steps + (wu_steps := ceil(total * wu_ratio)):
+            return target * (step - lag_steps) / wu_steps
+        return target
+
+    return beta_scheduler

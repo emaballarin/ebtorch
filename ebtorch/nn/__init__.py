@@ -28,6 +28,7 @@ from .architectures import FCBlock
 from .architectures import GaussianReparameterizerSampler
 from .architectures import GaussianReparameterizerSamplerLegacy
 from .architectures import InnerProduct
+from .architectures import lexsemble
 from .architectures import pixelwise_bce_mean
 from .architectures import pixelwise_bce_sum
 from .architectures import RBLinear
