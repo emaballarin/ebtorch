@@ -236,6 +236,7 @@ class WideResNet(nn.Module):
         padding: int = 0,
         num_input_channels: int = 3,
         bn_momentum: float = 0.1,
+        autopool: bool = False,
     ) -> None:
         super().__init__()
         self.mean: torch.Tensor = torch.tensor(mean).view(num_input_channels, 1, 1)
@@ -243,7 +244,7 @@ class WideResNet(nn.Module):
         self.mean_cuda: Optional[torch.Tensor] = None
         self.std_cuda: Optional[torch.Tensor] = None
         self.padding: int = padding
-        num_channels: List[int, int, int, int] = [
+        num_channels: List[int] = [
             16,
             16 * width,
             32 * width,
@@ -294,6 +295,9 @@ class WideResNet(nn.Module):
         self.relu: nn.Module = activation_fn()
         self.logits: nn.Module = nn.Linear(num_channels[3], num_classes)
         self.num_channels: int = num_channels[3]
+        self.pooling: nn.Module = (
+            nn.AdaptiveAvgPool2d((1, 1)) if autopool else nn.AvgPool2d(8)
+        )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x: torch.Tensor = _auto_pad_to_same(self, x)
@@ -301,7 +305,7 @@ class WideResNet(nn.Module):
         out: torch.Tensor = self.init_conv(out)
         out: torch.Tensor = self.layer(out)
         out: torch.Tensor = self.relu(self.batchnorm(out))
-        out: torch.Tensor = F.avg_pool2d(out, 8)
+        out: torch.Tensor = self.pooling(out)
         out: torch.Tensor = out.view(-1, self.num_channels)
         return self.logits(out)
 
@@ -320,6 +324,7 @@ class PreActResNet(nn.Module):
         padding: int = 0,
         num_input_channels: int = 3,
         bn_momentum: float = 0.1,
+        autopool: bool = False,
     ) -> None:
         super().__init__()
         if width != 0:
@@ -380,6 +385,9 @@ class PreActResNet(nn.Module):
         )
         self.relu: nn.Module = activation_fn()
         self.logits: nn.Module = nn.Linear(in_features=512, out_features=num_classes)
+        self.pooling: nn.Module = (
+            nn.AdaptiveAvgPool2d((1, 1)) if autopool else nn.AvgPool2d(4)
+        )
 
     def _make_layer(  # Do not make static.
         self,
@@ -412,6 +420,6 @@ class PreActResNet(nn.Module):
         out: torch.Tensor = self.layer_2(out)
         out: torch.Tensor = self.layer_3(out)
         out: torch.Tensor = self.relu(self.batchnorm(out))
-        out: torch.Tensor = F.avg_pool2d(out, 4)
+        out: torch.Tensor = self.pooling(out)
         out: torch.Tensor = out.view(out.size(0), -1)
         return self.logits(out)
