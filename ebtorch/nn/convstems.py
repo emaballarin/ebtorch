@@ -1,51 +1,116 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # ──────────────────────────────────────────────────────────────────────────────
-# TODO: This file is a work in progress and is not yet functional.
-# TODO: Do not expose this file to the public API until it is fully functional.
-# ──────────────────────────────────────────────────────────────────────────────
 from collections.abc import Callable
-from typing import List
+from collections.abc import Iterable
+from collections.abc import Sequence
+from itertools import repeat
+from typing import Any
 from typing import Optional
 from typing import Tuple
 from typing import Union
 
 import torch
+from safe_assert import safe_assert as sassert
 from torch import nn
 from torch import Tensor
 from torch.nn import functional as F
 
+# ──────────────────────────────────────────────────────────────────────────────
 __all__ = [
-    "convnext_stem",
-    "convstem_block",
-    "stem_blocks",
-    "smallconv_featurizer",
+    "ConvStem",
     "MetaAILayerNorm",
+    "GRNorm",
+    "ConvNeXtStem",
+    "ViTStem",
 ]
 
 
-class _ModularizedFX(nn.Module):
-    def __init__(self, fx: Callable[[Tensor], Tensor]) -> None:
-        super().__init__()
-        self.fx: Callable[[Tensor], Tensor] = fx
-
-    def forward(self, x: Tensor) -> Tensor:
-        return self.fx(x)
-
-
-class MetaAILayerNorm(nn.Module):
+# ──────────────────────────────────────────────────────────────────────────────
+def _ntuple(n: int) -> Callable[[Union[Any, Iterable[Any]]], Tuple[Any, ...]]:
     """
-    `LayerNorm` that supports two data formats: `channels_last` (default) or `channels_first`.
-    The ordering of the dimensions of the the inputs `channels_last` corresponds to inputs with
-    shape (`batch_size`, `height`, `width`, `channels`), whereas `channels_first` corresponds
-    to inputs with shape (`batch_size`, `channels`, `height`, `width`).
-    From Meta AI's ConvNeXtV2 implementation
-    (https://github.com/facebookresearch/ConvNeXt-V2/blob/main/models/utils.py).
+    Return a function that converts a single value or an iterable of values to a tuple of `n` values.
+    (from: `pytorch-image-models/timm/layers/helpers.py`)
+    """
+
+    def parse(x: Union[Any, Iterable[Any]]) -> Tuple[Any, ...]:
+        if isinstance(x, Iterable) and not isinstance(x, str):
+            return tuple(x)
+        return tuple(repeat(x, n))
+
+    return parse
+
+
+to_2tuple: Callable[[Union[Any, Iterable[Any]]], Tuple[Any, ...]] = _ntuple(2)
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+class ConvStem(nn.Module):
+    """
+    ConvStem for Vision Transformer (ViT) models.
+    (from Early Convolutions Help Transformers See Better, Tete et al. https://arxiv.org/abs/2106.14881;
+    implementation from: moco-v3/vits.py)
     """
 
     def __init__(
         self,
-        normalized_shape: int,
+        in_chans: int = 3,
+        embed_dim: int = 768,
+        embed_init_compr: int = 8,
+        depth: int = 4,
+        embed_step_expn: int = 2,
+        norm_layer: Optional[Callable[[int], nn.Module]] = None,
+        flatten: bool = True,
+    ) -> None:
+        super().__init__()
+
+        sassert(
+            bool(embed_dim % embed_init_compr),
+            "ConvStem only supports `embed_dim` divisible by `embed_init_compr`",
+        )
+
+        self.flatten: bool = flatten
+
+        stem: nn.ModuleList = nn.ModuleList()
+        input_dim: int = in_chans
+        output_dim: int = embed_dim // embed_init_compr
+        for _ in range(depth):
+            stem.append(
+                nn.Conv2d(
+                    input_dim,
+                    output_dim,
+                    kernel_size=3,
+                    stride=2,
+                    padding=1,
+                    bias=False,
+                )
+            )
+            stem.append(nn.BatchNorm2d(output_dim))
+            stem.append(nn.ReLU(inplace=True))  # TODO: Make activation choosable
+            input_dim, output_dim = output_dim, output_dim * embed_step_expn
+        stem.append(nn.Conv2d(input_dim, embed_dim, kernel_size=1))
+
+        self.proj: nn.Sequential = nn.Sequential(*stem)
+        self.norm: nn.Module = norm_layer(embed_dim) if norm_layer else nn.Identity()
+
+    def forward(self, x: Tensor) -> Tensor:
+        x: Tensor = self.proj(x)
+        x: Tensor = x.flatten(2).transpose(1, 2) if self.flatten else x
+        return self.norm(x)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+class MetaAILayerNorm(nn.Module):
+    """LayerNorm that supports two data formats: channels_last (default) or channels_first.
+    The ordering of the dimensions in the inputs. channels_last corresponds to inputs with
+    shape (batch_size, height, width, channels) while channels_first corresponds to inputs
+    with shape (batch_size, channels, height, width).
+    (from: ConvNeXt-V2/models/utils.py)
+    """
+
+    def __init__(
+        self,
+        normalized_shape: Union[int, Sequence[int]],
         eps: float = 1e-6,
         data_format: str = "channels_last",
     ) -> None:
@@ -55,217 +120,84 @@ class MetaAILayerNorm(nn.Module):
         self.eps: float = eps
         self.data_format: str = data_format
         if self.data_format not in ["channels_last", "channels_first"]:
-            raise NotImplementedError
-        self.normalized_shape: Tuple[int] = (normalized_shape,)
+            raise NotImplementedError(
+                f"Data format {self.data_format} is not supported."
+            )
+        self.normalized_shape: Tuple[int, ...] = (
+            tuple(normalized_shape)
+            if isinstance(normalized_shape, Sequence)
+            else (normalized_shape,)
+        )
 
     def forward(self, x: Tensor) -> Tensor:
         if self.data_format == "channels_last":
             return F.layer_norm(
                 x, self.normalized_shape, self.weight, self.bias, self.eps
             )
-        elif self.data_format == "channels_first":
-            u: Tensor = x.mean(1, keepdim=True)
-            s: Tensor = (x - u).pow(2).mean(1, keepdim=True)
-            x: Tensor = (x - u) / torch.sqrt(s + self.eps)
-            x: Tensor = self.weight[:, None, None] * x + self.bias[:, None, None]
-            return x
+        # elif self.data_format == "channels_first":
+        u: Tensor = x.mean(1, keepdim=True)
+        s: Tensor = (x - u).pow(2).mean(1, keepdim=True)
+        x: Tensor = (x - u) / torch.sqrt(s + self.eps)
+        x: Tensor = self.weight[:, None, None] * x + self.bias[:, None, None]
+        return x
 
 
-def convnext_stem(
-    in_channels: int,
-    out_channels: int,
-    kernel_size: int = 4,
-    padding: int = 0,
-    normalize: bool = True,
-) -> nn.Sequential:
-
-    stem_block: nn.ModuleList = nn.ModuleList(
-        [nn.Conv2d(in_channels, out_channels, kernel_size, kernel_size, padding)]
-    )
-
-    if normalize:
-        stem_block.append(MetaAILayerNorm(out_channels, data_format="channels_first"))
-
-    return nn.Sequential(*stem_block)
+# ──────────────────────────────────────────────────────────────────────────────
 
 
-def convstem_block(
-    in_channels: int,
-    post_conv_channels: int,
-    out_channels: int,
-    normalize: bool = True,
-) -> nn.Sequential:
+class GRNorm(nn.Module):
+    """
+    GRN (Global Response Normalization) layer
+    (from: https://arxiv.org/abs/2301.00808;
+    implementation from: ConvNeXt-V2/models/utils.py)
+    """
 
-    stem_block: nn.ModuleList = nn.ModuleList(
-        [nn.Conv2d(in_channels, post_conv_channels, 3, 2, 1, bias=False)]
-    )
+    def __init__(self, dim: int) -> None:
+        super().__init__()
+        self.gamma: nn.Parameter = nn.Parameter(torch.zeros(1, 1, 1, dim))
+        self.beta: nn.Parameter = nn.Parameter(torch.zeros(1, 1, 1, dim))
 
-    if normalize:
-        stem_block.append(nn.BatchNorm2d(post_conv_channels))
-
-    stem_block.extend([nn.ReLU(), nn.Conv2d(post_conv_channels, out_channels, 1)])
-
-    return nn.Sequential(*stem_block)
-
-
-def smallconv_featurizer(
-    in_channels: int,
-    out_channels: int,
-    pool: bool = True,
-):
-
-    stem_block: nn.ModuleList = nn.ModuleList(
-        [nn.Conv2d(in_channels, out_channels, 3), nn.ReLU()]
-    )
-
-    if pool:
-        stem_block.append(nn.MaxPool2d(2))
-
-    return nn.Sequential(*stem_block)
+    def forward(self, x: Tensor) -> Tensor:
+        gx: Tensor = torch.norm(x, p=2, dim=[1, 2], keepdim=True)
+        nx: Tensor = gx / (gx.mean(dim=-1, keepdim=True) + 1e-6)
+        return self.gamma * (x * nx) + self.beta + x
 
 
-def stem_blocks(  # NOSONAR
-    kind: str,
-    channels: Union[Tuple[int, ...], List[int]],
-    kernsize: Union[int, Tuple[int, ...], List[int]],
-    strides: Optional[Union[int, Tuple[int, ...], List[int]]] = None,
-    normalize: Optional[Union[bool, Tuple[bool, ...], List[bool]]] = None,
-    activation: Optional[
-        Union[
-            nn.Module,
-            Callable[[Tensor], Tensor],
-            nn.ModuleList,
-            List[Union[nn.Module, Callable[[Tensor], Tensor]]],
-            Tuple[Union[nn.Module, Callable[[Tensor], Tensor]], ...],
-        ]
-    ] = None,
-):
-    # Preparations on `kind`
-    allowed_kinds: List[str] = ["ViTConv", "ViTPatch"]
-    if kind not in allowed_kinds:
-        raise ValueError(
-            f"Invalid value {kind} in `type`. Expected one of {allowed_kinds}."
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+class ConvNeXtStem(nn.Module):
+    """
+    ConvNeXt stem for ConvNeXt-V2 models
+    (from: https://arxiv.org/abs/2301.00808;
+    implementation from: ConvNeXt-V2/models/convnextv2.py)
+    """
+
+    def __init__(
+        self,
+        patch_size: int = 4,
+        in_chans: int = 3,
+        out_chans: int = 96,
+    ):
+        super().__init__()
+        self.stem: nn.Sequential = nn.Sequential(
+            nn.Conv2d(in_chans, out_chans, kernel_size=patch_size, stride=patch_size),
+            MetaAILayerNorm(out_chans, eps=1e-6, data_format="channels_first"),
         )
 
-    # Preparations on `channels`
-    if isinstance(channels, (list, tuple)):
-        for elem in channels:
-            if not isinstance(elem, int) or elem <= 0:
-                raise ValueError(
-                    f"Invalid value {elem} in `channels`. "
-                    "Expected a positive integer."
-                )
-    else:
-        raise ValueError(
-            f"Invalid type {type(channels)} for `channels`. "
-            "Expected a list or tuple of integers."
-        )
-    if not isinstance(channels, tuple):
-        channels: Tuple[int, ...] = tuple(channels)
+    def forward(self, x: Tensor) -> Tensor:
+        return self.stem(x)
 
-    lcmo: int = len(channels) - 1
 
-    # Preparations on `kernsize`
-    if isinstance(kernsize, int):
-        kernsize: Tuple[int, ...] = (kernsize,) * lcmo
-    elif isinstance(kernsize, (list, tuple)):
-        if len(kernsize) != lcmo:
-            raise ValueError(
-                "Length of `kernsize` must be one less than the length of `channels`."
-            )
-        for elem in kernsize:
-            if not isinstance(elem, int) or elem <= 0:
-                raise ValueError(
-                    f"Invalid value {elem} in `kernsize`. "
-                    "Expected a positive integer."
-                )
-    else:
-        raise ValueError(
-            f"Invalid type {type(kernsize)} for `kernsize`. "
-            "Expected a list or tuple of integers."
-        )
-    if not isinstance(kernsize, tuple):
-        kernsize: Tuple[int, ...] = tuple(kernsize)
+# ──────────────────────────────────────────────────────────────────────────────
 
-    # Preparations on `strides`
-    if strides is None:
-        strides: int = 2
-    if isinstance(strides, int):
-        strides: Tuple[int, ...] = (strides,) * lcmo
-    elif isinstance(strides, (list, tuple)):
-        if len(strides) != lcmo:
-            raise ValueError(
-                "Length of `strides` must be one less than the length of `channels`."
-            )
-        for elem in strides:
-            if not isinstance(elem, int) or elem <= 0:
-                raise ValueError(
-                    f"Invalid value {elem} in `strides`. "
-                    "Expected a positive integer."
-                )
-    else:
-        raise ValueError(
-            f"Invalid type {type(strides)} for `strides`. "
-            "Expected a list or tuple of integers."
-        )
-    if not isinstance(strides, tuple):
-        strides: Tuple[int, ...] = tuple(strides)
 
-    # Preparations on `normalize`
-    if normalize is None:
-        normalize: bool = True
-    if isinstance(normalize, bool):
-        normalize: Tuple[bool, ...] = (normalize,) * lcmo
-    elif isinstance(normalize, (list, tuple)):
-        if len(normalize) != lcmo:
-            raise ValueError(
-                "Length of `normalize` must be one less than the length of `channels`."
-            )
-        for elem in normalize:
-            if not isinstance(elem, bool):
-                raise ValueError(
-                    f"Invalid value {elem} in `normalize`. " "Expected a boolean."
-                )
-    else:
-        raise ValueError(
-            f"Invalid type {type(normalize)} for `normalize`. "
-            "Expected a list or tuple of booleans."
+class ViTStem(ConvNeXtStem):
+    def __init__(
+        self, patch_size: int = 16, in_chans: int = 3, out_chans: int = 96
+    ) -> None:
+        super().__init__(
+            patch_size=patch_size,
+            in_chans=in_chans,
+            out_chans=out_chans,
         )
-    if not isinstance(normalize, tuple):
-        normalize: Tuple[bool, ...] = tuple(normalize)
-
-    # Preparations on `activation`
-    if activation is None:
-        activation: nn.Module = nn.ReLU()
-    if isinstance(activation, nn.Module):
-        activation: Tuple[nn.Module, ...] = (activation,) * lcmo
-    elif isinstance(activation, Callable):
-        activation: Tuple[nn.Module, ...] = (_ModularizedFX(activation),) * lcmo
-    elif isinstance(activation, (list, tuple)):
-        if len(activation) != lcmo:
-            raise ValueError(
-                "Length of `activation` must be one less than the length of `channels`."
-            )
-        for elem in activation:
-            if not isinstance(elem, (nn.Module, Callable)):
-                raise ValueError(
-                    f"Invalid value {elem} in `activation`. "
-                    "Expected a `Callable[[Tensor], Tensor]` or an instance of `nn.Module`."
-                )
-        activation: Tuple[nn.Module, ...] = tuple(
-            [
-                (_ModularizedFX(elem) if not isinstance(elem, nn.Module) else elem)
-                for elem in activation
-            ]
-        )
-    else:
-        raise ValueError(
-            f"Invalid type {type(activation)} for `activation`. "
-            "Expected an nn.ModuleList, a list or tuple of `Callable[[Tensor], Tensor]`s or `nn.Module`s, \
-            a Callable[[Tensor], Tensor] or an instance of `nn.Module`."
-        )
-    if not isinstance(activation, nn.ModuleList):
-        activation: nn.ModuleList = nn.ModuleList(activation)
-
-    # Constructing the stem blocks
-    ...

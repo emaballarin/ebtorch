@@ -42,10 +42,11 @@ from .architectures import TupleDecouple
 from .architectures_resnets_dm import PreActResNet
 from .architectures_resnets_dm import WideResNet
 from .convolutional_flatten import ConvolutionalFlattenLayer
-from .convstems import convnext_stem
-from .convstems import convstem_block
+from .convstems import ConvNeXtStem
+from .convstems import ConvStem
+from .convstems import GRNorm
 from .convstems import MetaAILayerNorm
-from .convstems import smallconv_featurizer
+from .convstems import ViTStem
 from .coordconv import CoordConv1d
 from .coordconv import CoordConv2d
 from .coordconv import CoordConv3d
