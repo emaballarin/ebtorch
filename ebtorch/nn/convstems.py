@@ -4,6 +4,7 @@
 from collections.abc import Callable
 from collections.abc import Iterable
 from collections.abc import Sequence
+from copy import deepcopy
 from itertools import repeat
 from typing import Any
 from typing import Optional
@@ -45,6 +46,32 @@ to_2tuple: Callable[[Union[Any, Iterable[Any]]], Tuple[Any, ...]] = _ntuple(2)
 # ──────────────────────────────────────────────────────────────────────────────
 
 
+class _FxToFxobj:  # NOSONAR
+    __slots__ = ("fx",)
+
+    def __init__(self, fx: Callable[[Tensor], Tensor]):
+        self.fx: Callable[[Tensor], Tensor] = fx
+
+    def __call__(self, x: Tensor) -> Tensor:
+        return self.fx(x)
+
+
+class _FxToModule(nn.Module):
+    def __init__(self, fx: Callable[[Tensor], Tensor]):
+        super().__init__()
+        self.fx: _FxToFxobj = _FxToFxobj(fx)
+
+    def forward(self, x: Tensor) -> Tensor:
+        return self.fx(x)
+
+
+def fxfx2module(fx: Union[Callable[[Tensor], Tensor], nn.Module]) -> nn.Module:
+    return fx if isinstance(fx, nn.Module) else _FxToModule(fx)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+
+
 class ConvStem(nn.Module):
     """
     ConvStem for Vision Transformer (ViT) models.
@@ -61,6 +88,9 @@ class ConvStem(nn.Module):
         embed_step_expn: int = 2,
         norm_layer: Optional[Callable[[int], nn.Module]] = None,
         flatten: bool = True,
+        activation: Union[Callable[[Tensor], Tensor], nn.Module] = nn.ReLU(
+            inplace=True
+        ),
     ) -> None:
         super().__init__()
 
@@ -69,6 +99,7 @@ class ConvStem(nn.Module):
             "ConvStem only supports `embed_dim` divisible by `embed_init_compr`",
         )
 
+        self.activation: nn.Module = fxfx2module(activation)
         self.flatten: bool = flatten
 
         stem: nn.ModuleList = nn.ModuleList()
@@ -86,7 +117,7 @@ class ConvStem(nn.Module):
                 )
             )
             stem.append(nn.BatchNorm2d(output_dim))
-            stem.append(nn.ReLU(inplace=True))  # TODO: Make activation choosable
+            stem.append(deepcopy(self.activation))
             input_dim, output_dim = output_dim, output_dim * embed_step_expn
         stem.append(nn.Conv2d(input_dim, embed_dim, kernel_size=1))
 
