@@ -95,7 +95,7 @@ class ConvStem(nn.Module):
         super().__init__()
 
         sassert(
-            bool(embed_dim % embed_init_compr),
+            not (embed_dim % embed_init_compr),
             "ConvStem only supports `embed_dim` divisible by `embed_init_compr`",
         )
 
