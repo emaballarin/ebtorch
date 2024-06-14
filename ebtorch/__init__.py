@@ -21,9 +21,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Versioning
-__version__ = "0.20.0"
-
 # Imports (wildcard)
 from .data import *
 from .distributed import *
@@ -114,10 +111,11 @@ del cummatmul
 del tensor_replicate
 del logit_to_prob
 del bisided_thresholding
-del convstem_block
-del convnext_stem
-del smallconv_featurizer
+del ConvNeXtStem
+del ConvStem
+del GRNorm
 del MetaAILayerNorm
+del ViTStem
 
 # Deletions (from .optim)
 del AdaBound
