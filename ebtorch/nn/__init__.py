@@ -27,6 +27,7 @@ from .architectures import DuplexLinearNeck
 from .architectures import FCBlock
 from .architectures import GaussianReparameterizerSampler
 from .architectures import GaussianReparameterizerSamplerLegacy
+from .architectures import GenerAct
 from .architectures import InnerProduct
 from .architectures import lexsemble
 from .architectures import pixelwise_bce_mean
@@ -112,6 +113,7 @@ del TA2ATAdapter
 del eval_model_on_test
 del extract_conv_filters
 del argser_f
+del fxfx2module
 del argsink
 del no_op
 del download_gdrive

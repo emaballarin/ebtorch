@@ -22,12 +22,15 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # Imports
+from collections.abc import Callable
 from functools import partial as fpartial
 from typing import Any
 from typing import Tuple
 from typing import Union
 
 import requests
+from torch import nn
+from torch import Tensor
 
 __all__ = [
     "argser_f",
@@ -36,6 +39,7 @@ __all__ = [
     "argsink",
     "no_op",
     "subset_state_dict",
+    "fxfx2module",
 ]
 
 
@@ -124,3 +128,26 @@ def no_op() -> None:
     A function that does nothing, by design.
     """
     pass
+
+
+def fxfx2module(fx: Union[Callable[[Tensor], Tensor], nn.Module]) -> nn.Module:
+    return fx if isinstance(fx, nn.Module) else _FxToModule(fx)
+
+
+class _FxToFxobj:  # NOSONAR
+    __slots__ = ("fx",)
+
+    def __init__(self, fx: Callable[[Tensor], Tensor]):
+        self.fx: Callable[[Tensor], Tensor] = fx
+
+    def __call__(self, x: Tensor) -> Tensor:
+        return self.fx(x)
+
+
+class _FxToModule(nn.Module):
+    def __init__(self, fx: Callable[[Tensor], Tensor]):
+        super().__init__()
+        self.fx: _FxToFxobj = _FxToFxobj(fx)
+
+    def forward(self, x: Tensor) -> Tensor:
+        return self.fx(x)

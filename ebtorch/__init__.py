@@ -96,6 +96,7 @@ del SilhouetteScore
 del Concatenate
 del DuplexLinearNeck
 del SharedDuplexLinearNeck
+del GenerAct
 del WideResNet
 del beta_reco_bce
 del beta_reco_bce_splitout

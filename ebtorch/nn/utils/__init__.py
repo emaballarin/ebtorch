@@ -26,6 +26,7 @@ from .onlyutils import argser_f
 from .onlyutils import argsink
 from .onlyutils import download_gdrive
 from .onlyutils import emplace_kv
+from .onlyutils import fxfx2module
 from .onlyutils import no_op
 from .onlyutils import subset_state_dict
 from .palettes import petroff_2021_cmap

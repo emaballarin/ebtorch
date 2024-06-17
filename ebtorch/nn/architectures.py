@@ -36,6 +36,7 @@ from torch.utils.hooks import RemovableHandle
 
 from .functional import silhouette_score
 from .penalties import beta_gaussian_kldiv
+from .utils import fxfx2module
 
 __all__ = [
     "pixelwise_bce_sum",
@@ -65,6 +66,7 @@ __all__ = [
     "SharedDuplexLinearNeck",
     "GaussianReparameterizerSamplerLegacy",
     "lexsemble",
+    "GenerAct",
 ]
 
 # CUSTOM TYPES
@@ -954,3 +956,25 @@ class SharedDuplexLinearNeck(nn.Module):
         cxc: torch.Tensor = torch.cat(xc, dim=1)
         # noinspection PyTypeChecker
         return torch.chunk(self.shared_layer(cxc), 2, dim=1)
+
+
+class GenerAct(nn.Module):
+    def __init__(
+        self,
+        act: Union[Callable[[Tensor], Tensor], nn.Module],
+        subv: Optional[float] = None,
+        maxv: Optional[float] = None,
+        minv: Optional[float] = None,
+    ):
+        super().__init__()
+        self.act: nn.Module = fxfx2module(act)
+        self.subv: Optional[float] = subv
+        self.maxv: Optional[float] = maxv
+        self.minv: Optional[float] = minv
+
+    def forward(self, x: Tensor) -> Tensor:
+        x: Tensor = self.act(x)
+        x: Tensor = x - self.subv if self.subv is not None else x
+        x: Tensor = x.clamp_max(self.maxv) if self.maxv is not None else x
+        x: Tensor = x.clamp_min(self.minv) if self.minv is not None else x
+        return x

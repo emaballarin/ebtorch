@@ -17,6 +17,8 @@ from torch import nn
 from torch import Tensor
 from torch.nn import functional as F
 
+from .utils import fxfx2module
+
 # ──────────────────────────────────────────────────────────────────────────────
 __all__ = [
     "ConvStem",
@@ -43,32 +45,6 @@ def _ntuple(n: int) -> Callable[[Union[Any, Iterable[Any]]], Tuple[Any, ...]]:
 
 
 to_2tuple: Callable[[Union[Any, Iterable[Any]]], Tuple[Any, ...]] = _ntuple(2)
-# ──────────────────────────────────────────────────────────────────────────────
-
-
-class _FxToFxobj:  # NOSONAR
-    __slots__ = ("fx",)
-
-    def __init__(self, fx: Callable[[Tensor], Tensor]):
-        self.fx: Callable[[Tensor], Tensor] = fx
-
-    def __call__(self, x: Tensor) -> Tensor:
-        return self.fx(x)
-
-
-class _FxToModule(nn.Module):
-    def __init__(self, fx: Callable[[Tensor], Tensor]):
-        super().__init__()
-        self.fx: _FxToFxobj = _FxToFxobj(fx)
-
-    def forward(self, x: Tensor) -> Tensor:
-        return self.fx(x)
-
-
-def fxfx2module(fx: Union[Callable[[Tensor], Tensor], nn.Module]) -> nn.Module:
-    return fx if isinstance(fx, nn.Module) else _FxToModule(fx)
-
-
 # ──────────────────────────────────────────────────────────────────────────────
 
 
