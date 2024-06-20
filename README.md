@@ -13,11 +13,11 @@ Due to the dependency of `ebtorch` on:
 the recommended way of installing `ebtorch`, at the moment, is the following:
 
 ```bash
-pip install --upgrade "ebtorch" "git+https://github.com/BorealisAI/advertorch.git" "requests>=2.28"
+pip install --upgrade "ebtorch>=0.25.6" "git+https://github.com/BorealisAI/advertorch.git" "requests>=2.28"
 ```
 
 Within [Google Colab](https://colab.research.google.com), it can be installed (together with all missing dependencies) with:
 
 ```jupyter
-!pip install "fire>=0.6" "medmnist>=3" "torchattacks>=3.5.1" "git+https://github.com/BorealisAI/advertorch.git" "ebtorch>=0.24.1" --no-deps
+!pip install "fire>=0.6" "medmnist>=3" "torchattacks>=3.5.1" "git+https://github.com/BorealisAI/advertorch.git" "ebtorch>=0.25.6" --no-deps
 ```

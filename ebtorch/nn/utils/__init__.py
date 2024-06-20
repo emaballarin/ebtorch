@@ -20,6 +20,7 @@ from .autoclip import AutoClipper
 from .evalutils import eval_model_on_test
 from .filtermanip import extract_conv_filters
 from .filtermanip import show_filters
+from .lrfinder import find_lr
 from .mapply import matched_apply
 from .mapply import tensor_module_matched_apply
 from .onlyutils import argser_f
@@ -54,6 +55,7 @@ del adverutils
 del actab
 del autoclip
 del evalutils
+del lrfinder
 del onlyutils
 del patches
 del reprutils

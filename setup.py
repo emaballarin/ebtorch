@@ -26,7 +26,7 @@ PACKAGENAME: str = "ebtorch"
 
 setup(
     name=PACKAGENAME,
-    version="0.25.5",
+    version="0.25.6",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",
@@ -53,6 +53,7 @@ setup(
         "numpy>=1.24",
         "pillow>=10.3.0",
         "requests>=2.25",
+        "torch-lr-finder>=0.2.1",
         "torch>=2",
         "torchattacks>=3.5.1",
         "torchvision>=0.15",

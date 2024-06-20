@@ -113,6 +113,7 @@ del TA2ATAdapter
 del eval_model_on_test
 del extract_conv_filters
 del argser_f
+del find_lr
 del fxfx2module
 del argsink
 del no_op
