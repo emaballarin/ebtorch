@@ -84,6 +84,6 @@ def find_lr(
     lrpick: float = numpy.array(rep_lrs).max().item()
 
     if not noprint:
-        print("Picking LR: {:.2E}".format(lrpick))
+        print(f"Picking LR: {lrpick:.2E}")
 
     return lrpick
