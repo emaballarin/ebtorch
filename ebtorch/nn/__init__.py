@@ -115,6 +115,7 @@ del extract_conv_filters
 del argser_f
 del find_lr
 del fxfx2module
+del suppress_std
 del argsink
 del no_op
 del download_gdrive

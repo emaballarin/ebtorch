@@ -22,7 +22,10 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # Imports
+import os
+import sys
 from collections.abc import Callable
+from contextlib import contextmanager
 from functools import partial as fpartial
 from typing import Any
 from typing import Tuple
@@ -40,6 +43,7 @@ __all__ = [
     "no_op",
     "subset_state_dict",
     "fxfx2module",
+    "suppress_std",
 ]
 
 
@@ -151,3 +155,26 @@ class _FxToModule(nn.Module):
 
     def forward(self, x: Tensor) -> Tensor:
         return self.fx(x)
+
+
+@contextmanager
+def suppress_std(which: str = "all") -> None:
+    if which not in ("none", "out", "err", "all"):
+        raise ValueError("`which` must be either: 'none', 'out', 'err', 'all'")
+
+    with open(os.devnull, "w") as devnull:
+
+        if which in ("out", "all"):
+            old_stdout = sys.stdout
+            sys.stdout = devnull
+        if which in ("err", "all"):
+            old_stderr = sys.stderr
+            sys.stderr = devnull
+
+        try:
+            yield  # NOSONAR
+        finally:
+            if which in ("out", "all"):
+                sys.stdout = old_stdout
+            if which in ("err", "all"):
+                sys.stderr = old_stderr

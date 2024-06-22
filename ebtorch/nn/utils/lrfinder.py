@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # ──────────────────────────────────────────────────────────────────────────────
 from collections.abc import Callable
+from typing import List
 from typing import Optional
 from typing import Union
 
@@ -13,13 +14,16 @@ from torch import optim
 from torch import Tensor
 from torch.utils import data as torch_data
 from torch_lr_finder import LRFinder
+from tqdm.auto import trange
+
+from .onlyutils import suppress_std
 
 # ──────────────────────────────────────────────────────────────────────────────
 __all__ = ["find_lr"]
 # ──────────────────────────────────────────────────────────────────────────────
 
 
-def find_lr(
+def _find_lr(
     model: nn.Module,
     optimizer: optim.Optimizer,
     criterion: Union[Callable[[Tensor, Tensor], Tensor], nn.Module],
@@ -46,3 +50,40 @@ def find_lr(
 
     lr_finder.reset()
     return retlr
+
+
+def find_lr(
+    model: nn.Module,
+    optimizer: optim.Optimizer,
+    criterion: Union[Callable[[Tensor, Tensor], Tensor], nn.Module],
+    train_dl: torch_data.DataLoader,
+    start_lr: float = 1e-8,
+    end_lr: float = 100.0,
+    num_iter: int = 100,
+    num_rep: int = 1,
+    device: Optional[Union[str, torch.device]] = None,
+    verbose: bool = False,
+    noprint: bool = False,
+) -> float:
+    rep_lrs: List[float] = []
+
+    with suppress_std("all" if (not verbose or noprint) else "none"):
+        for _ in trange(num_rep):
+            lr = _find_lr(
+                model,
+                optimizer,
+                criterion,
+                train_dl,
+                start_lr,
+                end_lr,
+                num_iter,
+                device,
+            )
+            rep_lrs.append(lr)
+
+    lrpick: float = numpy.array(rep_lrs).max().item()
+
+    if not noprint:
+        print("Picking LR: {:.2E}".format(lrpick))
+
+    return lrpick

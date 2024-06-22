@@ -30,6 +30,7 @@ from .onlyutils import emplace_kv
 from .onlyutils import fxfx2module
 from .onlyutils import no_op
 from .onlyutils import subset_state_dict
+from .onlyutils import suppress_std
 from .palettes import petroff_2021_cmap
 from .palettes import petroff_2021_color
 from .palettes import petroff_2021_cycler
