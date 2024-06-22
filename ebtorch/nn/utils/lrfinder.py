@@ -81,7 +81,7 @@ def find_lr(
             )
             rep_lrs.append(lr)
 
-    lrpick: float = numpy.array(rep_lrs).max().item()
+    lrpick: float = numpy.median(rep_lrs).item()
 
     if not noprint:
         print(f"Picking LR: {lrpick:.2E}")
