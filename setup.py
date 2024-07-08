@@ -26,7 +26,7 @@ PACKAGENAME: str = "ebtorch"
 
 setup(
     name=PACKAGENAME,
-    version="0.25.9",
+    version="0.25.10",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",
@@ -45,7 +45,7 @@ setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",
     ],
-    python_requires=">=3.10",
+    python_requires=">=3.11",
     install_requires=[
         "advertorch>=0.2.4",  # pip install git+https://github.com/BorealisAI/advertorch.git
         "matplotlib>=3.8",
@@ -59,6 +59,6 @@ setup(
         "torchvision>=0.15",
         "tqdm>=4.65",
     ],
-    include_package_data=True,
-    zip_safe=False,
+    include_package_data=False,
+    zip_safe=True,
 )

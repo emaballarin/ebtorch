@@ -22,12 +22,14 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 from collections.abc import Callable
+from typing import Optional
 from typing import Tuple
 from typing import Union
 
 import torch
 from torch import Tensor
 from torch.nn import Module
+from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 
 __all__ = [
@@ -37,13 +39,16 @@ __all__ = [
 
 def eval_model_on_test(  # NOSONAR
     model: Module,
-    model_is_classifier: bool,
-    test_data_loader,
+    test_data_loader: DataLoader,
     device: torch.device,
-    criterion_non_classifier: Callable,
+    model_is_classifier: bool = True,
+    criterion_non_classifier: Optional[Callable] = None,
     extract_z_non_classifier: bool = False,
+    verbose: bool = False,
 ) -> Union[Union[int, float], Tuple[Union[int, float], Tensor, Tensor]]:
-    trackingmetric: Union[int, float]
+
+    if not model_is_classifier and criterion_non_classifier is None:
+        raise ValueError("Criterion must be provided for non-classifier models.")
 
     num_elem: int = 0
     if model_is_classifier:
@@ -54,40 +59,48 @@ def eval_model_on_test(  # NOSONAR
     model.eval()
 
     with torch.no_grad():
-        for batch_idx_e, batched_datapoint_e in tqdm(  # type: ignore
+        for batch_idx_e, batched_datapoint_e in tqdm(
             enumerate(test_data_loader),
             total=len(test_data_loader),
             desc="Testing batch",
             leave=False,
-            disable=True,
+            disable=not verbose,
         ):
+
+            # Explicitly type-hint `x_e` and `y_e`
+            x_e: Tensor
+            y_e: Tensor
+
             if model_is_classifier:
                 x_e, y_e = batched_datapoint_e
                 x_e, y_e = x_e.to(device), y_e.to(device)
-                modeltarget_e = model(x_e)
-                ypred_e = torch.argmax(modeltarget_e, dim=1, keepdim=True)
+                modeltarget_e: Tensor = model(x_e)
+                ypred_e: Tensor = torch.argmax(modeltarget_e, dim=1, keepdim=True)
                 trackingmetric += ypred_e.eq(y_e.view_as(ypred_e)).sum().item()
-            else:
+
+            else:  # not model_is_classifier
                 x_e, y_e = batched_datapoint_e
-                x_e = x_e.to(device)
-                modeltarget_e_tuple = model(x_e)
-                modeltarget_e = modeltarget_e_tuple[0]
+                x_e: Tensor = x_e.to(device)
+                modeltarget_e_tuple: Tuple[Tensor, Tensor] = model(x_e)
+                modeltarget_e: Tensor = modeltarget_e_tuple[0]
                 if extract_z_non_classifier:
-                    z_to_cat = modeltarget_e_tuple[1]
-                    z = (
+                    z_to_cat: Tensor = modeltarget_e_tuple[1]
+                    z: Tensor = (
                         torch.cat(tensors=(z, z_to_cat), dim=0)
                         if batch_idx_e > 0
                         else z_to_cat
                     )
-                    y_e_to_cat = y_e
-                    y_e = (
+                    y_e_to_cat: Tensor = y_e
+                    y_e: Tensor = (
                         torch.cat(tensors=(y_e, y_e_to_cat), dim=0)
                         if batch_idx_e > 0
                         else y_e_to_cat
                     )
                 trackingmetric += criterion_non_classifier(modeltarget_e, x_e).item()
+
             num_elem += x_e.shape[0]
-    if extract_z_non_classifier:
+
+    if extract_z_non_classifier and not model_is_classifier:
         return trackingmetric / num_elem, z, y_e
     else:
         return trackingmetric / num_elem
