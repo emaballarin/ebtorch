@@ -27,11 +27,16 @@ import sys
 from collections.abc import Callable
 from contextlib import contextmanager
 from functools import partial as fpartial
+from os import environ
 from typing import Any
+from typing import Dict
+from typing import Optional
 from typing import Tuple
 from typing import Union
 
 import requests
+from httpx import Client
+from safe_assert import safe_assert as sassert
 from torch import nn
 from torch import Tensor
 
@@ -44,10 +49,16 @@ __all__ = [
     "subset_state_dict",
     "fxfx2module",
     "suppress_std",
+    "TelegramBotEcho",
 ]
 
 
 # Functions
+def _isnn(c):
+    """Functional shorthand for `c is not None`"""
+    return c is not None
+
+
 def argser_f(f, arglist: Union[list, tuple, dict]):
     error_listerror = "Function arguments must be either an args tuple or a kwargs dictionary, or both in this order inside a list."
 
@@ -138,25 +149,6 @@ def fxfx2module(fx: Union[Callable[[Tensor], Tensor], nn.Module]) -> nn.Module:
     return fx if isinstance(fx, nn.Module) else _FxToModule(fx)
 
 
-class _FxToFxobj:  # NOSONAR
-    __slots__ = ("fx",)
-
-    def __init__(self, fx: Callable[[Tensor], Tensor]):
-        self.fx: Callable[[Tensor], Tensor] = fx
-
-    def __call__(self, x: Tensor) -> Tensor:
-        return self.fx(x)
-
-
-class _FxToModule(nn.Module):
-    def __init__(self, fx: Callable[[Tensor], Tensor]):
-        super().__init__()
-        self.fx: _FxToFxobj = _FxToFxobj(fx)
-
-    def forward(self, x: Tensor) -> Tensor:
-        return self.fx(x)
-
-
 @contextmanager
 def suppress_std(which: str = "all") -> None:
     if which not in ("none", "out", "err", "all"):
@@ -178,3 +170,52 @@ def suppress_std(which: str = "all") -> None:
                 sys.stdout = old_stdout
             if which in ("err", "all"):
                 sys.stderr = old_stderr
+
+
+# Classes
+class _FxToFxobj:  # NOSONAR
+    __slots__ = ("fx",)
+
+    def __init__(self, fx: Callable[[Tensor], Tensor]):
+        self.fx: Callable[[Tensor], Tensor] = fx
+
+    def __call__(self, x: Tensor) -> Tensor:
+        return self.fx(x)
+
+
+class _FxToModule(nn.Module):
+    def __init__(self, fx: Callable[[Tensor], Tensor]):
+        super().__init__()
+        self.fx: _FxToFxobj = _FxToFxobj(fx)
+
+    def forward(self, x: Tensor) -> Tensor:
+        return self.fx(x)
+
+
+class TelegramBotEcho:  # NOSONAR
+    __slots__: Tuple[str, str, str] = ("_url", "_jdata", "_client")
+
+    def __init__(
+        self,
+        tok_var: Optional[str] = None,
+        chid_var: Optional[str] = None,
+        *,
+        tok: Optional[str] = None,
+        chid: Optional[str] = None,
+    ) -> None:
+        sassert(
+            (_isnn(tok) ^ _isnn(tok_var)) and (_isnn(chid) ^ _isnn(chid_var)),
+            "Exactly one among `tok` and `tok_var`, and exactly one among `chid` and `chid_var` must be defined.",
+        )
+        _tok: str = tok if _isnn(tok) else environ.get(tok_var)
+        _chid: str = chid if _isnn(tok) else environ.get(chid_var)
+
+        self._url: str = f"https://api.telegram.org/bot{_tok}/sendMessage"
+        self._jdata: Dict[str, str] = {
+            "chat_id": _chid,
+            "text": "",
+        }
+        self._client = Client(http2=True)
+
+    def send(self, msg: str) -> None:
+        _ = self._client.post(url=self._url, json=emplace_kv(self._jdata, "text", msg))

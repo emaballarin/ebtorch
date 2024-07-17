@@ -116,6 +116,7 @@ del argser_f
 del find_lr
 del fxfx2module
 del suppress_std
+del TelegramBotEcho
 del argsink
 del no_op
 del download_gdrive
