@@ -40,6 +40,7 @@ from .architectures import SilhouetteScore
 from .architectures import SirenSine
 from .architectures import SwiGLU
 from .architectures import TupleDecouple
+from .architectures import TupleSelect
 from .architectures_resnets_dm import PreActResNet
 from .architectures_resnets_dm import WideResNet
 from .convolutional_flatten import ConvolutionalFlattenLayer

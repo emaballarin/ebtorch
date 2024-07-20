@@ -92,6 +92,7 @@ del SolvePoisson
 del SolvePoissonTensor
 del SwiGLU
 del TupleDecouple
+del TupleSelect
 del SilhouetteScore
 del Concatenate
 del DuplexLinearNeck
