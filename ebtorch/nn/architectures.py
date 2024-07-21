@@ -61,6 +61,7 @@ __all__ = [
     "SwiGLU",
     "TupleDecouple",
     "TupleSelect",
+    "StatefulTupleSelect",
     "SilhouetteScore",
     "Concatenate",
     "DuplexLinearNeck",
@@ -915,6 +916,16 @@ class TupleSelect(nn.Module):
 
     def forward(self, xtuple: Tuple[Tensor, ...]) -> Tensor:
         return xtuple[self.idx]
+
+
+class StatefulTupleSelect(nn.Module):
+    def __init__(self, module, idx: int = 0) -> None:
+        super().__init__()
+        self.module: nn.Module = module
+        self.idx: int = idx
+
+    def forward(self, x: Tensor) -> Tensor:
+        return self.module(x)[self.idx]
 
 
 class SilhouetteScore(nn.Module):

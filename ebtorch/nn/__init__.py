@@ -38,6 +38,7 @@ from .architectures import SGRUHCell
 from .architectures import SharedDuplexLinearNeck
 from .architectures import SilhouetteScore
 from .architectures import SirenSine
+from .architectures import StatefulTupleSelect
 from .architectures import SwiGLU
 from .architectures import TupleDecouple
 from .architectures import TupleSelect
