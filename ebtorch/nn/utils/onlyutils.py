@@ -40,6 +40,8 @@ from safe_assert import safe_assert as sassert
 from torch import nn
 from torch import Tensor
 
+from .csttyping import numlike
+
 __all__ = [
     "argser_f",
     "emplace_kv",
@@ -50,6 +52,7 @@ __all__ = [
     "fxfx2module",
     "suppress_std",
     "TelegramBotEcho",
+    "stablediv",
 ]
 
 
@@ -57,6 +60,20 @@ __all__ = [
 def _isnn(c):
     """Functional shorthand for `c is not None`"""
     return c is not None
+
+
+def stablediv(
+    num: numlike, den: numlike, eps: numlike, stabilize_both: bool = False
+) -> numlike:
+    """Numerically stable division of two numbers.
+
+    Args:
+        num (numlike): Numerator.
+        den (numlike): Denominator.
+        eps (numlike): Numerical stability factor.
+        stabilize_both (bool, optional): Whether to stabilize both terms. Defaults to False.
+    """
+    return (num + eps * stabilize_both) / (den + eps)
 
 
 def argser_f(f, arglist: Union[list, tuple, dict]):

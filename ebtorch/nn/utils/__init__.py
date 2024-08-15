@@ -17,6 +17,9 @@ from .actab import broadcast_in_dim
 from .adverutils import AdverApply
 from .adverutils import TA2ATAdapter
 from .autoclip import AutoClipper
+from .csttyping import numlike
+from .csttyping import realnum
+from .csttyping import strdev
 from .evalutils import eval_model_on_test
 from .filtermanip import extract_conv_filters
 from .filtermanip import show_filters
@@ -29,6 +32,7 @@ from .onlyutils import download_gdrive
 from .onlyutils import emplace_kv
 from .onlyutils import fxfx2module
 from .onlyutils import no_op
+from .onlyutils import stablediv
 from .onlyutils import subset_state_dict
 from .onlyutils import suppress_std
 from .onlyutils import TelegramBotEcho
@@ -64,3 +68,4 @@ del reprutils
 del filtermanip
 del palettes
 del mapply
+del csttyping

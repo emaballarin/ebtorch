@@ -119,6 +119,7 @@ del find_lr
 del fxfx2module
 del suppress_std
 del TelegramBotEcho
+del stablediv
 del argsink
 del no_op
 del download_gdrive
@@ -148,3 +149,6 @@ del act_auto_broadcast
 del broadcast_in_dim
 del matched_apply
 del tensor_module_matched_apply
+del realnum
+del strdev
+del numlike
