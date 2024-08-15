@@ -880,7 +880,6 @@ class BasicVAE(nn.Module):
             return y
 
 
-################################################################################
 class SingleNeckVAE(nn.Module):
     def __init__(
         self,
@@ -918,9 +917,6 @@ class SingleNeckVAE(nn.Module):
             return y, mean, logvar
         else:
             return y
-
-
-################################################################################
 
 
 class SwiGLU(nn.Module):
