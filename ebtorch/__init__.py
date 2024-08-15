@@ -52,6 +52,7 @@ del slurm_nccl_env
 del ArgMaxLayer
 del BasicAE
 del BasicVAE
+del SingleNeckVAE
 del beta_gaussian_kldiv
 del var_of_lap
 del BinarizeLayer

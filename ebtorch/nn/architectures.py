@@ -57,6 +57,7 @@ __all__ = [
     "SirenSine",
     "BasicAE",
     "BasicVAE",
+    "SingleNeckVAE",
     "Clamp",
     "SwiGLU",
     "TupleDecouple",
@@ -865,6 +866,7 @@ class BasicVAE(nn.Module):
         shared: Tensor = self.encoder(x)
         mean: Tensor = self.mean_neck(shared)
         logvar: Tensor = self.logvar_neck(shared)
+        # noinspection DuplicatedCode
         z: Tensor = self.grps(mean, logvar)
         y: Tensor = self.decoder(z)
 
@@ -876,6 +878,49 @@ class BasicVAE(nn.Module):
             return y, mean, logvar
         else:
             return y
+
+
+################################################################################
+class SingleNeckVAE(nn.Module):
+    def __init__(
+        self,
+        encoder: nn.Module,
+        neck: nn.Module,
+        decoder: nn.Module,
+        extract_z: bool = False,
+        extract_mv: bool = False,
+    ) -> None:
+        super().__init__()
+        self.encoder: nn.Module = encoder
+        self.neck: nn.Module = neck
+        self.grps: GaussianReparameterizerSampler = GaussianReparameterizerSampler()
+        self.decoder: nn.Module = decoder
+        self.extract_z: bool = extract_z
+        self.extract_mv: bool = extract_mv
+
+    def forward(self, x: Tensor) -> Union[
+        Tensor,
+        Tuple[Tensor, Tensor],
+        Tuple[Tensor, Tensor, Tensor],
+        Tuple[Tensor, Tensor, Tensor, Tensor],
+    ]:
+        shared: Tensor = self.encoder(x)
+        mean, logvar = self.neck(shared)
+        # noinspection DuplicatedCode
+        z: Tensor = self.grps(mean, logvar)
+        y: Tensor = self.decoder(z)
+
+        if self.extract_z and self.extract_mv:
+            return y, z, mean, logvar
+        elif self.extract_z:
+            return y, z
+        elif self.extract_mv:
+            return y, mean, logvar
+        else:
+            return y
+
+
+################################################################################
 
 
 class SwiGLU(nn.Module):
