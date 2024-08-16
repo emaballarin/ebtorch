@@ -119,6 +119,7 @@ del extract_conv_filters
 del argser_f
 del find_lr
 del fxfx2module
+del act_opclone
 del suppress_std
 del TelegramBotEcho
 del stablediv
@@ -153,4 +154,5 @@ del matched_apply
 del tensor_module_matched_apply
 del realnum
 del strdev
+del actvt
 del numlike

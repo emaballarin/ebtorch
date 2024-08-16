@@ -17,6 +17,7 @@ from .actab import broadcast_in_dim
 from .adverutils import AdverApply
 from .adverutils import TA2ATAdapter
 from .autoclip import AutoClipper
+from .csttyping import actvt
 from .csttyping import numlike
 from .csttyping import realnum
 from .csttyping import strdev
@@ -26,6 +27,7 @@ from .filtermanip import show_filters
 from .lrfinder import find_lr
 from .mapply import matched_apply
 from .mapply import tensor_module_matched_apply
+from .onlyutils import act_opclone
 from .onlyutils import argser_f
 from .onlyutils import argsink
 from .onlyutils import download_gdrive

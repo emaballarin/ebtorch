@@ -26,6 +26,7 @@ import os
 import sys
 from collections.abc import Callable
 from contextlib import contextmanager
+from copy import deepcopy as deepcp
 from functools import partial as fpartial
 from os import environ
 from typing import Any
@@ -40,6 +41,7 @@ from safe_assert import safe_assert as sassert
 from torch import nn
 from torch import Tensor
 
+from .csttyping import actvt
 from .csttyping import numlike
 
 __all__ = [
@@ -50,6 +52,7 @@ __all__ = [
     "no_op",
     "subset_state_dict",
     "fxfx2module",
+    "act_opclone",
     "suppress_std",
     "TelegramBotEcho",
     "stablediv",
@@ -160,6 +163,13 @@ def no_op() -> None:
     A function that does nothing, by design.
     """
     pass
+
+
+def act_opclone(act: actvt) -> actvt:
+    """
+    Clone an activation function as an `nn.Module`.
+    """
+    return deepcp(act) if isinstance(act, nn.Module) else _FxToModule(act)
 
 
 def fxfx2module(fx: Union[Callable[[Tensor], Tensor], nn.Module]) -> nn.Module:
