@@ -99,6 +99,7 @@ del SilhouetteScore
 del Concatenate
 del DuplexLinearNeck
 del SharedDuplexLinearNeck
+del SimpleDuplexLinearNeck
 del GenerAct
 del WideResNet
 del beta_reco_bce

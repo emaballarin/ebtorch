@@ -67,6 +67,7 @@ __all__ = [
     "Concatenate",
     "DuplexLinearNeck",
     "SharedDuplexLinearNeck",
+    "SimpleDuplexLinearNeck",
     "GaussianReparameterizerSamplerLegacy",
     "lexsemble",
     "GenerAct",
@@ -1018,6 +1019,16 @@ class SharedDuplexLinearNeck(nn.Module):
         cxc: torch.Tensor = torch.cat(xc, dim=1)
         # noinspection PyTypeChecker
         return torch.chunk(self.shared_layer(cxc), 2, dim=1)
+
+
+class SimpleDuplexLinearNeck(nn.Module):
+    def __init__(self, in_dim: int, latent_dim: int):
+        super().__init__()
+        self.x_to_mu: nn.Linear = nn.Linear(in_dim, latent_dim)
+        self.x_to_log_var: nn.Linear = nn.Linear(in_dim, latent_dim)
+
+    def forward(self, x: Tensor) -> Tuple[Tensor, Tensor]:
+        return self.x_to_mu(x), self.x_to_log_var(x)
 
 
 class GenerAct(nn.Module):

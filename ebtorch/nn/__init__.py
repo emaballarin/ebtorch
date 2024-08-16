@@ -37,6 +37,7 @@ from .architectures import ResBlock
 from .architectures import SGRUHCell
 from .architectures import SharedDuplexLinearNeck
 from .architectures import SilhouetteScore
+from .architectures import SimpleDuplexLinearNeck
 from .architectures import SingleNeckVAE
 from .architectures import SirenSine
 from .architectures import StatefulTupleSelect
