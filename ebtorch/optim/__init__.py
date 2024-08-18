@@ -31,6 +31,7 @@ from .custom import onecycle_linlin
 from .custom import onecycle_linlin_updown
 from .custom import ralah_optim
 from .custom import tricyc1c
+from .custom import warmed_up_annealer
 from .custom import warmed_up_linneal
 from .custom import wfneal
 from .lamb import Lamb

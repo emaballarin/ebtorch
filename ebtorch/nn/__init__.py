@@ -17,6 +17,8 @@ from .architectures import BasicAE
 from .architectures import BasicVAE
 from .architectures import beta_reco_bce
 from .architectures import beta_reco_bce_splitout
+from .architectures import beta_reco_mse
+from .architectures import beta_reco_mse_splitout
 from .architectures import BinarizeLayer
 from .architectures import build_repeated_sequential
 from .architectures import CausalConv1d
@@ -32,6 +34,8 @@ from .architectures import InnerProduct
 from .architectures import lexsemble
 from .architectures import pixelwise_bce_mean
 from .architectures import pixelwise_bce_sum
+from .architectures import pixelwise_mse_mean
+from .architectures import pixelwise_mse_sum
 from .architectures import RBLinear
 from .architectures import ResBlock
 from .architectures import SGRUHCell

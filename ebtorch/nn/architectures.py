@@ -43,6 +43,10 @@ __all__ = [
     "pixelwise_bce_mean",
     "beta_reco_bce",
     "beta_reco_bce_splitout",
+    "pixelwise_mse_sum",
+    "pixelwise_mse_mean",
+    "beta_reco_mse",
+    "beta_reco_mse_splitout",
     "FCBlock",
     "CausalConv1d",
     "build_repeated_sequential",
@@ -93,8 +97,18 @@ def pixelwise_bce_sum(lhs: Tensor, rhs: Tensor) -> Tensor:
 
 
 @torch.jit.script
+def pixelwise_mse_sum(lhs: Tensor, rhs: Tensor) -> Tensor:
+    return F.mse_loss(lhs, rhs, reduction="sum")
+
+
+@torch.jit.script
 def pixelwise_bce_mean(lhs: Tensor, rhs: Tensor) -> Tensor:
     return F.binary_cross_entropy(lhs, rhs, reduction="mean")
+
+
+@torch.jit.script
+def pixelwise_mse_mean(lhs: Tensor, rhs: Tensor) -> Tensor:
+    return F.mse_loss(lhs, rhs, reduction="mean")
 
 
 @torch.jit.script
@@ -111,6 +125,19 @@ def beta_reco_bce(
 
 
 @torch.jit.script
+def beta_reco_mse(
+    input_reco: Tensor,
+    input_orig: Tensor,
+    mu: Tensor,
+    sigma: Tensor,
+    beta: float = 1.0,
+):
+    kldiv = beta_gaussian_kldiv(mu, sigma, beta)
+    pwmse = pixelwise_mse_sum(input_reco, input_orig)
+    return pwmse + kldiv
+
+
+@torch.jit.script
 def beta_reco_bce_splitout(
     input_reco: Tensor,
     input_orig: Tensor,
@@ -121,6 +148,19 @@ def beta_reco_bce_splitout(
     kldiv = beta_gaussian_kldiv(mu, sigma, beta)
     pwbce = pixelwise_bce_sum(input_reco, input_orig)
     return pwbce + kldiv, pwbce, kldiv
+
+
+@torch.jit.script
+def beta_reco_mse_splitout(
+    input_reco: Tensor,
+    input_orig: Tensor,
+    mu: Tensor,
+    sigma: Tensor,
+    beta: float = 1.0,
+):
+    kldiv = beta_gaussian_kldiv(mu, sigma, beta)
+    pwmse = pixelwise_mse_sum(input_reco, input_orig)
+    return pwmse + kldiv, pwmse, kldiv
 
 
 # Utility functions

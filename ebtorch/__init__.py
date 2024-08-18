@@ -110,6 +110,10 @@ del field_transform
 del mishlayer_init
 del pixelwise_bce_mean
 del pixelwise_bce_sum
+del pixelwise_mse_sum
+del pixelwise_mse_mean
+del beta_reco_mse
+del beta_reco_mse_splitout
 del oldtranspose
 del silhouette_score
 del cummatmul
@@ -140,6 +144,7 @@ del onecycle_lincos
 del onecycle_linlin
 del onecycle_linlin_updown
 del warmed_up_linneal
+del warmed_up_annealer
 del make_beta_scheduler
 del ralah_optim
 del tricyc1c
