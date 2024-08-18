@@ -43,6 +43,7 @@ __all__ = [
     "onecycle_lincos",
     "onecycle_linlin",
     "onecycle_linlin_updown",
+    "warmed_up_annealer",
     "warmed_up_linneal",
     "make_beta_scheduler",
 ]
@@ -326,7 +327,7 @@ def onecycle_linlin_updown(
     )
 
 
-def warmed_up_linneal(
+def warmed_up_annealer(
     optim: torch.optim.Optimizer,
     init_lr: float,
     steady_lr: float,
@@ -334,6 +335,7 @@ def warmed_up_linneal(
     warmup_epochs: int,
     steady_epochs: int,
     anneal_epochs: int,
+    cos_annealing: bool = False,
 ):
     # Prepare optim
     for grp in optim.param_groups:
@@ -358,13 +360,21 @@ def warmed_up_linneal(
         total_iters=milestones[1],
         last_epoch=-1,
     )
-    anneal_scheduler = torch.optim.lr_scheduler.LinearLR(
-        optimizer=optim,
-        start_factor=1.0,
-        end_factor=final_lr / steady_lr,
-        total_iters=max(3, anneal_epochs),
-        last_epoch=-1,
-    )
+    if not cos_annealing:
+        anneal_scheduler = torch.optim.lr_scheduler.LinearLR(
+            optimizer=optim,
+            start_factor=1.0,
+            end_factor=final_lr / steady_lr,
+            total_iters=max(3, anneal_epochs),
+            last_epoch=-1,
+        )
+    else:
+        anneal_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer=optim,
+            T_max=max(3, anneal_epochs),
+            eta_min=final_lr,
+            last_epoch=-1,
+        )
 
     # Prepare scheduler
     sched = torch.optim.lr_scheduler.SequentialLR(
@@ -376,6 +386,10 @@ def warmed_up_linneal(
 
     # Return
     return optim, sched
+
+
+# Legacy alias
+warmed_up_linneal = warmed_up_annealer
 
 
 def make_beta_scheduler(
