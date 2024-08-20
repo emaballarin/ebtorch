@@ -43,6 +43,7 @@ from .poptims import SGDP
 from .radam import RAdam
 from .sam import SAM
 from .schedcos import CosineLRScheduler
+from .sophia import SophiaG
 
 # Deletions (from .)
 del adabound
@@ -55,5 +56,6 @@ del lookahead
 del lookaround
 del poptims
 del radam
+del sophia
 del sam
 del schedcos

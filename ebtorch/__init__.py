@@ -137,6 +137,7 @@ del Lion
 del Lookahead
 del Lookaround
 del RAdam
+del SophiaG
 del SAM
 del SGDP
 del epochwise_onecycle
