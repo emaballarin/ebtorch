@@ -29,15 +29,15 @@ class SophiaG(Optimizer):
         capturable: bool = False,
     ):
         # Validate parameters
-        if not lr >= 0.0:
+        if lr < 0:
             raise ValueError(f"Learning rate must be positive. Got: {lr}.")
-        if not 0.0 <= betas[0] < 1.0:
+        if not 0 <= betas[0] < 1:
             raise ValueError(f"Beta[0] must be in [0, 1). Got: {betas[0]}.")
-        if not 0.0 <= betas[1] < 1.0:
+        if not 0 <= betas[1] < 1:
             raise ValueError(f"Beta[1] must be in [0, 1). Got: {betas[1]}.")
-        if not rho >= 0.0:
+        if rho < 0:
             raise ValueError(f"Rho must be non-negative. Got: {rho}.")
-        if not weight_decay >= 0.0:
+        if weight_decay < 0:
             raise ValueError(f"Weight decay must be non-negative. Got: {weight_decay}.")
         defaults = dict(
             lr=lr,
@@ -65,7 +65,7 @@ class SophiaG(Optimizer):
     @torch.no_grad()
     def update_hessian(self):
         for group in self.param_groups:
-            beta1, beta2 = group["betas"]
+            _, beta2 = group["betas"]
             for p in group["params"]:
                 if p.grad is None:
                     continue
