@@ -160,3 +160,4 @@ del realnum
 del strdev
 del actvt
 del numlike
+del stablediv

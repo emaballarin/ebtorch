@@ -27,6 +27,7 @@ from .distributed import *
 from .logging import *
 from .nn import *
 from .optim import *
+from .typing import *
 
 # Deletions (from .data)
 del FastCollateMixup
@@ -154,3 +155,8 @@ del wfneal
 # Deletions (from .logging)
 del AverageMeter
 del LogCSV
+
+# Deletions (from .typing)
+del numlike
+del realnum
+del strdev

@@ -12,6 +12,8 @@
 #
 # ──────────────────────────────────────────────────────────────────────────────
 # Imports
+from stabledivn import stablediv
+
 from .actab import act_auto_broadcast
 from .actab import broadcast_in_dim
 from .adverutils import AdverApply
@@ -71,3 +73,4 @@ del filtermanip
 del palettes
 del mapply
 del csttyping
+del stabledivn

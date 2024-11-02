@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -24,17 +24,17 @@ repos:
       - id: python-check-blanket-noqa
       - id: python-use-type-annotations
   - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.13.0
+    rev: v3.14.0
     hooks:
       - id: reorder-python-imports
   - repo: https://github.com/psf/black
-    rev: 24.4.2
+    rev: 24.10.0
     hooks:
       - id: black
         args: [--safe]
       - id: black-jupyter
         args: [--safe]
   - repo: https://github.com/janosh/format-ipy-cells
-    rev: v0.1.10
+    rev: v0.1.11
     hooks:
       - id: format-ipy-cells
