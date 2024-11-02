@@ -12,8 +12,6 @@
 #
 # ──────────────────────────────────────────────────────────────────────────────
 # Imports
-from stabledivn import stablediv
-
 from .actab import act_auto_broadcast
 from .actab import broadcast_in_dim
 from .adverutils import AdverApply
@@ -59,6 +57,7 @@ from .reprutils import repr_sizes_flat_adapter
 from .reprutils import store_repr_autohook
 from .reprutils import store_repr_fx
 from .reprutils import store_repr_hook
+from .stabledivn import stablediv
 
 # Deletions (from .)
 del adverutils
