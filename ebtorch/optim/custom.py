@@ -31,12 +31,14 @@ from typing import Union
 import torch as th
 import torch.optim
 from torch import Tensor
+from torch.optim import Adam
 
 from .lookahead import Lookahead
 from .radam import RAdam
 
 __all__ = [
     "ralah_optim",
+    "alah_optim",
     "wfneal",
     "tricyc1c",
     "epochwise_onecycle",
@@ -62,7 +64,7 @@ def ralah_optim(
     radam_wd: float = 0.0,
     radam_degenerate_to_sgd: bool = True,
     la_pullback_momentum: str = "none",
-):
+) -> Lookahead:
     """RAdam + Lookahead optimizer"""
     return Lookahead(
         RAdam(
@@ -72,6 +74,31 @@ def ralah_optim(
             eps=radam_eps,
             weight_decay=radam_wd,
             degenerated_to_sgd=radam_degenerate_to_sgd,
+        ),
+        la_steps=la_steps,
+        la_alpha=la_alpha,
+        pullback_momentum=la_pullback_momentum,
+    )
+
+
+def alah_optim(
+    parameters: Union[Iterable[Tensor], Iterable[dict]],
+    adam_lr: float = 1e-3,
+    la_steps: int = 5,
+    la_alpha: float = 0.8,
+    adam_betas: Tuple[float, float] = (0.9, 0.999),
+    adam_eps: float = 1e-8,
+    adam_wd: float = 0.0,
+    la_pullback_momentum: str = "none",
+) -> Lookahead:
+    """Adam + Lookahead optimizer"""
+    return Lookahead(
+        Adam(
+            params=parameters,
+            lr=adam_lr,
+            betas=adam_betas,
+            eps=adam_eps,
+            weight_decay=adam_wd,
         ),
         la_steps=la_steps,
         la_alpha=la_alpha,

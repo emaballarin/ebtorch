@@ -148,6 +148,7 @@ del onecycle_linlin_updown
 del warmed_up_linneal
 del warmed_up_annealer
 del make_beta_scheduler
+del alah_optim
 del ralah_optim
 del tricyc1c
 del wfneal

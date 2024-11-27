@@ -24,6 +24,7 @@
 from .adabound import AdaBound
 from .adahessian import AdaHessian
 from .adan import Adan
+from .custom import alah_optim
 from .custom import epochwise_onecycle
 from .custom import make_beta_scheduler
 from .custom import onecycle_lincos
