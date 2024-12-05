@@ -22,8 +22,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Imports (specific)
 from .adabound import AdaBound
-from .adahessian import AdaHessian
 from .adan import Adan
+from .adopt import ADOPT
 from .custom import alah_optim
 from .custom import epochwise_onecycle
 from .custom import make_beta_scheduler
@@ -44,11 +44,9 @@ from .poptims import SGDP
 from .radam import RAdam
 from .sam import SAM
 from .schedcos import CosineLRScheduler
-from .sophia import SophiaG
 
 # Deletions (from .)
 del adabound
-del adahessian
 del adan
 del custom
 del lamb
@@ -57,6 +55,6 @@ del lookahead
 del lookaround
 del poptims
 del radam
-del sophia
+del adopt
 del sam
 del schedcos

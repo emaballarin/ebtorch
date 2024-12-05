@@ -129,7 +129,6 @@ del ViTStem
 
 # Deletions (from .optim)
 del AdaBound
-del AdaHessian
 del AdamP
 del Adan
 del CosineLRScheduler
@@ -138,7 +137,7 @@ del Lion
 del Lookahead
 del Lookaround
 del RAdam
-del SophiaG
+del ADOPT
 del SAM
 del SGDP
 del epochwise_onecycle
