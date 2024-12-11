@@ -31,3 +31,4 @@ from .prep import data_prep_dispatcher_3ch
 del cutmixup
 del datasets
 del prep
+del tinyimagenet  # It is defined, trust me!
