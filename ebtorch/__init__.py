@@ -159,6 +159,6 @@ del LogCSV
 # Deletions (from .typing)
 del numlike
 del realnum
-del realnum
 del strdev
 del tensorlike
+del actvt
