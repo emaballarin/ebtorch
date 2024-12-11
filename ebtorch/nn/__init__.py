@@ -148,8 +148,12 @@ del petroff_2021_cycler
 del tableau10_cycler
 del petroff_2021_cmap
 del tableau10_cmap
+del variadic_attrs
 del set_petroff_2021_colors
 del set_tableau10_colors
+del custom_plot_setup
+del plot_out
+del fromcache
 del repr_sizes_flat_adapter
 del repr_fx_flat_adapter
 del act_auto_broadcast

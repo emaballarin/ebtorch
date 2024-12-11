@@ -16,7 +16,9 @@ from .actab import act_auto_broadcast
 from .actab import broadcast_in_dim
 from .adverutils import AdverApply
 from .adverutils import TA2ATAdapter
+from .attrsutils import variadic_attrs
 from .autoclip import AutoClipper
+from .cacher import fromcache
 from .csttyping import actvt
 from .csttyping import numlike
 from .csttyping import realnum
@@ -49,6 +51,8 @@ from .palettes import tableau10_cycler
 from .patches import patchify_2d
 from .patches import patchify_batch
 from .patches import patchify_dataset
+from .plotting import custom_plot_setup
+from .plotting import plot_out
 from .reprutils import gather_model_repr
 from .reprutils import model_reqgrad
 from .reprutils import model_reqgrad_
@@ -69,5 +73,8 @@ del patches
 del reprutils
 del filtermanip
 del palettes
+del cacher
+del plotting
+del attrsutils
 del mapply
 del csttyping
