@@ -41,8 +41,8 @@ from safe_assert import safe_assert as sassert
 from torch import nn
 from torch import Tensor
 
-from .csttyping import actvt
-from .csttyping import numlike
+from ...typing import actvt
+from ...typing import numlike
 
 __all__ = [
     "argser_f",

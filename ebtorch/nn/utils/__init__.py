@@ -19,10 +19,6 @@ from .adverutils import TA2ATAdapter
 from .attrsutils import variadic_attrs
 from .autoclip import AutoClipper
 from .cacher import fromcache
-from .csttyping import actvt
-from .csttyping import numlike
-from .csttyping import realnum
-from .csttyping import strdev
 from .evalutils import eval_model_on_test
 from .filtermanip import extract_conv_filters
 from .filtermanip import show_filters
@@ -63,18 +59,17 @@ from .reprutils import store_repr_fx
 from .reprutils import store_repr_hook
 
 # Deletions (from .)
-del adverutils
 del actab
-del autoclip
-del evalutils
-del lrfinder
-del onlyutils
-del patches
-del reprutils
-del filtermanip
-del palettes
-del cacher
-del plotting
+del adverutils
 del attrsutils
+del autoclip
+del cacher
+del evalutils
+del filtermanip
+del lrfinder
 del mapply
-del csttyping
+del onlyutils
+del palettes
+del patches
+del plotting
+del reprutils

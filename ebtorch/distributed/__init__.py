@@ -15,5 +15,5 @@ from .qol import reduce_accumulate_keepalive
 from .slurm import slurm_nccl_env
 
 # ──────────────────────────────────────────────────────────────────────────────
-del slurm
 del qol
+del slurm

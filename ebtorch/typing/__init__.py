@@ -12,9 +12,11 @@
 #
 # ──────────────────────────────────────────────────────────────────────────────
 # Imports
+from .customtypes import actvt
 from .customtypes import numlike
 from .customtypes import realnum
 from .customtypes import strdev
+from .customtypes import tensorlike
 
 # Deletions (from .)
 del customtypes

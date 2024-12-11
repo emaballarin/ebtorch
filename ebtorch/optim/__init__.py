@@ -48,6 +48,7 @@ from .schedcos import CosineLRScheduler
 # Deletions (from .)
 del adabound
 del adan
+del adopt
 del custom
 del lamb
 del lion
@@ -55,6 +56,5 @@ del lookahead
 del lookaround
 del poptims
 del radam
-del adopt
 del sam
 del schedcos
