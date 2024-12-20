@@ -146,6 +146,7 @@ del petroff_2021_cycler
 del plot_out
 del repr_fx_flat_adapter
 del repr_sizes_flat_adapter
+del seed_everything
 del set_petroff_2021_colors
 del set_tableau10_colors
 del show_filters

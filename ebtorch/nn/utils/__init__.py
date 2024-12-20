@@ -57,6 +57,7 @@ from .reprutils import repr_sizes_flat_adapter
 from .reprutils import store_repr_autohook
 from .reprutils import store_repr_fx
 from .reprutils import store_repr_hook
+from .seeder import seed_everything
 
 # Deletions (from .)
 del actab
@@ -73,3 +74,4 @@ del palettes
 del patches
 del plotting
 del reprutils
+del seeder
