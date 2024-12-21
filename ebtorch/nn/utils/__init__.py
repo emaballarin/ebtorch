@@ -31,7 +31,9 @@ from .onlyutils import argsink
 from .onlyutils import download_gdrive
 from .onlyutils import emplace_kv
 from .onlyutils import fxfx2module
+from .onlyutils import hermitize
 from .onlyutils import no_op
+from .onlyutils import randhermn
 from .onlyutils import stablediv
 from .onlyutils import subset_state_dict
 from .onlyutils import suppress_std

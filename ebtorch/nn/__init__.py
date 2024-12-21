@@ -133,6 +133,7 @@ del find_lr
 del fromcache
 del fxfx2module
 del gather_model_repr
+del hermitize
 del matched_apply
 del model_reqgrad
 del model_reqgrad_
@@ -144,6 +145,7 @@ del petroff_2021_cmap
 del petroff_2021_color
 del petroff_2021_cycler
 del plot_out
+del randhermn
 del repr_fx_flat_adapter
 del repr_sizes_flat_adapter
 del seed_everything

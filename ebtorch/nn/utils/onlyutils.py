@@ -36,13 +36,16 @@ from typing import Tuple
 from typing import Union
 
 import requests
+import torch as th
 from httpx import Client
 from safe_assert import safe_assert as sassert
+from torch import dtype as _dtype
 from torch import nn
 from torch import Tensor
 
 from ...typing import actvt
 from ...typing import numlike
+from ...typing import strdev
 
 __all__ = [
     "argser_f",
@@ -56,6 +59,8 @@ __all__ = [
     "suppress_std",
     "TelegramBotEcho",
     "stablediv",
+    "hermitize",
+    "randhermn",
 ]
 
 
@@ -197,6 +202,18 @@ def suppress_std(which: str = "all") -> None:
                 sys.stdout = old_stdout
             if which in ("err", "all"):
                 sys.stderr = old_stderr
+
+
+def hermitize(x: Tensor) -> Tensor:
+    return (x + x.conj().t()) / 2
+
+
+def randhermn(
+    n: int,
+    dtype: Optional[_dtype] = th.cdouble,
+    device: Optional[strdev] = None,
+):
+    return 2 * hermitize(th.randn(n, n, dtype=dtype, device=device))
 
 
 # Classes
