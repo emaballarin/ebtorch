@@ -34,5 +34,6 @@ class ScaledERF(torch.nn.Module):
     def __init__(self) -> None:
         super(ScaledERF, self).__init__()
 
-    def forward(self, x: Tensor) -> Tensor:  # Do not make static!
+    # noinspection PyMethodMayBeStatic
+    def forward(self, x: Tensor) -> Tensor:
         return fserf(x)

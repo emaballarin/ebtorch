@@ -22,6 +22,7 @@ from .inner_functional import serf
 from .inner_functional import serlu
 from .inner_functional import silhouette_score
 from .inner_functional import smelu
+from .inner_functional import telu
 from .inner_functional import tensor_replicate
 
 # Deletions (from .)

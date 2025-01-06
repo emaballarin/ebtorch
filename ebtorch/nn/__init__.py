@@ -89,6 +89,7 @@ from .serf import ScaledERF
 from .serlu import SERLU
 from .sinlu import SinLU
 from .smelu import SmeLU
+from .telu import TeLU
 from .utils import *
 
 # Deletions (from .)
@@ -109,10 +110,12 @@ del serf
 del serlu
 del sinlu
 del smelu
+del telu
 
 # Deletions (from .functional)
 # del mish  # (already done by chance!)
 # del serf  # (already done by chance!)
+# del telu # (already done by chance!)
 
 # Deletions (from .utils)
 del AdverApply

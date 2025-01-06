@@ -389,7 +389,8 @@ class PreActResNet(nn.Module):
             nn.AdaptiveAvgPool2d((1, 1)) if autopool else nn.AvgPool2d(4)
         )
 
-    def _make_layer(  # Do not make static.
+    # noinspection PyMethodMayBeStatic
+    def _make_layer(
         self,
         in_planes: int,
         out_planes: int,

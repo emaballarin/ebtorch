@@ -100,6 +100,7 @@ del SolvePoisson
 del SolvePoissonTensor
 del StatefulTupleSelect
 del SwiGLU
+del TeLU
 del TupleDecouple
 del TupleSelect
 del ViTStem

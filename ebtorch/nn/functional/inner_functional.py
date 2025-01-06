@@ -40,17 +40,18 @@ import torch.nn.functional as F
 from torch import Tensor
 
 __all__ = [
-    "field_transform",
-    "mish",
-    "serlu",
-    "smelu",
-    "serf",
-    "oldtranspose",
-    "silhouette_score",
-    "cummatmul",
-    "tensor_replicate",
-    "logit_to_prob",
     "bisided_thresholding",
+    "cummatmul",
+    "field_transform",
+    "logit_to_prob",
+    "mish",
+    "oldtranspose",
+    "serf",
+    "serlu",
+    "silhouette_score",
+    "smelu",
+    "telu",
+    "tensor_replicate",
 ]
 
 
@@ -120,6 +121,12 @@ def smelu(x_input: Tensor, beta: float = 2.0) -> Tensor:
 def serf(x: Tensor) -> Tensor:
     """Applies the Scaled ERror Function, element-wise."""
     return torch.erf(x / math.sqrt(2.0))  # type: ignore
+
+
+@torch.jit.script
+def telu(x: Tensor) -> Tensor:
+    """Applies the TeLU function, element-wise."""
+    return x * torch.tanh(torch.exp(x))
 
 
 def oldtranspose(x: Tensor) -> Tensor:

@@ -40,5 +40,6 @@ class FlatChannelize2DLayer(nn.Module):
     def __init__(self):
         super().__init__()
 
-    def forward(self, x):  # Do not make static!
+    # noinspection PyMethodMayBeStatic
+    def forward(self, x):
         return x.reshape(*x.shape, 1, 1)
