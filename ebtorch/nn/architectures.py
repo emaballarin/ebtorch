@@ -23,6 +23,7 @@
 import copy
 from collections.abc import Callable
 from math import copysign
+from math import sqrt as msqrt
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -34,6 +35,7 @@ from torch import Tensor
 from torch.nn import functional as F
 from torch.utils.hooks import RemovableHandle
 
+from ..typing import realnum
 from .functional import silhouette_score
 from .penalties import beta_gaussian_kldiv
 from .utils import fxfx2module
@@ -76,9 +78,6 @@ __all__ = [
     "lexsemble",
     "GenerAct",
 ]
-
-# CUSTOM TYPES
-realnum = Union[float, int]
 
 
 # Ensembling functions
@@ -230,7 +229,7 @@ def build_repeated_sequential(
 # Fully-Connected Block, New version
 # Joint work with Davide Roznowicz (https://github.com/DavideRoznowicz)
 class FCBlock(nn.Module):
-    def __init__(
+    def __init__(  # NOSONAR
         self,
         in_sizes: Union[List[int], tuple],
         out_size: int,
@@ -528,7 +527,7 @@ class SGRUHCell(nn.Module):
         if hx is not None:
             self._hx: Tensor = hx.clone()
         else:
-            self._hx = hx
+            self._hx = hx  # type: ignore
 
         # Track recurrence
         self._recurrence_idx: int = 0
@@ -566,13 +565,13 @@ class SGRUHCell(nn.Module):
         if self._hx is not None:
             self._hx: Tensor = self._hx.detach()
         else:
-            self._hx = None
+            self._hx = None  # type: ignore
 
         # Re-initialize self._hx
         if hx is not None:
             self._hx: Tensor = hx.clone()
         else:
-            self._hx = hx
+            self._hx = hx  # type: ignore
 
         # Restart the recurrence index
         self._recurrence_idx: int = 0
@@ -834,14 +833,16 @@ class ResBlock(nn.Module):
         block: Union[nn.Module, Callable[[Tensor], Tensor]],
         shortcut: Union[nn.Module, Callable[[Tensor], Tensor]] = nn.Identity(),
         postall: Union[nn.Module, Callable[[Tensor], Tensor]] = nn.Identity(),
+        sqrt2norm: bool = False,
     ) -> None:
         super().__init__()
         self.block: Union[nn.Module, Callable[[Tensor], Tensor]] = block
         self.shtct: Union[nn.Module, Callable[[Tensor], Tensor]] = shortcut
         self.postl: Union[nn.Module, Callable[[Tensor], Tensor]] = postall
+        self.addnorm: realnum = msqrt(2) if sqrt2norm else 1
 
     def forward(self, x: Tensor) -> Tensor:
-        return self.postl(self.shtct(x) + self.block(x))
+        return self.postl((self.shtct(x) + self.block(x)) / self.addnorm)
 
 
 # SIREN-like Sine activation(s)
@@ -851,7 +852,7 @@ class SirenSine(nn.Module):
         if learn_w0:
             self.w0: nn.Parameter = nn.Parameter(torch.tensor([w0]))
         else:
-            self.w0: float = w0
+            self.w0: float = w0  # type: ignore
 
     def forward(self, x: Tensor) -> Tensor:
         return torch.sin(self.w0 * x)

@@ -11,8 +11,8 @@ __all__: List[str] = ["custom_plot_setup", "plot_out"]
 # ──────────────────────────────────────────────────────────────────────────────
 
 
-def custom_plot_setup() -> None:
-    plt.rcParams["text.usetex"] = True
+def custom_plot_setup(usetex: bool = True) -> None:
+    plt.rcParams["text.usetex"] = usetex
     plt.style.use("ggplot")
     plt.rcParams["axes.facecolor"] = "white"
     plt.rcParams["axes.edgecolor"] = "black"
