@@ -34,8 +34,3 @@ repos:
         args: [--safe]
       - id: black-jupyter
         args: [--safe]
-#  - repo: https://github.com/astral-sh/ruff-pre-commit
-#    rev: v0.9.6
-#    hooks:
-#      - id: ruff-format
-#        types_or: [ python, pyi ]

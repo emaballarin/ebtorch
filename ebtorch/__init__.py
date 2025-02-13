@@ -119,13 +119,13 @@ del logit_to_prob
 del mishlayer_init
 del multilasso
 del multiridge
-del reco_reg_split
-del reco_reg
 del oldtranspose
 del pixelwise_bce_mean
 del pixelwise_bce_sum
 del pixelwise_mse_mean
 del pixelwise_mse_sum
+del reco_reg
+del reco_reg_split
 del silhouette_score
 del tensor_replicate
 del var_of_lap
@@ -160,8 +160,8 @@ del AverageMeter
 del LogCSV
 
 # Deletions (from .typing)
+del actvt
 del numlike
 del realnum
 del strdev
 del tensorlike
-del actvt

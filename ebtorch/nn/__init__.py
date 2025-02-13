@@ -128,8 +128,10 @@ del act_auto_broadcast
 del act_opclone
 del argser_f
 del argsink
+del auto_comb
 del broadcast_in_dim
 del custom_plot_setup
+del div_by_factorial
 del download_gdrive
 del emplace_kv
 del eval_model_on_test
@@ -139,13 +141,12 @@ del fromcache
 del fxfx2module
 del gather_model_repr
 del hermitize
-del matched_apply
-del div_by_factorial
-del auto_comb
 del log_muldiv
+del matched_apply
 del model_reqgrad
 del model_reqgrad_
 del no_op
+del om_flipper
 del patchify_2d
 del patchify_batch
 del patchify_dataset
@@ -154,7 +155,6 @@ del petroff_2021_color
 del petroff_2021_cycler
 del plot_out
 del randhermn
-del om_flipper
 del repr_fx_flat_adapter
 del repr_sizes_flat_adapter
 del seed_everything
