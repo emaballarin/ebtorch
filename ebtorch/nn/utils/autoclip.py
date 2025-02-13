@@ -10,9 +10,9 @@
 #
 # ==============================================================================
 #
-# Copyright (c) 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
-#                      All Rights Reserved.
-#                      [maintainance, adaptation, extension]
+# Copyright (c) 2020-2025 Emanuele Ballarin <emanuele@ballarin.cc>
+#                         All Rights Reserved.
+#                         [maintainance, adaptation, extension]
 #
 # ==============================================================================
 # SPDX-License-Identifier: MIT

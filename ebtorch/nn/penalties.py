@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ──────────────────────────────────────────────────────────────────────────────
 #
-# Copyright 2024 Emanuele Ballarin <emanuele@ballarin.cc>
+# Copyright 2025 Emanuele Ballarin <emanuele@ballarin.cc>
 # All Rights Reserved. Unless otherwise explicitly stated.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@
 #
 # ──────────────────────────────────────────────────────────────────────────────
 # Imports
+from collections.abc import Callable
 from math import pow as mpow
 from typing import List
 from typing import Tuple
@@ -30,6 +31,9 @@ from typing import Union
 
 import torch
 from torch import Tensor
+from torch.nn import functional as F
+
+from ..typing import realnum
 
 # ──────────────────────────────────────────────────────────────────────────────
 
@@ -45,7 +49,14 @@ def _bool_one_minusone(boolean: bool) -> int:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-__all__ = ["multilasso", "multiridge", "beta_gaussian_kldiv", "var_of_lap"]
+__all__ = [
+    "multilasso",
+    "multiridge",
+    "beta_gaussian_kldiv",
+    "var_of_lap",
+    "reco_reg",
+    "reco_reg_split",
+]
 # ──────────────────────────────────────────────────────────────────────────────
 
 
@@ -129,6 +140,57 @@ def multiridge(
 
     # Return Ridge penalty
     return lam * rpen / divnorm
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+def reco_reg_split(
+    x_true: Tensor,
+    x_pred: Tensor,
+    sparsifiand: Tensor,
+    *,
+    lambdas: Union[realnum, Tuple[realnum, ...]] = 1,
+    lpows: Union[realnum, Tuple[realnum, ...]] = 1,
+    reco_fx: Callable[..., Tensor] = F.mse_loss,
+    reduction: str = "mean",
+) -> Tuple[Tensor, Tensor, Tensor]:
+    if not isinstance(lambdas, Tuple):
+        lambdas: Tuple[realnum, ...] = (lambdas,)
+    if not isinstance(lpows, Tuple):
+        lpows: Tuple[realnum, ...] = (lpows,)
+
+    reco: Tensor = reco_fx(x_pred, x_true, reduction=reduction)
+    spar: Tensor = sum(  # type: ignore
+        lam * torch.linalg.vector_norm(sparsifiand, ord=lpow)
+        for lam, lpow in zip(lambdas, lpows)
+    )
+    loss: Tensor = reco + spar
+
+    return loss, reco, spar
+
+
+def reco_reg(
+    x_true: Tensor,
+    x_pred: Tensor,
+    sparsifiand: Tensor,
+    *,
+    lambdas: Union[realnum, Tuple[realnum, ...]] = 1,
+    lpows: Union[realnum, Tuple[realnum, ...]] = 1,
+    reco_fx: Callable[..., Tensor] = F.mse_loss,
+    reduction: str = "mean",
+):
+    loss: Tensor
+    loss, _, _ = reco_reg_split(
+        x_true,
+        x_pred,
+        sparsifiand,
+        lambdas=lambdas,
+        lpows=lpows,
+        reco_fx=reco_fx,
+        reduction=reduction,
+    )
+    return loss
 
 
 # ──────────────────────────────────────────────────────────────────────────────

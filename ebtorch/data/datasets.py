@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-#  Copyright (c) 2024 Emanuele Ballarin <emanuele@ballarin.cc>
+#  Copyright (c) 2025 Emanuele Ballarin <emanuele@ballarin.cc>
 #  Released under the terms of the MIT License
 #  (see: https://url.ballarin.cc/mitlicense)
 #
@@ -370,7 +370,6 @@ def imagenette_dataloader_dispatcher(
     dataset_kwargs: Optional[dict] = None,
     dataloader_kwargs: Optional[dict] = None,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
-
     dataset_kwargs: dict = {} if dataset_kwargs is None else dataset_kwargs
 
     train_ds: DatasetFolder = ImageFolder(
@@ -439,7 +438,6 @@ def tinyimagenet_dataloader_dispatcher(
     dataset_kwargs: Optional[dict] = None,
     dataloader_kwargs: Optional[dict] = None,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
-
     dataset_kwargs: dict = {} if dataset_kwargs is None else dataset_kwargs
 
     train_ds: TinyImagenet = TinyImagenet(

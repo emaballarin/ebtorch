@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright (c) 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
-#                      All Rights Reserved.
+# Copyright (c) 2020-2025 Emanuele Ballarin <emanuele@ballarin.cc>
+#                         All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -178,21 +178,25 @@ def _rbm_mask_generator(
     if dens < 0 or dens > 1:
         raise ValueError("Out-of-diagonal band density must be in [0, 1]")
 
-    mask: Tensor = torch.logical_or(torch.diag(torch.rand(size) <= dens), (not rand_diag) * torch.eye(size))  # type: ignore
+    mask: Tensor = torch.logical_or(
+        torch.diag(torch.rand(size) <= dens), (not rand_diag) * torch.eye(size)
+    )  # type: ignore
     for i in range(ood_width):
         offset: int = i + 1
         mask: Tensor = torch.logical_or(
-            mask, torch.diag(torch.rand(size - offset) <= dens, diagonal=offset)  # type: ignore
+            mask,
+            torch.diag(torch.rand(size - offset) <= dens, diagonal=offset),  # type: ignore
         )
         mask: Tensor = torch.logical_or(
-            mask, torch.diag(torch.rand(size - offset) <= dens, diagonal=-offset)  # type: ignore
+            mask,
+            torch.diag(torch.rand(size - offset) <= dens, diagonal=-offset),  # type: ignore
         )
 
     return mask
 
 
 def _masked_gradient_hook_factory(
-    mask: Union[Tensor, None]
+    mask: Union[Tensor, None],
 ) -> Callable[[Union[Tensor, None]], Union[Tensor, None]]:
     """
     Return a backward hook that masks the gradient with the given mask.
@@ -681,9 +685,13 @@ class RBLinear(nn.Linear):
 
         if self.bias is not None:
             if rand_bias:
-                _b_mask: Tensor = (torch.rand_like(self.bias) <= dens).to(self.bias.device)  # type: ignore
+                _b_mask: Tensor = (torch.rand_like(self.bias) <= dens).to(
+                    self.bias.device
+                )  # type: ignore
             else:
-                _b_mask: Tensor = torch.ones_like(self.bias, dtype=torch.bool).to(self.bias.device)  # type: ignore
+                _b_mask: Tensor = torch.ones_like(self.bias, dtype=torch.bool).to(
+                    self.bias.device
+                )  # type: ignore
         else:
             _b_mask = None  # type: ignore
         self.register_buffer(name="b_mask", tensor=_b_mask, persistent=True)

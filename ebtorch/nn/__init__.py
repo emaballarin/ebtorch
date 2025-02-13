@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ──────────────────────────────────────────────────────────────────────────────
 #
-#  Copyright (c) 2020-2024 Emanuele Ballarin <emanuele@ballarin.cc>
+#  Copyright (c) 2020-2025 Emanuele Ballarin <emanuele@ballarin.cc>
 #  Released under the terms of the MIT License
 #  (see: https://url.ballarin.cc/mitlicense)
 #
@@ -82,6 +82,8 @@ from .nnsemble import NNEnsemble
 from .penalties import beta_gaussian_kldiv
 from .penalties import multilasso
 from .penalties import multiridge
+from .penalties import reco_reg
+from .penalties import reco_reg_split
 from .penalties import var_of_lap
 from .reshapelayers import FlatChannelize2DLayer
 from .reshapelayers import ReshapeLayer
@@ -138,6 +140,9 @@ del fxfx2module
 del gather_model_repr
 del hermitize
 del matched_apply
+del div_by_factorial
+del auto_comb
+del log_muldiv
 del model_reqgrad
 del model_reqgrad_
 del no_op
@@ -149,6 +154,7 @@ del petroff_2021_color
 del petroff_2021_cycler
 del plot_out
 del randhermn
+del om_flipper
 del repr_fx_flat_adapter
 del repr_sizes_flat_adapter
 del seed_everything

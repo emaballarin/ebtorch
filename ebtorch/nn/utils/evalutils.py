@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
+# Copyright 2020-2025 Emanuele Ballarin <emanuele@ballarin.cc>
 # All Rights Reserved. Unless otherwise explicitly stated.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,7 +46,6 @@ def eval_model_on_test(  # NOSONAR
     extract_z_non_classifier: bool = False,
     verbose: bool = False,
 ) -> Union[Union[int, float], Tuple[Union[int, float], Tensor, Tensor]]:
-
     if not model_is_classifier and criterion_non_classifier is None:
         raise ValueError("Criterion must be provided for non-classifier models.")
 
@@ -66,7 +65,6 @@ def eval_model_on_test(  # NOSONAR
             leave=False,
             disable=not verbose,
         ):
-
             # Explicitly type-hint `x_e` and `y_e`
             x_e: Tensor
             y_e: Tensor

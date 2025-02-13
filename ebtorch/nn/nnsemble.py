@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright 2024 Emanuele Ballarin <emanuele@ballarin.cc>
+# Copyright 2025 Emanuele Ballarin <emanuele@ballarin.cc>
 # All Rights Reserved. Unless otherwise explicitly stated.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,7 +46,7 @@ T = TypeVar("T", bound="NNEnsemble")
 
 # Functions
 def _tensor_no_op(
-    x: Union[th.Tensor, Sequence[th.Tensor]]
+    x: Union[th.Tensor, Sequence[th.Tensor]],
 ) -> Union[th.Tensor, Sequence[th.Tensor]]:
     return x
 

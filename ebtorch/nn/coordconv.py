@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright (c) 2024 Emanuele Ballarin <emanuele@ballarin.cc>
+# Copyright (c) 2025 Emanuele Ballarin <emanuele@ballarin.cc>
 #                      All Rights Reserved.
 #                      [maintainance, adaptation, extension]
 #

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
+# Copyright 2020-2025 Emanuele Ballarin <emanuele@ballarin.cc>
 # All Rights Reserved. Unless otherwise explicitly stated.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -76,7 +76,6 @@ def store_repr_fx(
     device: Union[str, torch_device],
     preserve_graph: bool = False,
 ) -> List[Tensor]:
-
     with ExitStack() as stack:
         if not preserve_graph:
             stack.enter_context(torch.no_grad())
@@ -114,7 +113,6 @@ def store_repr_autohook(
     layers: Optional[Tuple[str, ...]] = None,
     preserve_graph: bool = False,
 ) -> List[RemovableHandle]:
-
     handles: List[RemovableHandle] = []
 
     for name, mod in model.named_modules():
@@ -138,7 +136,6 @@ def gather_model_repr(
     layers: Optional[Tuple[str, ...]] = None,
     preserve_graph: bool = False,
 ) -> Tuple[Tensor, List[Tensor]]:
-
     representation: List[Tensor] = []
 
     handles: List[RemovableHandle] = store_repr_autohook(

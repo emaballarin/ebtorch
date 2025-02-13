@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
+# Copyright 2020-2025 Emanuele Ballarin <emanuele@ballarin.cc>
 # All Rights Reserved. Unless otherwise explicitly stated.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -119,6 +119,8 @@ del logit_to_prob
 del mishlayer_init
 del multilasso
 del multiridge
+del reco_reg_split
+del reco_reg
 del oldtranspose
 del pixelwise_bce_mean
 del pixelwise_bce_sum

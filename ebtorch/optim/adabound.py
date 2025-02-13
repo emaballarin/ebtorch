@@ -4,7 +4,7 @@
 # Copyright 2019 Google Research (main, core work; original source)
 #           2019 Liangchen Luo   (main, core work; original source)
 #           2023 Nikolay Novik   (minor edits; refactoring)
-#           2023 Emanuele Ballarin <emanuele@ballarin.cc> (minor edits; maintainance)
+#           2025 Emanuele Ballarin <emanuele@ballarin.cc> (minor edits; maintainance)
 # All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

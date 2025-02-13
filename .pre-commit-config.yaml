@@ -28,13 +28,14 @@ repos:
     hooks:
       - id: reorder-python-imports
   - repo: https://github.com/psf/black
-    rev: 24.10.0
+    rev: 25.1.0
     hooks:
       - id: black
         args: [--safe]
       - id: black-jupyter
         args: [--safe]
-  - repo: https://github.com/janosh/format-ipy-cells
-    rev: v0.1.11
-    hooks:
-      - id: format-ipy-cells
+#  - repo: https://github.com/astral-sh/ruff-pre-commit
+#    rev: v0.9.6
+#    hooks:
+#      - id: ruff-format
+#        types_or: [ python, pyi ]

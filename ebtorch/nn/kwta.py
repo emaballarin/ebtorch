@@ -7,9 +7,9 @@
 #                      [orig. work: https://arxiv.org/abs/1905.10510;
 #                       orig. code: https://github.com/a554b554/kWTA-Activation]
 #
-# Copyright (c) 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
-#                      All Rights Reserved.
-#                      [maintainance, adaptation, extension]
+# Copyright (c) 2020-2025 Emanuele Ballarin <emanuele@ballarin.cc>
+#                         All Rights Reserved.
+#                         [maintainance, adaptation, extension]
 #
 # ==============================================================================
 # For type-annotation

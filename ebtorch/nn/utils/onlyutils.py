@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
+# Copyright 2020-2025 Emanuele Ballarin <emanuele@ballarin.cc>
 # All Rights Reserved. Unless otherwise explicitly stated.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,6 +61,7 @@ __all__ = [
     "stablediv",
     "hermitize",
     "randhermn",
+    "om_flipper",
 ]
 
 
@@ -187,7 +188,6 @@ def suppress_std(which: str = "all") -> None:
         raise ValueError("`which` must be either: 'none', 'out', 'err', 'all'")
 
     with open(os.devnull, "w") as devnull:
-
         if which in ("out", "all"):
             old_stdout = sys.stdout
             sys.stdout = devnull
@@ -214,6 +214,10 @@ def randhermn(
     device: Optional[strdev] = None,
 ):
     return 2 * hermitize(th.randn(n, n, dtype=dtype, device=device))
+
+
+def om_flipper(i: int, offset: int = 0) -> int:
+    return (-2 * ((i + offset) % 2)) + 1
 
 
 # Classes

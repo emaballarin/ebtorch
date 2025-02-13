@@ -10,9 +10,9 @@
 # Copyright (c) 2020-* @wenhui-prudencemed (GitHub user). All Rights Reserved.
 #                      [orig. code: https://github.com/wenhui-prudencemed/RAdam]
 #
-# Copyright (c) 2020-* Emanuele Ballarin <emanuele@ballarin.cc>
-#                      All Rights Reserved.
-#                      [maintainance, adaptation, extension]
+# Copyright (c) 2020-2025 Emanuele Ballarin <emanuele@ballarin.cc>
+#                         All Rights Reserved.
+#                         [maintainance, adaptation, extension]
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

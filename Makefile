@@ -7,6 +7,7 @@ clean:
 format:
 	find . -type f -name '*.py' -exec reorder-python-imports --py310-plus "{}" \;
 	black "$(realpath .)"
+	sort-requirements "$(realpath .)/requirements.txt"
 
 .PHONY: deployhooks
 deployhooks:

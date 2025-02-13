@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # =============================================================================
-# Copyright (c) 2024   Jiangtao Zhang and Shunyu Liu and Jie Song and
+# Copyright (c) 2025   Jiangtao Zhang and Shunyu Liu and Jie Song and
 #                      Tongtian Zhu and Zhengqi Xu and Mingli Song
 #                      [original work: https://arxiv.org/abs/2306.07684]
 #                      All Rights Reserved. Apache-2.0 Licensed.
@@ -18,7 +18,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-# Copyright (c) 2024 Emanuele Ballarin <emanuele@ballarin.cc> [minor edits]
+# Copyright (c) 2025 Emanuele Ballarin <emanuele@ballarin.cc> [minor edits]
 #                      All Rights Reserved. MIT Licensed.
 # ==============================================================================
 import copy

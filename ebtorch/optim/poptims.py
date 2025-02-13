@@ -16,7 +16,7 @@
 #                      [orig. code: https://github.com/huggingface/pytorch-image-models ;
 #                      license text: https://github.com/huggingface/pytorch-image-models/blob/main/LICENSE]
 #
-# Copyright (c) 2024 Emanuele Ballarin <emanuele@ballarin.cc> (minor edits)
+# Copyright (c) 2025 Emanuele Ballarin <emanuele@ballarin.cc> (minor edits)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 #

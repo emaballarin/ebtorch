@@ -3,7 +3,7 @@
 # ──────────────────────────────────────────────────────────────────────────────
 # Copyright 2020 Deepmind Technologies Limited.
 # Copyright 2023 Cui Jiequan (崔洁全). Minor edits.
-# Copyright 2023 Emanuele Ballarin <emanuele@ballarin.cc>. Minor edits.
+# Copyright 2025 Emanuele Ballarin <emanuele@ballarin.cc>. Minor edits.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

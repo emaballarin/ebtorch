@@ -33,7 +33,6 @@ def _find_lr(
     num_iter: int = 100,
     device: Optional[Union[str, torch.device]] = None,
 ) -> Optional[float]:
-
     lr_finder: LRFinder = LRFinder(model, optimizer, criterion, device)
     lr_finder.range_test(train_dl, start_lr=start_lr, end_lr=end_lr, num_iter=num_iter)
     _ = lr_finder.plot()

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ──────────────────────────────────────────────────────────────────────────────
 #
-#  Copyright (c) 2020-2024 Emanuele Ballarin <emanuele@ballarin.cc>
+#  Copyright (c) 2020-2025 Emanuele Ballarin <emanuele@ballarin.cc>
 #  Released under the terms of the MIT License
 #  (see: https://url.ballarin.cc/mitlicense)
 #
@@ -25,6 +25,9 @@ from .filtermanip import show_filters
 from .lrfinder import find_lr
 from .mapply import matched_apply
 from .mapply import tensor_module_matched_apply
+from .numtricks import auto_comb
+from .numtricks import div_by_factorial
+from .numtricks import log_muldiv
 from .onlyutils import act_opclone
 from .onlyutils import argser_f
 from .onlyutils import argsink
@@ -33,6 +36,7 @@ from .onlyutils import emplace_kv
 from .onlyutils import fxfx2module
 from .onlyutils import hermitize
 from .onlyutils import no_op
+from .onlyutils import om_flipper
 from .onlyutils import randhermn
 from .onlyutils import stablediv
 from .onlyutils import subset_state_dict
@@ -71,6 +75,7 @@ del evalutils
 del filtermanip
 del lrfinder
 del mapply
+del numtricks
 del onlyutils
 del palettes
 del patches

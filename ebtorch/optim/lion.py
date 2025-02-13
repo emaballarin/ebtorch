@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # =============================================================================
 # Copyright 2023 Google Research (main, core work; original source)
-# Copyright 2023 Emanuele Ballarin <emanuele@ballarin.cc> (minor edits; maintainance)
+# Copyright 2025 Emanuele Ballarin <emanuele@ballarin.cc> (minor edits; maintainance)
 # All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
