@@ -37,6 +37,7 @@ from typing import Union
 
 import torch
 import torch.nn.functional as F
+from thrmt.core import batched_outer
 from torch import Tensor
 
 __all__ = [
@@ -226,13 +227,3 @@ def bisided_thresholding(x: Tensor, thresh_ile: float) -> Tensor:
             torch.zeros_like(x),
         ),
     )
-
-
-def batched_outer(vec1: Tensor, vec2: Tensor, use_einsum: bool = False) -> Tensor:
-    """
-    Batched outer product of `vec1` and `vec2`.
-    """
-    if use_einsum:
-        return torch.einsum("bi,bj->bij", (vec1, vec2))
-    else:
-        return torch.bmm(vec1.unsqueeze(2), vec2.unsqueeze(1))
