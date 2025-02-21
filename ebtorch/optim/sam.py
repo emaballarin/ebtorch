@@ -132,6 +132,7 @@ class SAM(torch.optim.Optimizer):
                 ]
             ),
             p=2,
+            dim=None,
         )
         return norm
 

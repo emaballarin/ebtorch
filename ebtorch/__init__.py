@@ -105,6 +105,7 @@ del TupleDecouple
 del TupleSelect
 del ViTStem
 del WideResNet
+del batched_outer
 del beta_gaussian_kldiv
 del beta_reco_bce
 del beta_reco_bce_splitout

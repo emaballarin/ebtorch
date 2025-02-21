@@ -14,7 +14,7 @@ from torch import Tensor
 __all__: List[str] = ["realnum", "strdev", "numlike", "tensorlike", "actvt"]
 # ──────────────────────────────────────────────────────────────────────────────
 realnum = Union[int, float]
-strdev = Union[str, torch.device]
+strdev = Union[str, int, torch.device]
 tensorlike = Union[Tensor, np.ndarray]
 numlike = Union[realnum, tensorlike]
 actvt = Union[torch.nn.Module, Callable[[Tensor], Tensor]]

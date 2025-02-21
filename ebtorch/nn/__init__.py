@@ -61,6 +61,7 @@ from .coordconv import CoordConv2d
 from .coordconv import CoordConv3d
 from .debuglayers import ProbePrintLayer
 from .fieldtransform import FieldTransform
+from .functional import batched_outer
 from .functional import bisided_thresholding
 from .functional import cummatmul
 from .functional import field_transform
@@ -140,7 +141,6 @@ del find_lr
 del fromcache
 del fxfx2module
 del gather_model_repr
-del hermitize
 del log_muldiv
 del matched_apply
 del model_reqgrad

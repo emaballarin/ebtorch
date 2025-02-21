@@ -52,6 +52,7 @@ __all__ = [
     "smelu",
     "telu",
     "tensor_replicate",
+    "batched_outer",
 ]
 
 
@@ -148,7 +149,7 @@ def silhouette_score(feats: Tensor, labels: Tensor) -> Union[float, Tensor]:  # 
             f"`feats` (shape {feats.shape}) and `labels` (shape {labels.shape}) must have same length"
         )
     device, dtype = feats.device, feats.dtype
-    unique_labels: Union[Tensor, Tuple[Tensor, ...]] = torch.unique(labels)
+    unique_labels: Union[Tensor, Tuple[Tensor, ...]] = torch.unique(labels)  # NOSONAR
     num_samples: int = feats.shape[0]
     if not (1 < len(unique_labels) < num_samples):
         raise ValueError("The number of unique `labels` must be ∈ (1, `num_samples`)")
@@ -217,9 +218,18 @@ def logit_to_prob(logit: Tensor) -> Tensor:
 def bisided_thresholding(x: Tensor, thresh_ile: float) -> Tensor:
     lq = min(thresh_ile, 1 - thresh_ile)
     return torch.where(
-        x > torch.quantile(x, 1 - lq),
+        x > torch.quantile(x, 1 - lq, dim=None),
         torch.ones_like(x),
         torch.where(
-            x < torch.quantile(x, lq), -torch.ones_like(x), torch.zeros_like(x)
+            x < torch.quantile(x, lq, dim=None),
+            -torch.ones_like(x),
+            torch.zeros_like(x),
         ),
     )
+
+
+def batched_outer(vec1: Tensor, vec2: Tensor, use_einsum: bool = False):
+    if use_einsum:
+        return torch.einsum("bi,bj->bij", (vec1, vec2))
+    else:
+        torch.bmm(vec1.unsqueeze(2), vec2.unsqueeze(1))

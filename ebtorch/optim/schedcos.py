@@ -280,7 +280,7 @@ class CosineLRScheduler(_Scheduler):
 
     def get_cycle_length(self, cycles=0):
         cycles = max(1, cycles or self.cycle_limit)
-        if self.cycle_mul == 1.0:
+        if self.cycle_mul == 1.0:  # NOSONAR
             return self.t_initial * cycles
         else:
             return int(

@@ -25,6 +25,7 @@
 import os
 import sys
 from collections.abc import Callable
+from collections.abc import Generator
 from contextlib import contextmanager
 from copy import deepcopy as deepcp
 from functools import partial as fpartial
@@ -39,6 +40,7 @@ import requests
 import torch as th
 from httpx import Client
 from safe_assert import safe_assert as sassert
+from thrmt import random_gue
 from torch import dtype as _dtype
 from torch import nn
 from torch import Tensor
@@ -59,7 +61,6 @@ __all__ = [
     "suppress_std",
     "TelegramBotEcho",
     "stablediv",
-    "hermitize",
     "randhermn",
     "om_flipper",
 ]
@@ -183,7 +184,7 @@ def fxfx2module(fx: Union[Callable[[Tensor], Tensor], nn.Module]) -> nn.Module:
 
 
 @contextmanager
-def suppress_std(which: str = "all") -> None:
+def suppress_std(which: str = "all") -> Generator[None, Any, None]:
     if which not in ("none", "out", "err", "all"):
         raise ValueError("`which` must be either: 'none', 'out', 'err', 'all'")
 
@@ -196,7 +197,7 @@ def suppress_std(which: str = "all") -> None:
             sys.stderr = devnull
 
         try:
-            yield  # NOSONAR
+            yield
         finally:
             if which in ("out", "all"):
                 sys.stdout = old_stdout
@@ -204,16 +205,18 @@ def suppress_std(which: str = "all") -> None:
                 sys.stderr = old_stderr
 
 
-def hermitize(x: Tensor) -> Tensor:
-    return (x + x.conj().t()) / 2
-
-
 def randhermn(
     n: int,
     dtype: Optional[_dtype] = th.cdouble,
     device: Optional[strdev] = None,
 ):
-    return 2 * hermitize(th.randn(n, n, dtype=dtype, device=device))
+    return random_gue(
+        size=n,
+        sigma=1,
+        dtype=dtype,
+        device=device,
+        batch_shape=None,
+    )
 
 
 def om_flipper(i: int, offset: int = 0) -> int:

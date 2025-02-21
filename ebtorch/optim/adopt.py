@@ -402,7 +402,7 @@ def _multi_tensor_adopt(  # NOSONAR
             if maximize:
                 torch._foreach_add_(device_grads, device_params, alpha=weight_decay)
             else:
-                device_grads: List[Tensor] = torch._foreach_add(
+                device_grads: List[Tensor] = torch._foreach_add(  # type: ignore
                     device_grads, device_params, alpha=weight_decay
                 )
 
@@ -432,7 +432,7 @@ def _multi_tensor_adopt(  # NOSONAR
             mask_scale: list = [m.mean() for m in masks]
             torch._foreach_maximum_(mask_scale, 1e-3)
             torch._foreach_div_(masks, mask_scale)
-            device_exp_avgs: List[Tensor] = torch._foreach_mul(device_exp_avgs, masks)
+            device_exp_avgs: List[Tensor] = torch._foreach_mul(device_exp_avgs, masks)  # type: ignore
 
         torch._foreach_add_(device_params, device_exp_avgs, alpha=-lr)
 

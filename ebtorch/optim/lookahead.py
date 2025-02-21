@@ -31,6 +31,7 @@ class Lookahead(Optimizer):
     Lookahead Optimizer: https://arxiv.org/abs/1907.08610
     """
 
+    # noinspection PyMissingConstructor
     def __init__(self, optimizer, la_steps=5, la_alpha=0.8, pullback_momentum="none"):
         """optimizer: inner optimizer
         la_steps (int): number of lookahead steps

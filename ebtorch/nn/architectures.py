@@ -685,12 +685,12 @@ class RBLinear(nn.Linear):
 
         if self.bias is not None:
             if rand_bias:
-                _b_mask: Tensor = (torch.rand_like(self.bias) <= dens).to(
-                    self.bias.device
+                _b_mask: Tensor = (torch.rand_like(self.bias) <= dens).to(  # type: ignore
+                    self.bias.device  # type: ignore
                 )  # type: ignore
             else:
-                _b_mask: Tensor = torch.ones_like(self.bias, dtype=torch.bool).to(
-                    self.bias.device
+                _b_mask: Tensor = torch.ones_like(self.bias, dtype=torch.bool).to(  # type: ignore
+                    self.bias.device  # type: ignore
                 )  # type: ignore
         else:
             _b_mask = None  # type: ignore

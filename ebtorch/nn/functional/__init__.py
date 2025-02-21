@@ -12,6 +12,7 @@
 #
 # ──────────────────────────────────────────────────────────────────────────────
 # Imports (specific)
+from .inner_functional import batched_outer
 from .inner_functional import bisided_thresholding
 from .inner_functional import cummatmul
 from .inner_functional import field_transform
