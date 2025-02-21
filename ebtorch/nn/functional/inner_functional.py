@@ -228,8 +228,11 @@ def bisided_thresholding(x: Tensor, thresh_ile: float) -> Tensor:
     )
 
 
-def batched_outer(vec1: Tensor, vec2: Tensor, use_einsum: bool = False):
+def batched_outer(vec1: Tensor, vec2: Tensor, use_einsum: bool = False) -> Tensor:
+    """
+    Batched outer product of `vec1` and `vec2`.
+    """
     if use_einsum:
         return torch.einsum("bi,bj->bij", (vec1, vec2))
     else:
-        torch.bmm(vec1.unsqueeze(2), vec2.unsqueeze(1))
+        return torch.bmm(vec1.unsqueeze(2), vec2.unsqueeze(1))
