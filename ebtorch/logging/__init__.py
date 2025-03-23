@@ -14,7 +14,9 @@
 # Imports (specific)
 from .avgmeter import AverageMeter
 from .logcsv import LogCSV
+from .yamldump import write_dict_as_yaml
 
 # Deletions (from .)
 del avgmeter
 del logcsv
+del yamldump

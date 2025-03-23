@@ -12,15 +12,18 @@
 #
 # ──────────────────────────────────────────────────────────────────────────────
 
-# LIST OF REQUIREMENTS:
 advertorch>=0.2.4  # pip install git+https://github.com/BorealisAI/advertorch.git
+distributed>=2024.12.1
 httpx>=0.27
 matplotlib>=3.8
-medmnist>=2.2.3
+medmnist>=3
 numpy>=1.24
 pillow>=10.3.0
+# LIST OF REQUIREMENTS:
+PyYAML>=6.0.2
 requests>=2.25
 safe_assert>=0.5
+setuptools>=75.8.2
 thrmt>=0.0.6
 torch>=2.5
 torch-lr-finder>=0.2.1

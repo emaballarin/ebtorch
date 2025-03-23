@@ -159,6 +159,7 @@ del wfneal
 # Deletions (from .logging)
 del AverageMeter
 del LogCSV
+del write_dict_as_yaml
 
 # Deletions (from .typing)
 del actvt
