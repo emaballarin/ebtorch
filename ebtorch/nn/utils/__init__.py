@@ -63,6 +63,7 @@ from .reprutils import store_repr_autohook
 from .reprutils import store_repr_fx
 from .reprutils import store_repr_hook
 from .seeder import seed_everything
+from .zzag import zigzag
 
 # Deletions (from .)
 del actab
@@ -81,3 +82,4 @@ del patches
 del plotting
 del reprutils
 del seeder
+del zzag

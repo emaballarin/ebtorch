@@ -172,3 +172,4 @@ del tableau10_color
 del tableau10_cycler
 del tensor_module_matched_apply
 del variadic_attrs
+del zigzag
