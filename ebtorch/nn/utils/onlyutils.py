@@ -63,6 +63,7 @@ __all__ = [
     "stablediv",
     "randhermn",
     "om_flipper",
+    "index_discard",
 ]
 
 
@@ -221,6 +222,23 @@ def randhermn(
 
 def om_flipper(i: int, offset: int = 0) -> int:
     return (-2 * ((i + offset) % 2)) + 1
+
+
+def index_discard(x, dim, index):
+    if not isinstance(index, th.Tensor):
+        index = th.tensor(index, device=x.device, dtype=th.long)
+    else:
+        index = index.to(x.device)
+
+    n = x.size(dim)
+    all_indices = th.arange(n, device=x.device)
+
+    mask = th.ones(n, dtype=th.bool, device=x.device)
+    mask[index] = False
+
+    keep_indices = all_indices[mask]
+
+    return th.index_select(x, dim, keep_indices)
 
 
 # Classes
