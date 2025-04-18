@@ -40,6 +40,7 @@ import requests
 import torch as th
 from httpx import Client
 from safe_assert import safe_assert as sassert
+from safetensors.torch import save_model
 from thrmt import random_gue
 from torch import dtype as _dtype
 from torch import nn
@@ -64,6 +65,7 @@ __all__ = [
     "randhermn",
     "om_flipper",
     "index_discard",
+    "BestModelSaver",
 ]
 
 
@@ -106,6 +108,7 @@ def argser_f(f, arglist: Union[list, tuple, dict]):
         else:
             if isinstance(arglist[0], tuple):
                 return fpartial(f, *arglist[0])
+            # noinspection PyInconsistentReturns
             if isinstance(arglist[0], dict):
                 return fpartial(f, **arglist[0])
     elif isinstance(arglist, tuple):
@@ -288,3 +291,22 @@ class TelegramBotEcho:  # NOSONAR
 
     def send(self, msg: str) -> None:
         _ = self._client.post(url=self._url, json=emplace_kv(self._jdata, "text", msg))
+
+
+class BestModelSaver:
+
+    __slots__: Tuple[str, ...] = ("iteration", "best_metric", "name", "path")
+
+    def __init__(self, name: Optional[str] = None, path: Optional[str] = None):
+        self.iteration: int = -1
+        self.best_metric: Optional[numlike] = None
+        self.name: str = name or "model"
+        self.path: str = path or "./"
+
+    def __call__(self, model: nn.Module, metric: numlike) -> bool:
+        if (self.best_metric is None) or (metric >= self.best_metric):
+            self.iteration += 1
+            self.best_metric: numlike = metric
+            save_model(model, os.path.join(self.path, f"{self.name}.safetensors"))
+            return True
+        return False

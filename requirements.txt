@@ -19,10 +19,10 @@ matplotlib>=3.8
 medmnist>=3
 numpy>=1.24
 pillow>=10.3.0
-# LIST OF REQUIREMENTS:
 PyYAML>=6.0.2
 requests>=2.25
 safe_assert>=0.5
+safetensors>=0.5.3
 setuptools>=75.8.2
 thrmt>=0.0.6
 torch>=2.5
