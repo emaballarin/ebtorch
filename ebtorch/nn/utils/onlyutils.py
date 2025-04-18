@@ -307,6 +307,9 @@ class BestModelSaver:
         if (self.best_metric is None) or (metric >= self.best_metric):
             self.iteration += 1
             self.best_metric: numlike = metric
-            save_model(model, os.path.join(self.path, f"{self.name}.safetensors"))
+            save_model(
+                model,
+                os.path.join(self.path, f"{self.name}_{self.iteration}.safetensors"),
+            )
             return True
         return False
