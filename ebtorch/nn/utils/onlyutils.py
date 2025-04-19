@@ -30,8 +30,10 @@ from contextlib import contextmanager
 from copy import deepcopy as deepcp
 from functools import partial as fpartial
 from os import environ
+from pathlib import Path
 from typing import Any
 from typing import Dict
+from typing import Literal
 from typing import Optional
 from typing import Tuple
 from typing import Union
@@ -90,7 +92,10 @@ def stablediv(
 
 
 def argser_f(f, arglist: Union[list, tuple, dict]):
-    error_listerror = "Function arguments must be either an args tuple or a kwargs dictionary, or both in this order inside a list."
+    error_listerror = (
+        "Function arguments must be either an args tuple or a kwargs dictionary, or both in this order "
+        "inside a list."
+    )
 
     if not isinstance(arglist, (list, tuple, dict)):
         raise TypeError(error_listerror)
@@ -244,6 +249,10 @@ def index_discard(x, dim, index):
     return th.index_select(x, dim, keep_indices)
 
 
+def _safetensors_model_saver(model: nn.Module, filepath: Path) -> None:
+    save_model(model, str(filepath))
+
+
 # Classes
 class _FxToFxobj:  # NOSONAR
     __slots__ = ("fx",)
@@ -294,22 +303,91 @@ class TelegramBotEcho:  # NOSONAR
 
 
 class BestModelSaver:
+    __slots__: Tuple[str] = (
+        "best_metric",
+        "best_path",
+        "from_epoch",
+        "logger",
+        "mode",
+        "name",
+        "path",
+        "saver",
+    )
 
-    __slots__: Tuple[str, ...] = ("iteration", "best_metric", "name", "path")
+    def __init__(
+        self,
+        *,
+        name: str = "model",
+        path: Union[str, Path] = "./checkpoints",
+        mode: Literal["max", "min"] = "max",
+        from_epoch: Optional[int] = None,
+        saver: Callable[[nn.Module, Path], None] = _safetensors_model_saver,
+        logger: Optional[Callable[[str], None]] = print,
+    ) -> None:
 
-    def __init__(self, name: Optional[str] = None, path: Optional[str] = None):
-        self.iteration: int = -1
-        self.best_metric: Optional[numlike] = None
-        self.name: str = name or "model"
-        self.path: str = path or "./"
+        if mode not in ("max", "min"):
+            raise ValueError("mode must be 'max' or 'min'")
 
-    def __call__(self, model: nn.Module, metric: numlike) -> bool:
-        if (self.best_metric is None) or (metric >= self.best_metric):
-            self.iteration += 1
-            self.best_metric: numlike = metric
-            save_model(
-                model,
-                os.path.join(self.path, f"{self.name}_{self.iteration}.safetensors"),
+        self.name: str = name
+        self.path: Path = Path(path)
+        self.path.mkdir(parents=True, exist_ok=True)
+        self.mode: Literal["max", "min"] = mode
+        self.best_metric: numlike = float("inf") if mode == "min" else float("-inf")
+        self.best_path: Optional[Path] = None
+        self.from_epoch: Optional[int] = (
+            None if from_epoch is None else max(from_epoch, 0)
+        )
+        self.saver: Callable[[nn.Module, Path], None] = saver
+        self.logger: Optional[Callable[[str], None]] = logger
+
+    def __call__(
+        self,
+        model: nn.Module,
+        metric: numlike,
+        epoch: Optional[int] = None,
+    ) -> bool:
+
+        if self.from_epoch is not None and epoch is None:
+            raise ValueError("`epoch` must be provided if `from_epoch` is set")
+        if self.from_epoch is not None and epoch < self.from_epoch:
+            return False
+
+        improved: bool = (
+            metric < self.best_metric
+            if self.mode == "min"
+            else metric > self.best_metric
+        )
+        if not improved:
+            return False
+
+        filename: str = (
+            f"{self.name}_{epoch if epoch is not None else ''}_{metric:.4f}.pt"
+        )
+        new_path: Path = self.path / filename
+
+        self.saver(model, new_path)
+
+        if self.best_path and self.best_path.exists():
+            try:
+                self.best_path.unlink()
+            except Exception as e:
+                if self.logger:
+                    self.logger(
+                        f"[BestModelSaver] warning: could not delete old checkpoint {self.best_path!r}: {e}"
+                    )
+
+        self.best_metric: numlike = metric
+        self.best_path: Path = new_path
+
+        if self.logger:
+            self.logger(
+                f"[BestModelSaver] saved new best ({self.mode}): "
+                f"{metric:.4f} → {new_path}"
             )
-            return True
-        return False
+        return True
+
+    def __repr__(self) -> str:
+        return (
+            f"<BestModelSaver name={self.name!r} mode={self.mode!r} "
+            f"best_metric={self.best_metric!r} best_path={self.best_path!r}>"
+        )
