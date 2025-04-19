@@ -141,6 +141,7 @@ del Lamb
 del Lion
 del Lookahead
 del Lookaround
+del MultiPhaseScheduler
 del RAdam
 del SAM
 del SGDP

@@ -39,6 +39,7 @@ from .lamb import Lamb
 from .lion import Lion
 from .lookahead import Lookahead
 from .lookaround import Lookaround
+from .multiphase import MultiPhaseScheduler
 from .poptims import AdamP
 from .poptims import SGDP
 from .radam import RAdam
@@ -54,6 +55,7 @@ del lamb
 del lion
 del lookahead
 del lookaround
+del multiphase
 del poptims
 del radam
 del sam
