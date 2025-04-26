@@ -26,7 +26,7 @@ PACKAGENAME: str = "ebtorch"
 
 setup(
     name=PACKAGENAME,
-    version="0.32.0",
+    version="0.32.1",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",
@@ -53,7 +53,7 @@ setup(
         "matplotlib>=3.8",
         "medmnist>=3",
         "numpy>=1.24",
-        "pillow>=10.3.0",
+        "pillow>=9.5",
         "PyYAML>=6.0.2",
         "requests>=2.25",
         "safe_assert>=0.5",

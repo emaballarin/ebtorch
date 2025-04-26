@@ -49,6 +49,29 @@ def _normalize_list(
     return [caster(value)] * length
 
 
+def _dilate_int(
+    x: Optional[Union[int, Sequence[int]]] = None, dilation: Optional[int] = None
+) -> Optional[Union[int, List[int]]]:
+    """Multiply an int or sequence of ints by a dilation factor."""
+
+    if x is None:
+        return None
+
+    if dilation is None:
+        dilation = 1
+
+    if isinstance(x, int):
+        return x * dilation
+
+    if isinstance(x, Sequence):
+        try:
+            return [elem * dilation for elem in x]
+        except TypeError:
+            raise TypeError("All elements of `x` must be ints")
+
+    raise TypeError("`x` must be None, an int, or a Sequence[int]")
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 
 
@@ -66,8 +89,17 @@ class MultiPhaseScheduler(_LRScheduler):
         anneal_steps: Optional[Union[int, Sequence[int]]] = None,
         cos_warmup: bool = False,
         cos_annealing: Optional[Union[bool, Sequence[bool]]] = None,
+        step_dilation: Optional[int] = None,
         verbose: bool = False,
     ) -> None:
+
+        warmup_steps: int = _dilate_int(warmup_steps, step_dilation)
+        steady_steps: Optional[Union[int, Sequence[int]]] = _dilate_int(
+            steady_steps, step_dilation
+        )
+        anneal_steps: Optional[Union[int, Sequence[int]]] = _dilate_int(
+            anneal_steps, step_dilation
+        )
 
         num_groups: int = len(optim.param_groups)
 
