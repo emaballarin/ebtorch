@@ -110,7 +110,7 @@ def alah_optim(
 
 
 def lahdopt(
-    params: Union[Iterable[Tensor], Iterable[dict]],
+    parameters: Union[Iterable[Tensor], Iterable[dict]],
     ad_lr: Union[float, Tensor] = 1e-3,
     la_steps: int = 5,
     la_alpha: float = 0.8,
@@ -126,7 +126,7 @@ def lahdopt(
     """ADOPT + Lookahead optimizer"""
     return Lookahead(
         ADOPT(
-            params=params,
+            params=parameters,
             lr=ad_lr,
             betas=ad_betas,
             eps=ad_eps,
