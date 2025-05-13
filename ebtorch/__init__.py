@@ -147,6 +147,7 @@ del SAM
 del SGDP
 del alah_optim
 del epochwise_onecycle
+del lahdopt
 del make_beta_scheduler
 del onecycle_lincos
 del onecycle_linlin

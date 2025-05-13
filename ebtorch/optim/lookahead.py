@@ -17,6 +17,7 @@
 # ==============================================================================
 # SPDX-License-Identifier: MIT
 # SPDX-License-Identifier: Apache-2.0
+import contextlib as cxl
 from collections import defaultdict
 
 import torch
@@ -94,6 +95,22 @@ class Lookahead(Optimizer):
                 param_state = self.state[p]
                 p.data.copy_(param_state["backup_params"])
                 del param_state["backup_params"]
+
+    @cxl.contextmanager
+    def slow_weights(self):
+        self._backup_and_load_cache()
+        try:
+            yield
+        finally:
+            self._clear_and_load_backup()
+
+    @cxl.contextmanager
+    def fast_weights(self):
+        self._clear_and_load_backup()
+        try:
+            yield
+        finally:
+            self._backup_and_load_cache()
 
     @property
     def param_groups(self):

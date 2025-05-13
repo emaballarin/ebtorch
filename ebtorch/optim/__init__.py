@@ -26,6 +26,7 @@ from .adan import Adan
 from .adopt import ADOPT
 from .custom import alah_optim
 from .custom import epochwise_onecycle
+from .custom import lahdopt
 from .custom import make_beta_scheduler
 from .custom import onecycle_lincos
 from .custom import onecycle_linlin
