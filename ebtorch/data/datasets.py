@@ -191,6 +191,7 @@ def mnist_dataloader_dispatcher(
     shuffle_test: bool = False,
     dataset_kwargs: Optional[dict] = None,
     dataloader_kwargs: Optional[dict] = None,
+    augment_train: bool = False,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
     return _dataloader_dispatcher(
         dataset="mnist",
@@ -202,6 +203,7 @@ def mnist_dataloader_dispatcher(
         shuffle_test=shuffle_test,
         dataset_kwargs=dataset_kwargs,
         dataloader_kwargs=dataloader_kwargs,
+        augment_train=augment_train,
     )
 
 
@@ -237,6 +239,7 @@ def kmnist_dataloader_dispatcher(
     shuffle_test: bool = False,
     dataset_kwargs: Optional[dict] = None,
     dataloader_kwargs: Optional[dict] = None,
+    augment_train: bool = False,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
     return _dataloader_dispatcher(
         dataset="kmnist",
@@ -248,6 +251,7 @@ def kmnist_dataloader_dispatcher(
         shuffle_test=shuffle_test,
         dataset_kwargs=dataset_kwargs,
         dataloader_kwargs=dataloader_kwargs,
+        augment_train=augment_train,
     )
 
 
