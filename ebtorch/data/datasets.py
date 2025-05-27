@@ -24,6 +24,7 @@ from torchvision.datasets import KMNIST
 from torchvision.datasets import MNIST
 from torchvision.transforms import CenterCrop
 from torchvision.transforms import Compose
+from torchvision.transforms import RandomAffine
 from torchvision.transforms import RandomCrop
 from torchvision.transforms import RandomHorizontalFlip
 from torchvision.transforms import RandomResizedCrop
@@ -114,17 +115,26 @@ def _dataloader_dispatcher(  # NOSONAR
     os.makedirs(name=data_root, exist_ok=True)
 
     eval_transforms = Compose([ToTensor()])
-    train_transforms = (
-        Compose(
-            [
-                RandomCrop(32, padding=4),
-                RandomHorizontalFlip(),
-                ToTensor(),
-            ]
-        )
-        if (augment_train and ("cifar" in dataset))
-        else Compose([ToTensor()])
-    )
+    if augment_train:
+        if "cifar" in dataset:
+            train_transforms = Compose(
+                [
+                    RandomCrop(32, padding=4),
+                    RandomHorizontalFlip(),
+                    ToTensor(),
+                ]
+            )
+        elif dataset in ("mnist", "kmnist"):
+            train_transforms = Compose(
+                [
+                    RandomAffine(degrees=18, scale=(0.8, 1.2)),
+                    ToTensor(),
+                ]
+            )
+        else:  # augment_train=True, unsupported dataset
+            raise RuntimeError("Augmentation not supported for this dataset.")
+    else:  # augment_train=False
+        train_transforms = Compose([ToTensor()])
 
     # Address dictionary mutability as default argument
     dataset_kwargs: dict = {} if dataset_kwargs is None else dataset_kwargs
