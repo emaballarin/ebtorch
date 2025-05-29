@@ -131,9 +131,16 @@ def _dataloader_dispatcher(  # NOSONAR
                     ToTensor(),
                 ]
             )
-        else:  # augment_train=True, unsupported dataset
+        elif dataset == "fashionmnist":
+            train_transforms = Compose(
+                [
+                    RandomAffine(degrees=18, translate=(0.1, 0.1), scale=(0.9, 1.1)),
+                    ToTensor(),
+                ]
+            )
+        else:
             raise RuntimeError("Augmentation not supported for this dataset.")
-    else:  # augment_train=False
+    else:
         train_transforms = Compose([ToTensor()])
 
     # Address dictionary mutability as default argument
@@ -216,6 +223,7 @@ def fashionmnist_dataloader_dispatcher(
     shuffle_test: bool = False,
     dataset_kwargs: Optional[dict] = None,
     dataloader_kwargs: Optional[dict] = None,
+    augment_train: bool = False,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
     return _dataloader_dispatcher(
         dataset="fashionmnist",
@@ -227,6 +235,7 @@ def fashionmnist_dataloader_dispatcher(
         shuffle_test=shuffle_test,
         dataset_kwargs=dataset_kwargs,
         dataloader_kwargs=dataloader_kwargs,
+        augment_train=augment_train,
     )
 
 
