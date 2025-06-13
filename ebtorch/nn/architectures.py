@@ -77,6 +77,7 @@ __all__ = [
     "GaussianReparameterizerSamplerLegacy",
     "lexsemble",
     "GenerAct",
+    "SimpleFCN",
 ]
 
 
@@ -228,6 +229,38 @@ def build_repeated_sequential(
     for i in range(depth):
         repeated.append(rep_builder(i))
     return repeated
+
+
+class SimpleFCN(nn.Module):
+    def __init__(
+        self,
+        in_dim: int,
+        out_dim: int,
+        hid_dims: Optional[Union[List[int], Tuple[int, ...], int]] = None,
+        actv: Union[nn.Module, Callable[[Tensor], Tensor]] = nn.Mish(),
+        final_actv: Optional[Union[nn.Module, Callable[[Tensor], Tensor]]] = None,
+        normalize: bool = False,
+    ) -> None:
+        super().__init__()
+        if hid_dims is None:
+            hid_dims: Union[List[int], Tuple[int, ...]] = []
+        elif not isinstance(hid_dims, (list, tuple)):
+            hid_dims: Union[List[int], Tuple[int, ...]] = (hid_dims,)
+        layers: List[nn.Module] = []
+        prev_dim: int = in_dim
+        for dim in hid_dims:
+            layers.append(nn.Linear(prev_dim, dim))
+            layers.append(copy.deepcopy(actv))
+            if normalize and (dim > 1):
+                layers.append(nn.LayerNorm(dim))
+            prev_dim: int = dim
+        layers.append(nn.Linear(prev_dim, out_dim))
+        if final_actv is not None:
+            layers.append(copy.deepcopy(final_actv))
+        self.net = nn.Sequential(*layers)
+
+    def forward(self, x: Tensor) -> Tensor:
+        return self.net(x)
 
 
 # Fully-Connected Block, New version
@@ -408,8 +441,6 @@ class FCBlockLegacy(nn.Module):
 
 # Causal Convolutional Layer, 1D
 # (cfr.: https://github.com/pytorch/pytorch/issues/1333#issuecomment-400338207)
-
-
 class CausalConv1d(nn.Conv1d):
     def __init__(
         self,
@@ -444,8 +475,6 @@ class CausalConv1d(nn.Conv1d):
 
 
 # Reparameterizer / Sampler for (C)VAEs & co.
-
-
 def _gauss_reparameterize_sample(
     z_mu: Tensor, z_log_var: Tensor, device: Optional[torch.DeviceObjType] = None
 ) -> Tensor:

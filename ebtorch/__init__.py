@@ -92,6 +92,7 @@ del ScaledERF
 del SharedDuplexLinearNeck
 del SilhouetteScore
 del SimpleDuplexLinearNeck
+del SimpleFCN
 del SinLU
 del SingleNeckVAE
 del SirenSine

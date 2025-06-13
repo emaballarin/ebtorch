@@ -28,14 +28,14 @@
 #
 # ==============================================================================
 # SPDX-License-Identifier: Apache-2.0
+from typing import Dict
 from typing import List
-from typing import TypeVar
+from typing import Optional
+from typing import Union
 
 import torch
 import torch.nn as nn
 from torch import Tensor
-
-SinLUModule = TypeVar("SinLUModule", bound="SinLU")
 
 __all__: List[str] = [
     "SinLU",
@@ -43,10 +43,19 @@ __all__: List[str] = [
 
 
 class SinLU(nn.Module):
-    def __init__(self: SinLUModule) -> None:
-        super(SinLU, self).__init__()
-        self.a: Tensor = nn.Parameter(torch.ones(1))
-        self.b: Tensor = nn.Parameter(torch.ones(1))
+    def __init__(
+        self,
+        a: Union[int, float] = 1,
+        b: Union[int, float] = 1,
+        device: Optional[torch.device] = None,
+        dtype: Optional[torch.dtype] = None,
+    ) -> None:
+        factory_kwargs: Dict[
+            str, Union[Optional[torch.device], Optional[torch.dtype]]
+        ] = {"device": device, "dtype": dtype}
+        super().__init__()
+        self.a: Tensor = nn.Parameter(torch.ones(1, **factory_kwargs) * a)
+        self.b: Tensor = nn.Parameter(torch.ones(1, **factory_kwargs) * b)
 
-    def forward(self: SinLUModule, x: Tensor) -> Tensor:
+    def forward(self, x: Tensor) -> Tensor:
         return torch.sigmoid(x) * (x + self.a * torch.sin(self.b * x))
