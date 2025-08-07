@@ -26,7 +26,7 @@ PACKAGENAME: str = "ebtorch"
 
 setup(
     name=PACKAGENAME,
-    version="0.34.0",
+    version="0.34.1",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",
@@ -45,7 +45,7 @@ setup(
     ],
     python_requires=">=3.10",
     install_requires=[
-        "advertorch>=0.2.4",  # pip install git+https://github.com/BorealisAI/advertorch.git
+        "advertorch>=0.2.3",  # pip install git+https://github.com/BorealisAI/advertorch.git
         "distributed>=2024.12.1",
         "httpx>=0.27",
         "matplotlib>=3.8",

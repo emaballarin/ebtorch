@@ -40,7 +40,6 @@ from typing import Tuple
 from typing import Union
 
 import requests
-import torch
 import torch as th
 from httpx import Client
 from safe_assert import safe_assert as sassert
@@ -53,7 +52,6 @@ from torch import Tensor
 from ...typing import actvt
 from ...typing import numlike
 from ...typing import strdev
-from .onlyutils import std_suppress
 
 __all__ = [
     "argser_f",
@@ -252,21 +250,21 @@ def _safetensors_model_saver(model: nn.Module, filepath: Path) -> None:
 
 
 def torch_set_hiperf_precision(newapi: bool = False, aggressive: bool = False, quiet: bool = False) -> None:
-    with std_suppress(which="all" if quiet else "none"):
+    with suppress_std(which="all" if quiet else "none"):
         if newapi:
-            torch.backends.fp32_precision = "tf32"  # type: ignore
-            torch.backends.cudnn.fp32_precision = "tf32"  # type: ignore
-            torch.backends.cuda.matmul.fp32_precision = "tf32"
-            torch.backends.cudnn.conv.fp32_precision = "tf32"  # type: ignore
-            torch.backends.cudnn.rnn.fp32_precision = "tf32"  # type: ignore
+            th.backends.fp32_precision = "tf32"  # type: ignore
+            th.backends.cudnn.fp32_precision = "tf32"  # type: ignore
+            th.backends.cuda.matmul.fp32_precision = "tf32"
+            th.backends.cudnn.conv.fp32_precision = "tf32"  # type: ignore
+            th.backends.cudnn.rnn.fp32_precision = "tf32"  # type: ignore
         else:
-            torch.set_float32_matmul_precision(precision="high")
-            torch.backends.cuda.matmul.allow_tf32 = True
-            torch.backends.cudnn.allow_tf32 = True
+            th.set_float32_matmul_precision(precision="high")
+            th.backends.cuda.matmul.allow_tf32 = True
+            th.backends.cudnn.allow_tf32 = True
         if aggressive:
-            torch.backends.cuda.matmul.allow_fp16_accumulation = True
-            torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = True
-            torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction = True
+            th.backends.cuda.matmul.allow_fp16_accumulation = True
+            th.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = True
+            th.backends.cuda.matmul.allow_bf16_reduced_precision_reduction = True
 
 
 # Classes

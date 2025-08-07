@@ -18,6 +18,7 @@
 # limitations under the License.
 # ==============================================================================
 """Implementation of the Lion optimizer."""
+
 from collections.abc import Callable
 from typing import Optional
 from typing import Tuple
