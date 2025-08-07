@@ -1,27 +1,9 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# ==============================================================================
-#
-# Copyright 2025 Emanuele Ballarin <emanuele@ballarin.cc>
-# All Rights Reserved. Unless otherwise explicitly stated.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# ==============================================================================
-#
-# SPDX-License-Identifier: Apache-2.0
-#
+# ~~ Imports ~~ ────────────────────────────────────────────────────────────────
+import math
 from collections.abc import Callable
+from collections.abc import Generator
+from contextlib import contextmanager
 from typing import List
 from typing import Tuple
 from typing import Union
@@ -33,9 +15,128 @@ from torchattacks.attack import Attack as TAAttack
 __all__ = [
     "AdverApply",
     "TA2ATAdapter",
+    "sample_ndball",
+    "randpert",
 ]
 
 
+# ~~ Functions ~~ ──────────────────────────────────────────────────────────────
+@contextmanager
+def manual_seed(seed: int | None = None) -> Generator[None, None, None]:
+    if seed is None:
+        yield
+        return
+    old_state: th.Tensor = th.random.get_rng_state()
+    try:
+        if seed is not None:
+            th.random.manual_seed(seed=seed)
+        yield
+    finally:
+        if seed is not None:
+            th.random.set_rng_state(new_state=old_state)
+
+
+def sample_ndball(  # NOSONAR
+    n: int = 1,
+    d: int = 1,
+    within: bool = True,
+    qmc: bool = False,
+    seed: int | None = None,
+    device: th.device | None = None,
+    dtype: th.dtype | None = None,
+    sobol: th.quasirandom.SobolEngine | None = None,
+) -> th.Tensor:
+    """Sample `n` points uniformly from a `d`-dimensional unit hyperball or
+        its surface.
+
+    Args:
+        n (int): Number of samples to harvest
+        d (int): Dimension of hyperball
+        within (bool): If True, sample inside the hyperball; if False, sample on its surface
+        qmc (bool): Use quasi-Monte Carlo (Sobol) instead of pseudo-random sampling
+        seed (int | None): Random seed
+        device (torch.device | None): device for the sampled points
+        dtype (torch.dtype | None): dtype for the sampled points
+        sobol (torch.quasirandom.SobolEngine | None): SobolEngine instance for quasi-Monte Carlo sampling
+
+    Returns:
+        Tensor of shape (n, d) with points inside the unit hyperball (within=True)
+        or on its surface (within=False)
+
+    Raises:
+        ValueError: If `d` is non-positive
+    """
+    if d <= 0:
+        raise ValueError("`d` must be positive")
+    if n <= 0:
+        return th.empty(0, d, device=device, dtype=dtype)
+
+    if not qmc:
+        with manual_seed(seed=seed):
+            if d == 1:
+                if within:
+                    return th.rand(n, 1, device=device, dtype=dtype) * 2 - 1
+                else:
+                    return th.randint(high=2, size=(n, 1), device=device, dtype=dtype) * 2 - 1
+            pts: th.Tensor = th.randn(n, d, device=device, dtype=dtype)
+            normed_pts: th.Tensor = pts / pts.norm(dim=1, keepdim=True)
+            if within:
+                return th.rand(n, 1, device=device, dtype=dtype).pow(exponent=1.0 / d) * normed_pts
+            else:
+                return normed_pts
+    else:
+        d_normal: int = 2 * math.ceil(d / 2)
+        if sobol is not None:
+            if sobol.dimension != d_normal + int(within):
+                raise ValueError(f"`sobol.dimension` must be {d_normal + int(within)}")
+            sobolengine: th.quasirandom.SobolEngine = sobol
+        else:
+            sobolengine = th.quasirandom.SobolEngine(dimension=d_normal + int(within), scramble=True, seed=seed)
+        usamples: th.Tensor = sobolengine.draw(n=n).to(device=device, dtype=dtype)
+        upairs: th.Tensor = usamples[:, :d_normal].view(n, d_normal // 2, 2)
+        r: th.Tensor = th.sqrt(input=-2 * th.log(input=upairs[:, :, 0]))
+        theta: th.Tensor = 2 * th.pi * upairs[:, :, 1]
+        pts: th.Tensor = (
+            th.stack(tensors=[r * th.cos(input=theta), r * th.sin(input=theta)], dim=2).view(n, d_normal)
+        )[:, :d]
+        normed_pts: th.Tensor = pts / pts.norm(dim=1, keepdim=True)
+        if within:
+            return usamples[:, -1:].pow(exponent=1.0 / d) * normed_pts
+        else:
+            return normed_pts
+
+
+def randpert(
+    x: th.Tensor,
+    radius: float = 0,
+    within: bool = True,
+    qmc: bool = False,
+    seed: int | None = None,
+    sobol: th.quasirandom.SobolEngine | None = None,
+    condition: bool = True,
+) -> th.Tensor:
+    """
+    Randomly perturb the input tensor `x` by a uniformly-sampled vector within a `radius`-bounded hyperball.
+
+    Args:
+        x (Tensor): Input tensor to be perturbed.
+        radius (float | None): Radius of the hyperball for perturbation. Defaults to 0.
+        within (bool | None): If True, sample inside the hyperball; if False, sample on its surface. Defaults to True.
+        qmc (bool | None): Whether to use quasi-Monte Carlo sampling. Defaults to True.
+        seed (int | None): Random seed for reproducibility. Defaults to None.
+        sobol (torch.quasirandom.SobolEngine | None): SobolEngine instance for quasi-Monte Carlo sampling. Defaults to None.
+        condition (bool | None): If True, apply perturbation; if False, return original tensor. Defaults to True.
+    """
+
+    if radius <= 0 or not condition:
+        return x
+    exs: th.Size = x.shape[1:]
+    return x + radius * sample_ndball(
+        n=x.shape[0], d=math.prod(exs), within=within, qmc=qmc, seed=seed, device=x.device, dtype=x.dtype, sobol=sobol
+    ).view(x.shape[0], *exs)
+
+
+# ~~ Classes ~~ ────────────────────────────────────────────────────────────────
 class TA2ATAdapter:
     """
     Adapt a TorchAttacks adversarial attack to the AdverTorch `perturb` API.

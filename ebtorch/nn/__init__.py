@@ -116,11 +116,6 @@ del sinlu
 del smelu
 del telu
 
-# Deletions (from .functional)
-# del mish  # (already done by chance!)
-# del serf  # (already done by chance!)
-# del telu # (already done by chance!)
-
 # Deletions (from .utils)
 del AdverApply
 del AutoClipper
@@ -144,7 +139,6 @@ del fromcache
 del fxfx2module
 del gather_model_repr
 del index_discard
-del torch_set_hiperf_precision
 del log_muldiv
 del matched_apply
 del model_reqgrad
@@ -159,8 +153,10 @@ del petroff_2021_color
 del petroff_2021_cycler
 del plot_out
 del randhermn
+del randpert
 del repr_fx_flat_adapter
 del repr_sizes_flat_adapter
+del sample_ndball
 del seed_everything
 del set_petroff_2021_colors
 del set_tableau10_colors
@@ -175,5 +171,6 @@ del tableau10_cmap
 del tableau10_color
 del tableau10_cycler
 del tensor_module_matched_apply
+del torch_set_hiperf_precision
 del variadic_attrs
 del zigzag
