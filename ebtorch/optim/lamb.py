@@ -108,9 +108,7 @@ class Lamb(Optimizer):
                 loss = closure()
 
         device = self.param_groups[0]["params"][0].device
-        one_tensor = torch.tensor(
-            1.0, device=device
-        )  # because torch.where doesn't handle scalars correctly
+        one_tensor = torch.tensor(1.0, device=device)  # because torch.where doesn't handle scalars correctly
         global_grad_norm = torch.zeros(1, device=device)
         for group in self.param_groups:
             for p in group["params"]:
@@ -118,9 +116,7 @@ class Lamb(Optimizer):
                     continue
                 grad = p.grad
                 if grad.is_sparse:
-                    raise RuntimeError(
-                        "Lamb does not support sparse gradients, consider SparseAdam instad."
-                    )
+                    raise RuntimeError("Lamb does not support sparse gradients, consider SparseAdam instad.")
                 global_grad_norm.add_(grad.pow(2).sum())
 
         global_grad_norm = torch.sqrt(global_grad_norm)
@@ -172,9 +168,7 @@ class Lamb(Optimizer):
                 exp_avg.mul_(beta1).add_(grad, alpha=beta3)  # m_t
                 exp_avg_sq.mul_(beta2).addcmul_(grad, grad, value=1 - beta2)  # v_t
 
-                denom = (exp_avg_sq.sqrt() / math.sqrt(bias_correction2)).add_(
-                    group["eps"]
-                )
+                denom = (exp_avg_sq.sqrt() / math.sqrt(bias_correction2)).add_(group["eps"])
                 update = (exp_avg / bias_correction1).div_(denom)
 
                 weight_decay = group["weight_decay"]

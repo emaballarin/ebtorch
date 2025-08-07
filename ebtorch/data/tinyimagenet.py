@@ -57,9 +57,7 @@ class TinyImagenet(VisionDataset):
         download: bool = False,
     ) -> None:
         super().__init__(root, transform=transform, target_transform=target_transform)
-        self.split: str = verify_str_arg(
-            split, "split", tuple(self.split_dl_info.keys())
-        )
+        self.split: str = verify_str_arg(split, "split", tuple(self.split_dl_info.keys()))
         self.url: str = self.split_dl_info[split][0]
         self.filename: str = self.split_dl_info[split][1]
         self.file_md5: str = self.split_dl_info[split][2]
@@ -68,9 +66,7 @@ class TinyImagenet(VisionDataset):
             self.download()
 
         if not self._check_integrity():
-            raise RuntimeError(
-                "Dataset not found or corrupted. You can use download=True to download it (again)"
-            )
+            raise RuntimeError("Dataset not found or corrupted. You can use download=True to download it (again)")
 
         # reading(loading) npz file as array
         loaded_npz = np.load(os.path.join(self.root, self.filename))
@@ -88,11 +84,7 @@ class TinyImagenet(VisionDataset):
         img, target = Image.fromarray(self.data[index]), int(self.targets[index])
 
         img = self.transform(img) if self.transform is not None else img
-        target = (
-            self.target_transform(target)
-            if self.target_transform is not None
-            else target
-        )
+        target = self.target_transform(target) if self.target_transform is not None else target
 
         return img, target
 

@@ -43,6 +43,7 @@ from .onlyutils import stablediv
 from .onlyutils import subset_state_dict
 from .onlyutils import suppress_std
 from .onlyutils import TelegramBotEcho
+from .onlyutils import torch_set_hiperf_precision
 from .palettes import petroff_2021_cmap
 from .palettes import petroff_2021_color
 from .palettes import petroff_2021_cycler

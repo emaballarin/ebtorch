@@ -44,13 +44,10 @@ class ConvolutionalFlattenLayer(nn.Module):
     ) -> None:
         super(ConvolutionalFlattenLayer, self).__init__()
         channels_out: int = math.ceil(
-            (channels_in * height * width)
-            / ((height - detail_size + 1) * (width - detail_size + 1))
+            (channels_in * height * width) / ((height - detail_size + 1) * (width - detail_size + 1))
         )
 
-        self._output_numel: int = (
-            channels_out * (height - detail_size + 1) * (width - detail_size + 1)
-        )
+        self._output_numel: int = channels_out * (height - detail_size + 1) * (width - detail_size + 1)
 
         self.actually_flatten: bool = actually_flatten
         self.conv: nn.Module = nn.Conv2d(

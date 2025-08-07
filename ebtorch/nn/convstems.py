@@ -64,9 +64,7 @@ class ConvStem(nn.Module):
         embed_step_expn: int = 2,
         norm_layer: Optional[Callable[[int], nn.Module]] = None,
         flatten: bool = True,
-        activation: Union[Callable[[Tensor], Tensor], nn.Module] = nn.ReLU(
-            inplace=True
-        ),
+        activation: Union[Callable[[Tensor], Tensor], nn.Module] = nn.ReLU(inplace=True),
     ) -> None:
         super().__init__()
 
@@ -127,20 +125,14 @@ class MetaAILayerNorm(nn.Module):
         self.eps: float = eps
         self.data_format: str = data_format
         if self.data_format not in ["channels_last", "channels_first"]:
-            raise NotImplementedError(
-                f"Data format {self.data_format} is not supported."
-            )
+            raise NotImplementedError(f"Data format {self.data_format} is not supported.")
         self.normalized_shape: Tuple[int, ...] = (
-            tuple(normalized_shape)
-            if isinstance(normalized_shape, Sequence)
-            else (normalized_shape,)
+            tuple(normalized_shape) if isinstance(normalized_shape, Sequence) else (normalized_shape,)
         )
 
     def forward(self, x: Tensor) -> Tensor:
         if self.data_format == "channels_last":
-            return F.layer_norm(
-                x, self.normalized_shape, self.weight, self.bias, self.eps
-            )
+            return F.layer_norm(x, self.normalized_shape, self.weight, self.bias, self.eps)
         # elif self.data_format == "channels_first":
         u: Tensor = x.mean(1, keepdim=True)
         s: Tensor = (x - u).pow(2).mean(1, keepdim=True)
@@ -200,9 +192,7 @@ class ConvNeXtStem(nn.Module):
 
 
 class ViTStem(ConvNeXtStem):
-    def __init__(
-        self, patch_size: int = 16, in_chans: int = 3, out_chans: int = 96
-    ) -> None:
+    def __init__(self, patch_size: int = 16, in_chans: int = 3, out_chans: int = 96) -> None:
         super().__init__(
             patch_size=patch_size,
             in_chans=in_chans,

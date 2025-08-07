@@ -76,15 +76,13 @@ class AddCoords(nn.Module):
         """
         if self.rank == 1:
             batch_size_shape, _, dim_x = input_tensor.shape
-            xx_range: torch.Tensor = torch.arange(
-                dim_x, dtype=torch.int32, device=input_tensor.device
-            )
+            xx_range: torch.Tensor = torch.arange(dim_x, dtype=torch.int32, device=input_tensor.device)
             xx_channel: torch.Tensor = (xx_range[None, None, :]).to(input_tensor.device)
 
             xx_channel: torch.Tensor = xx_channel.float() / (dim_x - 1)
-            xx_channel: torch.Tensor = xx_channel * torch.tensor(2).to(
+            xx_channel: torch.Tensor = xx_channel * torch.tensor(2).to(input_tensor.device) - torch.tensor(1).to(
                 input_tensor.device
-            ) - torch.tensor(1).to(input_tensor.device)
+            )
             xx_channel: torch.Tensor = xx_channel.repeat(batch_size_shape, 1, 1)
 
             out = torch.cat([input_tensor, xx_channel], dim=1)
@@ -100,25 +98,13 @@ class AddCoords(nn.Module):
 
         elif self.rank == 2:
             batch_size_shape, _, dim_y, dim_x = input_tensor.shape
-            xx_ones: torch.Tensor = torch.ones(
-                [1, 1, 1, dim_x], dtype=torch.int32, device=input_tensor.device
-            )
-            yy_ones: torch.Tensor = torch.ones(
-                [1, 1, 1, dim_y], dtype=torch.int32, device=input_tensor.device
-            )
+            xx_ones: torch.Tensor = torch.ones([1, 1, 1, dim_x], dtype=torch.int32, device=input_tensor.device)
+            yy_ones: torch.Tensor = torch.ones([1, 1, 1, dim_y], dtype=torch.int32, device=input_tensor.device)
 
-            xx_range: torch.Tensor = torch.arange(
-                dim_y, dtype=torch.int32, device=input_tensor.device
-            )
-            yy_range: torch.Tensor = torch.arange(
-                dim_x, dtype=torch.int32, device=input_tensor.device
-            )
-            xx_range: torch.Tensor = xx_range[None, None, :, None].to(
-                input_tensor.device
-            )
-            yy_range: torch.Tensor = yy_range[None, None, :, None].to(
-                input_tensor.device
-            )
+            xx_range: torch.Tensor = torch.arange(dim_y, dtype=torch.int32, device=input_tensor.device)
+            yy_range: torch.Tensor = torch.arange(dim_x, dtype=torch.int32, device=input_tensor.device)
+            xx_range: torch.Tensor = xx_range[None, None, :, None].to(input_tensor.device)
+            yy_range: torch.Tensor = yy_range[None, None, :, None].to(input_tensor.device)
 
             xx_channel: torch.Tensor = torch.matmul(xx_range, xx_ones)
             yy_channel: torch.Tensor = torch.matmul(yy_range, yy_ones)
@@ -129,12 +115,12 @@ class AddCoords(nn.Module):
             xx_channel: torch.Tensor = xx_channel.float() / (dim_y - 1)
             yy_channel: torch.Tensor = yy_channel.float() / (dim_x - 1)
 
-            xx_channel: torch.Tensor = xx_channel * torch.tensor(2).to(
+            xx_channel: torch.Tensor = xx_channel * torch.tensor(2).to(input_tensor.device) - torch.tensor(1).to(
                 input_tensor.device
-            ) - torch.tensor(1).to(input_tensor.device)
-            yy_channel: torch.Tensor = yy_channel * torch.tensor(2).to(
+            )
+            yy_channel: torch.Tensor = yy_channel * torch.tensor(2).to(input_tensor.device) - torch.tensor(1).to(
                 input_tensor.device
-            ) - torch.tensor(1).to(input_tensor.device)
+            )
 
             xx_channel: torch.Tensor = xx_channel.repeat(batch_size_shape, 1, 1, 1)
             yy_channel: torch.Tensor = yy_channel.repeat(batch_size_shape, 1, 1, 1)
@@ -144,50 +130,27 @@ class AddCoords(nn.Module):
             if self.with_r:
                 rr: torch.Tensor = torch.sqrt(
                     torch.pow(xx_channel - torch.tensor(0.5).to(input_tensor.device), 2)
-                    + torch.pow(
-                        yy_channel - torch.tensor(0.5).to(input_tensor.device), 2
-                    )
+                    + torch.pow(yy_channel - torch.tensor(0.5).to(input_tensor.device), 2)
                 )
                 out: torch.Tensor = torch.cat([out, rr], dim=1)
 
         elif self.rank == 3:
             batch_size_shape, _, dim_z, dim_y, dim_x = input_tensor.shape
-            xx_ones: torch.Tensor = torch.ones(
-                [1, 1, 1, 1, dim_x], dtype=torch.int32, device=input_tensor.device
-            )
-            yy_ones: torch.Tensor = torch.ones(
-                [1, 1, 1, 1, dim_y], dtype=torch.int32, device=input_tensor.device
-            )
-            zz_ones: torch.Tensor = torch.ones(
-                [1, 1, 1, 1, dim_z], dtype=torch.int32, device=input_tensor.device
-            )
+            xx_ones: torch.Tensor = torch.ones([1, 1, 1, 1, dim_x], dtype=torch.int32, device=input_tensor.device)
+            yy_ones: torch.Tensor = torch.ones([1, 1, 1, 1, dim_y], dtype=torch.int32, device=input_tensor.device)
+            zz_ones: torch.Tensor = torch.ones([1, 1, 1, 1, dim_z], dtype=torch.int32, device=input_tensor.device)
 
-            xy_range: torch.Tensor = torch.arange(
-                dim_y, dtype=torch.int32, device=input_tensor.device
-            )
-            yz_range: torch.Tensor = torch.arange(
-                dim_z, dtype=torch.int32, device=input_tensor.device
-            )
-            zx_range: torch.Tensor = torch.arange(
-                dim_x, dtype=torch.int32, device=input_tensor.device
-            )
+            xy_range: torch.Tensor = torch.arange(dim_y, dtype=torch.int32, device=input_tensor.device)
+            yz_range: torch.Tensor = torch.arange(dim_z, dtype=torch.int32, device=input_tensor.device)
+            zx_range: torch.Tensor = torch.arange(dim_x, dtype=torch.int32, device=input_tensor.device)
 
-            xy_range: torch.Tensor = xy_range[None, None, None, :, None].to(
-                input_tensor.device
-            )
-            yz_range: torch.Tensor = yz_range[None, None, None, :, None].to(
-                input_tensor.device
-            )
-            zx_range: torch.Tensor = zx_range[None, None, None, :, None].to(
-                input_tensor.device
-            )
+            xy_range: torch.Tensor = xy_range[None, None, None, :, None].to(input_tensor.device)
+            yz_range: torch.Tensor = yz_range[None, None, None, :, None].to(input_tensor.device)
+            zx_range: torch.Tensor = zx_range[None, None, None, :, None].to(input_tensor.device)
 
             xy_channel: torch.Tensor = torch.matmul(xy_range, xx_ones)
             xx_channel: torch.Tensor = torch.cat(
-                [
-                    xy_channel + torch.tensor(i).to(input_tensor.device)
-                    for i in range(dim_z)
-                ],
+                [xy_channel + torch.tensor(i).to(input_tensor.device) for i in range(dim_z)],
                 dim=2,
             )
             xx_channel: torch.Tensor = xx_channel.repeat(batch_size_shape, 1, 1, 1, 1)
@@ -195,10 +158,7 @@ class AddCoords(nn.Module):
             yz_channel: torch.Tensor = torch.matmul(yz_range, yy_ones)
             yz_channel: torch.Tensor = yz_channel.permute(0, 1, 3, 4, 2)
             yy_channel: torch.Tensor = torch.cat(
-                [
-                    yz_channel + torch.tensor(i).to(input_tensor.device)
-                    for i in range(dim_x)
-                ],
+                [yz_channel + torch.tensor(i).to(input_tensor.device) for i in range(dim_x)],
                 dim=4,
             )
             yy_channel: torch.Tensor = yy_channel.repeat(batch_size_shape, 1, 1, 1, 1)
@@ -206,27 +166,18 @@ class AddCoords(nn.Module):
             zx_channel: torch.Tensor = torch.matmul(zx_range, zz_ones)
             zx_channel: torch.Tensor = zx_channel.permute(0, 1, 4, 2, 3)
             zz_channel: torch.Tensor = torch.cat(
-                [
-                    zx_channel + torch.tensor(i).to(input_tensor.device)
-                    for i in range(dim_y)
-                ],
+                [zx_channel + torch.tensor(i).to(input_tensor.device) for i in range(dim_y)],
                 dim=3,
             )
             zz_channel: torch.Tensor = zz_channel.repeat(batch_size_shape, 1, 1, 1, 1)
 
-            out: torch.Tensor = torch.cat(
-                [input_tensor, xx_channel, yy_channel, zz_channel], dim=1
-            )
+            out: torch.Tensor = torch.cat([input_tensor, xx_channel, yy_channel, zz_channel], dim=1)
 
             if self.with_r:
                 rr: torch.Tensor = torch.sqrt(
                     torch.pow(xx_channel - torch.tensor(0.5).to(input_tensor.device), 2)
-                    + torch.pow(
-                        yy_channel - torch.tensor(0.5).to(input_tensor.device), 2
-                    )
-                    + torch.pow(
-                        zz_channel - torch.tensor(0.5).to(input_tensor.device), 2
-                    )
+                    + torch.pow(yy_channel - torch.tensor(0.5).to(input_tensor.device), 2)
+                    + torch.pow(zz_channel - torch.tensor(0.5).to(input_tensor.device), 2)
                 )
                 out: torch.Tensor = torch.cat([out, rr], dim=1)
         else:

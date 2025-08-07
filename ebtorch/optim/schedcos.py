@@ -74,22 +74,13 @@ class _Scheduler(abc.ABC):
         if initialize:
             for i, group in enumerate(self.optimizer.param_groups):
                 if param_group_field not in group:
-                    raise KeyError(
-                        f"{param_group_field} missing from param_groups[{i}]"
-                    )
-                group.setdefault(
-                    self._initial_param_group_field, group[param_group_field]
-                )
+                    raise KeyError(f"{param_group_field} missing from param_groups[{i}]")
+                group.setdefault(self._initial_param_group_field, group[param_group_field])
         else:
             for i, group in enumerate(self.optimizer.param_groups):
                 if self._initial_param_group_field not in group:
-                    raise KeyError(
-                        f"{self._initial_param_group_field} missing from param_groups[{i}]"
-                    )
-        self.base_values = [
-            group[self._initial_param_group_field]
-            for group in self.optimizer.param_groups
-        ]
+                    raise KeyError(f"{self._initial_param_group_field} missing from param_groups[{i}]")
+        self.base_values = [group[self._initial_param_group_field] for group in self.optimizer.param_groups]
         self.metric = None  # any point to having this for all?
         self.t_in_epochs = t_in_epochs
         self.noise_range_t = noise_range_t
@@ -100,9 +91,7 @@ class _Scheduler(abc.ABC):
         self.update_groups(self.base_values)
 
     def state_dict(self) -> Dict[str, Any]:
-        return {
-            key: value for key, value in self.__dict__.items() if key != "optimizer"
-        }
+        return {key: value for key, value in self.__dict__.items() if key != "optimizer"}
 
     def load_state_dict(self, state_dict: Dict[str, Any]) -> None:
         self.__dict__.update(state_dict)
@@ -112,9 +101,7 @@ class _Scheduler(abc.ABC):
         pass
 
     def _get_values(self, t: int, on_epoch: bool = True) -> Optional[float]:
-        proceed = (on_epoch and self.t_in_epochs) or (
-            not on_epoch and not self.t_in_epochs
-        )
+        proceed = (on_epoch and self.t_in_epochs) or (not on_epoch and not self.t_in_epochs)
         if not proceed:
             return None
         return self._get_lr(t)
@@ -232,9 +219,7 @@ class CosineLRScheduler(_Scheduler):
         self.warmup_prefix = warmup_prefix
         self.k_decay = k_decay
         if self.warmup_t:
-            self.warmup_steps = [
-                (v - warmup_lr_init) / self.warmup_t for v in self.base_values
-            ]
+            self.warmup_steps = [(v - warmup_lr_init) / self.warmup_t for v in self.base_values]
             super().update_groups(self.warmup_lr_init)
         else:
             self.warmup_steps = [1 for _ in self.base_values]
@@ -247,15 +232,9 @@ class CosineLRScheduler(_Scheduler):
                 t = t - self.warmup_t
 
             if self.cycle_mul != 1:
-                i = math.floor(
-                    math.log(
-                        1 - t / self.t_initial * (1 - self.cycle_mul), self.cycle_mul
-                    )
-                )
+                i = math.floor(math.log(1 - t / self.t_initial * (1 - self.cycle_mul), self.cycle_mul))
                 t_i = self.cycle_mul**i * self.t_initial
-                t_curr = (
-                    t - (1 - self.cycle_mul**i) / (1 - self.cycle_mul) * self.t_initial
-                )
+                t_curr = t - (1 - self.cycle_mul**i) / (1 - self.cycle_mul) * self.t_initial
             else:
                 i = t // self.t_initial
                 t_i = self.t_initial
@@ -267,10 +246,7 @@ class CosineLRScheduler(_Scheduler):
 
             if i < self.cycle_limit:
                 lrs = [
-                    self.lr_min
-                    + 0.5
-                    * (lr_max - self.lr_min)
-                    * (1 + math.cos(math.pi * t_curr**k / t_i**k))
+                    self.lr_min + 0.5 * (lr_max - self.lr_min) * (1 + math.cos(math.pi * t_curr**k / t_i**k))
                     for lr_max in lr_max_values
                 ]
             else:
@@ -283,10 +259,4 @@ class CosineLRScheduler(_Scheduler):
         if self.cycle_mul == 1.0:  # NOSONAR
             return self.t_initial * cycles
         else:
-            return int(
-                math.floor(
-                    -self.t_initial
-                    * (self.cycle_mul**cycles - 1)
-                    / (1 - self.cycle_mul)
-                )
-            )
+            return int(math.floor(-self.t_initial * (self.cycle_mul**cycles - 1) / (1 - self.cycle_mul)))

@@ -32,9 +32,7 @@ def _str_to_booltuple(s: str, sep: Optional[str] = None) -> Tuple[bool, ...]:
     return tuple(map(partial(_str_to_bool, onesym=True), [*s]))
 
 
-def _any_to_booltuple(
-    x: Union[str, Iterable[Union[str, bool]]], sep: Optional[str] = None
-) -> Tuple[bool, ...]:
+def _any_to_booltuple(x: Union[str, Iterable[Union[str, bool]]], sep: Optional[str] = None) -> Tuple[bool, ...]:
     if isinstance(x, str):
         return _str_to_booltuple(x, sep)
     return tuple(map(_any_to_bool, x))
@@ -51,7 +49,5 @@ def variadic_attrs(
     lodk: int = len(odkeys)
     varsel: Iterable = varsel if varsel is not None else ([True] * lodk)
     bvsel: Tuple[bool, ...] = _any_to_booltuple(varsel, insep)
-    strtuple: Tuple[str, ...] = tuple(
-        str(odict[odkeys[i]]) if bvsel[i] else "" for i in range(lodk)
-    )
+    strtuple: Tuple[str, ...] = tuple(str(odict[odkeys[i]]) if bvsel[i] else "" for i in range(lodk))
     return (outsep.join(strtuple)).strip().strip(outsep)

@@ -144,6 +144,7 @@ del fromcache
 del fxfx2module
 del gather_model_repr
 del index_discard
+del torch_set_hiperf_precision
 del log_muldiv
 del matched_apply
 del model_reqgrad

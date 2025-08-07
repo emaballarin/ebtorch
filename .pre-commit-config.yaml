@@ -3,7 +3,7 @@ repos:
     rev: v5.0.0
     hooks:
       - id: check-added-large-files
-        args: ['--maxkb=1536']
+        args: ["--maxkb=1536"]
       - id: check-ast
       - id: check-case-conflict
       - id: check-executables-have-shebangs
@@ -15,7 +15,6 @@ repos:
       - id: check-yaml
       - id: debug-statements
         language_version: python3
-      - id: fix-encoding-pragma
       - id: end-of-file-fixer
       - id: mixed-line-ending
       - id: trailing-whitespace
@@ -24,14 +23,12 @@ repos:
     hooks:
       - id: python-check-blanket-noqa
       - id: python-use-type-annotations
-  - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.15.0
+#  - repo: https://github.com/asottile/reorder_python_imports
+#    rev: v3.15.0
+#    hooks:
+#      - id: reorder-python-imports
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.7
     hooks:
-      - id: reorder-python-imports
-  - repo: https://github.com/psf/black
-    rev: 25.1.0
-    hooks:
-      - id: black
-        args: [--safe]
-      - id: black-jupyter
-        args: [--safe]
+      - id: ruff-format
+        args: [--config=~/ruffconfigs/ebdefault/ruff.toml]

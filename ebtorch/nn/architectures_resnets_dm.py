@@ -19,6 +19,7 @@
 #
 # ──────────────────────────────────────────────────────────────────────────────
 """WideResNet and PreActResNet implementations in PyTorch. From DeepMind's original."""
+
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -93,14 +94,10 @@ class _Block(nn.Module):
         super().__init__()
         self.batchnorm_0: nn.Module = nn.BatchNorm2d(in_planes, momentum=bn_momentum)
         self.relu_0: nn.Module = activation_fn()
-        self.conv_0: nn.Module = nn.Conv2d(
-            in_planes, out_planes, kernel_size=3, stride=stride, padding=0, bias=False
-        )
+        self.conv_0: nn.Module = nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, padding=0, bias=False)
         self.batchnorm_1: nn.Module = nn.BatchNorm2d(out_planes, momentum=bn_momentum)
         self.relu_1: nn.Module = activation_fn()
-        self.conv_1: nn.Module = nn.Conv2d(
-            out_planes, out_planes, kernel_size=3, stride=1, padding=1, bias=False
-        )
+        self.conv_1: nn.Module = nn.Conv2d(out_planes, out_planes, kernel_size=3, stride=1, padding=1, bias=False)
         self.has_shortcut: bool = in_planes != out_planes
         if self.has_shortcut:
             self.shortcut: Optional[nn.Module] = nn.Conv2d(
@@ -188,9 +185,7 @@ class _PreActBlock(nn.Module):
         )
         self.batchnorm_1: nn.Module = nn.BatchNorm2d(out_planes, momentum=bn_momentum)
         self.relu_1: nn.Module = activation_fn()
-        self.conv_2d_2: nn.Module = nn.Conv2d(
-            out_planes, out_planes, kernel_size=3, stride=1, padding=1, bias=False
-        )
+        self.conv_2d_2: nn.Module = nn.Conv2d(out_planes, out_planes, kernel_size=3, stride=1, padding=1, bias=False)
         self.has_shortcut: bool = stride != 1 or in_planes != out_planes
         if self.has_shortcut:
             self.shortcut: nn.Module = nn.Conv2d(
@@ -289,15 +284,11 @@ class WideResNet(nn.Module):
                 bn_momentum=bn_momentum,
             ),
         )
-        self.batchnorm: nn.Module = nn.BatchNorm2d(
-            num_channels[3], momentum=bn_momentum
-        )
+        self.batchnorm: nn.Module = nn.BatchNorm2d(num_channels[3], momentum=bn_momentum)
         self.relu: nn.Module = activation_fn()
         self.logits: nn.Module = nn.Linear(num_channels[3], num_classes)
         self.num_channels: int = num_channels[3]
-        self.pooling: nn.Module = (
-            nn.AdaptiveAvgPool2d((1, 1)) if autopool else nn.AvgPool2d(8)
-        )
+        self.pooling: nn.Module = nn.AdaptiveAvgPool2d((1, 1)) if autopool else nn.AvgPool2d(8)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x: torch.Tensor = _auto_pad_to_same(self, x)
@@ -380,14 +371,10 @@ class PreActResNet(nn.Module):
             activation_fn=activation_fn,
             bn_momentum=bn_momentum,
         )
-        self.batchnorm: nn.Module = nn.BatchNorm2d(
-            num_features=512, momentum=bn_momentum
-        )
+        self.batchnorm: nn.Module = nn.BatchNorm2d(num_features=512, momentum=bn_momentum)
         self.relu: nn.Module = activation_fn()
         self.logits: nn.Module = nn.Linear(in_features=512, out_features=num_classes)
-        self.pooling: nn.Module = (
-            nn.AdaptiveAvgPool2d((1, 1)) if autopool else nn.AvgPool2d(4)
-        )
+        self.pooling: nn.Module = nn.AdaptiveAvgPool2d((1, 1)) if autopool else nn.AvgPool2d(4)
 
     # noinspection PyMethodMayBeStatic
     def _make_layer(

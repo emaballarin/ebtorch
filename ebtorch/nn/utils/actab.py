@@ -13,9 +13,7 @@ __all__: List[str] = ["act_auto_broadcast", "broadcast_in_dim"]
 # ──────────────────────────────────────────────────────────────────────────────
 
 
-def broadcast_in_dim(
-    xin: torch.Tensor, target_shape: torch.Size, broadcast_dims: Tuple[int, ...]
-) -> torch.Tensor:
+def broadcast_in_dim(xin: torch.Tensor, target_shape: torch.Size, broadcast_dims: Tuple[int, ...]) -> torch.Tensor:
     s: List[int] = list(target_shape)
     for broadcast_dim in broadcast_dims:
         s[broadcast_dim] = -1
@@ -26,9 +24,7 @@ def broadcast_in_dim(
 
 
 # noinspection PyProtectedMember
-def act_auto_broadcast(
-    xin: torch.Tensor, xpar: torch.Tensor, act_name: str, xpar_name: str
-) -> torch.Tensor:
+def act_auto_broadcast(xin: torch.Tensor, xpar: torch.Tensor, act_name: str, xpar_name: str) -> torch.Tensor:
     if xpar.numel() != 1:
         torch._check(
             xin.ndim > 0,
@@ -42,8 +38,7 @@ def act_auto_broadcast(
         )
     torch._check(
         xpar.ndim in (0, 1),
-        lambda: f"{act_name}: Expected `{xpar_name}` to be a scalar or 1D tensor, but got: "
-        f"ndim = {xpar.ndim}",
+        lambda: f"{act_name}: Expected `{xpar_name}` to be a scalar or 1D tensor, but got: ndim = {xpar.ndim}",
     )
 
     if xin.ndim == 0:

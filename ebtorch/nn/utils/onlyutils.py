@@ -35,10 +35,12 @@ from typing import Any
 from typing import Dict
 from typing import Literal
 from typing import Optional
+from typing import TextIO
 from typing import Tuple
 from typing import Union
 
 import requests
+import torch
 import torch as th
 from httpx import Client
 from safe_assert import safe_assert as sassert
@@ -51,6 +53,7 @@ from torch import Tensor
 from ...typing import actvt
 from ...typing import numlike
 from ...typing import strdev
+from .onlyutils import std_suppress
 
 __all__ = [
     "argser_f",
@@ -68,6 +71,7 @@ __all__ = [
     "om_flipper",
     "index_discard",
     "BestModelSaver",
+    "torch_set_hiperf_precision",
 ]
 
 
@@ -77,9 +81,7 @@ def _isnn(c):
     return c is not None
 
 
-def stablediv(
-    num: numlike, den: numlike, eps: numlike, stabilize_both: bool = False
-) -> numlike:
+def stablediv(num: numlike, den: numlike, eps: numlike, stabilize_both: bool = False) -> numlike:
     """Numerically stable division of two numbers.
 
     Args:
@@ -93,8 +95,7 @@ def stablediv(
 
 def argser_f(f, arglist: Union[list, tuple, dict]):
     error_listerror = (
-        "Function arguments must be either an args tuple or a kwargs dictionary, or both in this order "
-        "inside a list."
+        "Function arguments must be either an args tuple or a kwargs dictionary, or both in this order inside a list."
     )
 
     if not isinstance(arglist, (list, tuple, dict)):
@@ -168,10 +169,7 @@ def argsink(*args) -> None:
 
 
 def subset_state_dict(d: dict, subset_key: str) -> dict:
-    return {
-        key[(len(subset_key) + 1) :]: d[key]
-        for key in (key for key in d.keys() if key.startswith(subset_key))
-    }
+    return {key[(len(subset_key) + 1) :]: d[key] for key in (key for key in d.keys() if key.startswith(subset_key))}
 
 
 def no_op() -> None:
@@ -197,21 +195,21 @@ def suppress_std(which: str = "all") -> Generator[None, Any, None]:
     if which not in ("none", "out", "err", "all"):
         raise ValueError("`which` must be either: 'none', 'out', 'err', 'all'")
 
-    with open(os.devnull, "w") as devnull:
+    with open(file=os.devnull, mode="w") as devnull:
         if which in ("out", "all"):
-            old_stdout = sys.stdout
+            old_stdout: TextIO = sys.stdout
             sys.stdout = devnull
         if which in ("err", "all"):
-            old_stderr = sys.stderr
+            old_stderr: TextIO = sys.stderr
             sys.stderr = devnull
 
         try:
             yield
         finally:
             if which in ("out", "all"):
-                sys.stdout = old_stdout
+                sys.stdout = old_stdout  # type: ignore
             if which in ("err", "all"):
-                sys.stderr = old_stderr
+                sys.stderr = old_stderr  # type: ignore
 
 
 def randhermn(
@@ -251,6 +249,24 @@ def index_discard(x, dim, index):
 
 def _safetensors_model_saver(model: nn.Module, filepath: Path) -> None:
     save_model(model, str(filepath))
+
+
+def torch_set_hiperf_precision(newapi: bool = False, aggressive: bool = False, quiet: bool = False) -> None:
+    with std_suppress(which="all" if quiet else "none"):
+        if newapi:
+            torch.backends.fp32_precision = "tf32"  # type: ignore
+            torch.backends.cudnn.fp32_precision = "tf32"  # type: ignore
+            torch.backends.cuda.matmul.fp32_precision = "tf32"
+            torch.backends.cudnn.conv.fp32_precision = "tf32"  # type: ignore
+            torch.backends.cudnn.rnn.fp32_precision = "tf32"  # type: ignore
+        else:
+            torch.set_float32_matmul_precision(precision="high")
+            torch.backends.cuda.matmul.allow_tf32 = True
+            torch.backends.cudnn.allow_tf32 = True
+        if aggressive:
+            torch.backends.cuda.matmul.allow_fp16_accumulation = True
+            torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = True
+            torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction = True
 
 
 # Classes
@@ -324,7 +340,6 @@ class BestModelSaver:
         saver: Callable[[nn.Module, Path], None] = _safetensors_model_saver,
         logger: Optional[Callable[[str], None]] = print,
     ) -> None:
-
         if mode not in ("max", "min"):
             raise ValueError("mode must be 'max' or 'min'")
 
@@ -334,9 +349,7 @@ class BestModelSaver:
         self.mode: Literal["max", "min"] = mode
         self.best_metric: numlike = float("inf") if mode == "min" else float("-inf")
         self.best_path: Optional[Path] = None
-        self.from_epoch: Optional[int] = (
-            None if from_epoch is None else max(from_epoch, 0)
-        )
+        self.from_epoch: Optional[int] = None if from_epoch is None else max(from_epoch, 0)
         self.saver: Callable[[nn.Module, Path], None] = saver
         self.logger: Optional[Callable[[str], None]] = logger
 
@@ -346,23 +359,16 @@ class BestModelSaver:
         metric: numlike,
         epoch: Optional[int] = None,
     ) -> bool:
-
         if self.from_epoch is not None and epoch is None:
             raise ValueError("`epoch` must be provided if `from_epoch` is set")
         if self.from_epoch is not None and epoch < self.from_epoch:
             return False
 
-        improved: bool = (
-            metric < self.best_metric
-            if self.mode == "min"
-            else metric > self.best_metric
-        )
+        improved: bool = metric < self.best_metric if self.mode == "min" else metric > self.best_metric
         if not improved:
             return False
 
-        filename: str = (
-            f"{self.name}_{epoch if epoch is not None else ''}_{metric:.4f}.pt"
-        )
+        filename: str = f"{self.name}_{epoch if epoch is not None else ''}_{metric:.4f}.pt"
         new_path: Path = self.path / filename
 
         self.saver(model, new_path)
@@ -372,18 +378,13 @@ class BestModelSaver:
                 self.best_path.unlink()
             except Exception as e:
                 if self.logger:
-                    self.logger(
-                        f"[BestModelSaver] warning: could not delete old checkpoint {self.best_path!r}: {e}"
-                    )
+                    self.logger(f"[BestModelSaver] warning: could not delete old checkpoint {self.best_path!r}: {e}")
 
         self.best_metric: numlike = metric
         self.best_path: Path = new_path
 
         if self.logger:
-            self.logger(
-                f"[BestModelSaver] saved new best ({self.mode}): "
-                f"{metric:.4f} → {new_path}"
-            )
+            self.logger(f"[BestModelSaver] saved new best ({self.mode}): {metric:.4f} → {new_path}")
         return True
 
     def __repr__(self) -> str:

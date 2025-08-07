@@ -83,17 +83,9 @@ def eval_model_on_test(  # NOSONAR
                 modeltarget_e: Tensor = modeltarget_e_tuple[0]
                 if extract_z_non_classifier:
                     z_to_cat: Tensor = modeltarget_e_tuple[1]
-                    z: Tensor = (
-                        torch.cat(tensors=(z, z_to_cat), dim=0)
-                        if batch_idx_e > 0
-                        else z_to_cat
-                    )
+                    z: Tensor = torch.cat(tensors=(z, z_to_cat), dim=0) if batch_idx_e > 0 else z_to_cat
                     y_e_to_cat: Tensor = y_e
-                    y_e: Tensor = (
-                        torch.cat(tensors=(y_e, y_e_to_cat), dim=0)
-                        if batch_idx_e > 0
-                        else y_e_to_cat
-                    )
+                    y_e: Tensor = torch.cat(tensors=(y_e, y_e_to_cat), dim=0) if batch_idx_e > 0 else y_e_to_cat
                 trackingmetric += criterion_non_classifier(modeltarget_e, x_e).item()
 
             num_elem += x_e.shape[0]

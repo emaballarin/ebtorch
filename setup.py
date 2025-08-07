@@ -17,7 +17,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 
-def read(fname):
+def read(fname) -> str:
     with open(os.path.join(os.path.dirname(__file__), fname)) as f:
         return f.read().strip()
 
@@ -26,7 +26,7 @@ PACKAGENAME: str = "ebtorch"
 
 setup(
     name=PACKAGENAME,
-    version="0.33.4",
+    version="0.34.0",
     author="Emanuele Ballarin",
     author_email="emanuele@ballarin.cc",
     url="https://github.com/emaballarin/ebtorch",
@@ -35,9 +35,7 @@ setup(
     long_description_content_type="text/markdown",
     keywords=["Deep Learning", "Machine Learning"],
     license="Apache-2.0",
-    packages=[
-        package for package in find_packages() if package.startswith(PACKAGENAME)
-    ],
+    packages=[package for package in find_packages() if package.startswith(PACKAGENAME)],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",

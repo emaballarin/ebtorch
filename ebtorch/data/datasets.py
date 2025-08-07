@@ -117,27 +117,21 @@ def _dataloader_dispatcher(  # NOSONAR
     eval_transforms = Compose([ToTensor()])
     if augment_train:
         if "cifar" in dataset:
-            train_transforms = Compose(
-                [
-                    RandomCrop(32, padding=4),
-                    RandomHorizontalFlip(),
-                    ToTensor(),
-                ]
-            )
+            train_transforms = Compose([
+                RandomCrop(32, padding=4),
+                RandomHorizontalFlip(),
+                ToTensor(),
+            ])
         elif dataset in ("mnist", "kmnist"):
-            train_transforms = Compose(
-                [
-                    RandomAffine(degrees=18, scale=(0.8, 1.2)),
-                    ToTensor(),
-                ]
-            )
+            train_transforms = Compose([
+                RandomAffine(degrees=18, scale=(0.8, 1.2)),
+                ToTensor(),
+            ])
         elif dataset == "fashionmnist":
-            train_transforms = Compose(
-                [
-                    RandomAffine(degrees=18, translate=(0.1, 0.1), scale=(0.9, 1.1)),
-                    ToTensor(),
-                ]
-            )
+            train_transforms = Compose([
+                RandomAffine(degrees=18, translate=(0.1, 0.1), scale=(0.9, 1.1)),
+                ToTensor(),
+            ])
         else:
             raise RuntimeError("Augmentation not supported for this dataset.")
     else:
@@ -397,25 +391,21 @@ def imagenette_dataloader_dispatcher(
 
     train_ds: DatasetFolder = ImageFolder(
         root=data_root + "imagenette2-320/train",
-        transform=Compose(
-            [
-                RandomResizedCrop(224),
-                RandomHorizontalFlip(),
-                ToTensor(),
-            ]
-        ),
+        transform=Compose([
+            RandomResizedCrop(224),
+            RandomHorizontalFlip(),
+            ToTensor(),
+        ]),
         **dataset_kwargs,
     )
 
     test_ds: DatasetFolder = ImageFolder(
         root=data_root + "imagenette2-320/val",
-        transform=Compose(
-            [
-                Resize(256),
-                CenterCrop(224),
-                ToTensor(),
-            ]
-        ),
+        transform=Compose([
+            Resize(256),
+            CenterCrop(224),
+            ToTensor(),
+        ]),
         **dataset_kwargs,
     )
 
@@ -467,13 +457,11 @@ def tinyimagenet_dataloader_dispatcher(
         root=data_root,
         split="train",
         transform=(
-            Compose(
-                [
-                    RandomCrop(64, padding=4),
-                    RandomHorizontalFlip(),
-                    ToTensor(),
-                ]
-            )
+            Compose([
+                RandomCrop(64, padding=4),
+                RandomHorizontalFlip(),
+                ToTensor(),
+            ])
             if augment_train
             else Compose([ToTensor()])
         ),

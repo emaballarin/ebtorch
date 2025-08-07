@@ -50,9 +50,10 @@ class SinLU(nn.Module):
         device: Optional[torch.device] = None,
         dtype: Optional[torch.dtype] = None,
     ) -> None:
-        factory_kwargs: Dict[
-            str, Union[Optional[torch.device], Optional[torch.dtype]]
-        ] = {"device": device, "dtype": dtype}
+        factory_kwargs: Dict[str, Union[Optional[torch.device], Optional[torch.dtype]]] = {
+            "device": device,
+            "dtype": dtype,
+        }
         super().__init__()
         self.a: Tensor = nn.Parameter(torch.ones(1, **factory_kwargs) * a)
         self.b: Tensor = nn.Parameter(torch.ones(1, **factory_kwargs) * b)

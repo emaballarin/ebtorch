@@ -54,9 +54,7 @@ class AutoClipper:
 
     def grad_autoclip_(self, model, clip_percentile) -> None:
         self.grad_consider(model)
-        thutils.clip_grad_norm_(
-            model.parameters(), np.percentile(self.queue_list, clip_percentile)
-        )
+        thutils.clip_grad_norm_(model.parameters(), np.percentile(self.queue_list, clip_percentile))
 
     def reset(self) -> None:
         self.queue_list = []

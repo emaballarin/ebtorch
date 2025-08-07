@@ -64,9 +64,7 @@ def flipcmp(lhs: Any, rhs: Any, largest: bool = True) -> Any:
 
 # Error messages
 red_not_none: str = str("'reduction' applies only if both 'ratio' and 'k' are defined!")
-red_none_but: str = str(
-    "'reduction' must be defined if both 'ratio' and 'k' are defined!"
-)
+red_none_but: str = str("'reduction' must be defined if both 'ratio' and 'k' are defined!")
 
 
 class KWTA1d(Module):
@@ -210,9 +208,9 @@ class KWTA2d(Module):
         transfx: Tensor = self.abstransf(x)
         tmpx = transfx.view(transfx.shape[0], transfx.shape[1], -1)
         topval = tmpx.topk(k, dim=2, largest=self.largest)[0][:, :, -1]
-        topval = topval.expand(
-            transfx.shape[2], transfx.shape[3], transfx.shape[0], transfx.shape[1]
-        ).permute(2, 3, 0, 1)
+        topval = topval.expand(transfx.shape[2], transfx.shape[3], transfx.shape[0], transfx.shape[1]).permute(
+            2, 3, 0, 1
+        )
         comp = (flipcmp(transfx, topval, self.largest)).to(x)  # acceptable
         return comp * x
 

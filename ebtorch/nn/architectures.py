@@ -84,9 +84,7 @@ __all__ = [
 # Ensembling functions
 @torch.jit.script
 def lexsemble(x: Tensor, cls_dim: int = -2, ens_dim: int = -1) -> Tensor:
-    out: Tensor = torch.softmax(
-        torch.exp(x).sum(dim=ens_dim), dim=cls_dim - int(copysign(1, cls_dim))
-    )
+    out: Tensor = torch.softmax(torch.exp(x).sum(dim=ens_dim), dim=cls_dim - int(copysign(1, cls_dim)))
     return torch.log(out / (1 - out))
 
 
@@ -164,9 +162,7 @@ def beta_reco_mse_splitout(
 
 
 # Utility functions
-def _rbm_mask_generator(
-    size: int, ood_width: int = 0, dens: float = 1.0, rand_diag: bool = False
-) -> torch.Tensor:
+def _rbm_mask_generator(size: int, ood_width: int = 0, dens: float = 1.0, rand_diag: bool = False) -> torch.Tensor:
     """
     Generate a random band matrix mask.
     """
@@ -179,9 +175,7 @@ def _rbm_mask_generator(
     if dens < 0 or dens > 1:
         raise ValueError("Out-of-diagonal band density must be in [0, 1]")
 
-    mask: Tensor = torch.logical_or(
-        torch.diag(torch.rand(size) <= dens), (not rand_diag) * torch.eye(size)
-    )  # type: ignore
+    mask: Tensor = torch.logical_or(torch.diag(torch.rand(size) <= dens), (not rand_diag) * torch.eye(size))  # type: ignore
     for i in range(ood_width):
         offset: int = i + 1
         mask: Tensor = torch.logical_or(
@@ -212,18 +206,14 @@ def _masked_gradient_hook_factory(
             return grad
 
         if grad.shape != mask.shape:
-            raise ValueError(
-                f"Gradient shape {grad.shape} is not equal to mask shape {mask.shape}"
-            )
+            raise ValueError(f"Gradient shape {grad.shape} is not equal to mask shape {mask.shape}")
 
         return grad * mask.to(grad.device)
 
     return _masked_gradient_hook
 
 
-def build_repeated_sequential(
-    depth: int, rep_builder: Callable[[int], nn.Module]
-) -> nn.Sequential:
+def build_repeated_sequential(depth: int, rep_builder: Callable[[int], nn.Module]) -> nn.Sequential:
     repeated: nn.Sequential = nn.Sequential()
     i: int
     for i in range(depth):
@@ -279,9 +269,7 @@ class FCBlock(nn.Module):
 
         self.activation_fx = nn.ModuleList()
 
-        error_uneven_size: str = (
-            "The length of lists of arguments must be the same across them."
-        )
+        error_uneven_size: str = "The length of lists of arguments must be the same across them."
         error_illegal_dropout: str = (
             "The 'dropout' argument must be either False, a float, or an iterable of floats and/or False."
         )
@@ -306,9 +294,7 @@ class FCBlock(nn.Module):
                 dropout = [False] * len(in_sizes)
             else:
                 raise ValueError(error_illegal_dropout)
-        elif isinstance(dropout, float) or (
-            isinstance(dropout, int) and (dropout in (0, 1))
-        ):
+        elif isinstance(dropout, float) or (isinstance(dropout, int) and (dropout in (0, 1))):
             dropout = [dropout] * len(in_sizes)
         elif not isinstance(dropout, list):
             raise ValueError(error_illegal_dropout)
@@ -318,22 +304,14 @@ class FCBlock(nn.Module):
 
         if isinstance(activation_fx, list):
             self.activation_fx = nn.ModuleList(copy.deepcopy(activation_fx))
-        elif isinstance(activation_fx, nn.Module) and not isinstance(
-            activation_fx, nn.ModuleList
-        ):
+        elif isinstance(activation_fx, nn.Module) and not isinstance(activation_fx, nn.ModuleList):
             for _ in enumerate(in_sizes):
                 self.activation_fx.append(copy.deepcopy(activation_fx))
         elif isinstance(activation_fx, nn.ModuleList):
             self.activation_fx = copy.deepcopy(activation_fx)
 
         # Sanitize
-        if (
-            not len(in_sizes)
-            == len(bias)
-            == len(self.activation_fx)
-            == len(dropout)
-            == len(batchnorm)
-        ):
+        if not len(in_sizes) == len(bias) == len(self.activation_fx) == len(dropout) == len(batchnorm):
             raise ValueError(error_uneven_size)
 
         # Start with an empty module list
@@ -350,18 +328,14 @@ class FCBlock(nn.Module):
             self.module_battery.append(copy.deepcopy(self.activation_fx[layer_idx]))
 
             if batchnorm[layer_idx]:
-                self.module_battery.append(
-                    nn.BatchNorm1d(num_features=in_sizes[layer_idx + 1])
-                )
+                self.module_battery.append(nn.BatchNorm1d(num_features=in_sizes[layer_idx + 1]))
 
             if isinstance(dropout[layer_idx], bool) and dropout[layer_idx]:
                 raise ValueError(error_illegal_dropout)
             if not isinstance(dropout[layer_idx], bool):
                 self.module_battery.append(nn.Dropout(p=dropout[layer_idx]))
 
-        self.module_battery.append(
-            nn.Linear(in_features=in_sizes[-1], out_features=out_size, bias=bias[-1])
-        )
+        self.module_battery.append(nn.Linear(in_features=in_sizes[-1], out_features=out_size, bias=bias[-1]))
         self.module_battery.append(copy.deepcopy(self.activation_fx[-1]))
         if batchnorm[-1]:
             self.module_battery.append(nn.BatchNorm1d(num_features=out_size))
@@ -401,28 +375,17 @@ class FCBlockLegacy(nn.Module):
             bias = [bias] * (len(allsizes) - 1)
         else:
             if len(bias) != len(allsizes) - 1:
-                raise RuntimeError(
-                    "If 'bias' is a list, it must have as many elements as #linears"
-                )
+                raise RuntimeError("If 'bias' is a list, it must have as many elements as #linears")
 
-        self.linears: nn.ModuleList = nn.ModuleList(
-            [
-                nn.Linear(allsizes[i], allsizes[i + 1], bias=bias[i])
-                for i in range(0, len(allsizes) - 1)
-            ]
-        )
+        self.linears: nn.ModuleList = nn.ModuleList([
+            nn.Linear(allsizes[i], allsizes[i + 1], bias=bias[i]) for i in range(0, len(allsizes) - 1)
+        ])
         self.hactiv = hactiv
         self.oactiv = oactiv
 
         # Address the "hactiv: list" case
-        if (
-            hactiv is not None
-            and isinstance(hactiv, list)
-            and (len(hactiv) != len(self.linears) - 1)
-        ):
-            raise RuntimeError(
-                "If 'hactiv' is a list, it must have as many elements as (#linears - 1)"
-            )
+        if hactiv is not None and isinstance(hactiv, list) and (len(hactiv) != len(self.linears) - 1):
+            raise RuntimeError("If 'hactiv' is a list, it must have as many elements as (#linears - 1)")
 
     def forward(self, x: Tensor) -> Tensor:
         idx: int
@@ -481,9 +444,7 @@ def _gauss_reparameterize_sample(
     if device is None:
         device = z_mu.device
         if device != z_log_var.device:
-            raise RuntimeError(
-                f"Device mismatch among 'z_mu' ({device}) and 'z_log_var' ({z_log_var.device})!"
-            )
+            raise RuntimeError(f"Device mismatch among 'z_mu' ({device}) and 'z_log_var' ({z_log_var.device})!")
     return z_mu.to(device) + torch.randn_like(z_mu).to(device) * torch.exp(
         z_log_var * 0.5  # type: ignore
     ).to(device)
@@ -504,9 +465,7 @@ class GaussianReparameterizerSampler(nn.Module):
 
     # noinspection PyMethodMayBeStatic
     def forward(self, z_mu: torch.Tensor, z_log_var: torch.Tensor) -> torch.Tensor:
-        return z_mu + torch.randn_like(z_mu, device=z_mu.device) * torch.exp(
-            z_log_var * 0.5
-        )
+        return z_mu + torch.randn_like(z_mu, device=z_mu.device) * torch.exp(z_log_var * 0.5)
 
 
 class SGRUHCell(nn.Module):
@@ -532,13 +491,8 @@ class SGRUHCell(nn.Module):
         super().__init__()
 
         # Validate tbptt (otherwise it could become impossible to catch mistakes!)
-        if not (
-            (isinstance(tbptt, bool) and not tbptt)
-            or (isinstance(tbptt, int) and tbptt >= 0)
-        ):
-            raise ValueError(
-                f"Parameter 'tbptt' must be either False or a positive integer. Given: {tbptt}"
-            )
+        if not ((isinstance(tbptt, bool) and not tbptt) or (isinstance(tbptt, int) and tbptt >= 0)):
+            raise ValueError(f"Parameter 'tbptt' must be either False or a positive integer. Given: {tbptt}")
         self._tbptt: int = int(tbptt)  # False == 0
 
         # Copy and store read-heads
@@ -567,11 +521,7 @@ class SGRUHCell(nn.Module):
 
     def forward(self, x: Tensor) -> Tensor:
         # Implement Truncated BPTT (if requested to do so)
-        if (
-            self._tbptt > 0
-            and self._recurrence_idx > 0
-            and self._recurrence_idx % self._tbptt == 0
-        ):
+        if self._tbptt > 0 and self._recurrence_idx > 0 and self._recurrence_idx % self._tbptt == 0:
             self._hx: Tensor = self._hx.detach()
 
         # Read input in, through the readin head
@@ -707,9 +657,9 @@ class RBLinear(nn.Linear):
         self.rand_bias = rand_bias
 
         # Instantiate masks
-        _w_mask: Tensor = _rbm_mask_generator(
-            size=features, ood_width=ood_width, dens=dens, rand_diag=rand_diag
-        ).to(self.weight.device)
+        _w_mask: Tensor = _rbm_mask_generator(size=features, ood_width=ood_width, dens=dens, rand_diag=rand_diag).to(
+            self.weight.device
+        )
         self.register_buffer(name="w_mask", tensor=_w_mask, persistent=True)
 
         if self.bias is not None:
@@ -741,9 +691,7 @@ class RBLinear(nn.Linear):
         w_handle = self.weight.register_hook(_masked_gradient_hook_factory(self.w_mask))
         self.hook_handles.append(w_handle)
         if self.bias is not None:
-            b_handle = self.bias.register_hook(
-                _masked_gradient_hook_factory(self.b_mask)
-            )
+            b_handle = self.bias.register_hook(_masked_gradient_hook_factory(self.b_mask))
             self.hook_handles.append(b_handle)
 
     def _reset_parameters(self) -> None:
@@ -936,7 +884,9 @@ class BasicVAE(nn.Module):
         self.extract_z: bool = extract_z
         self.extract_mv: bool = extract_mv
 
-    def forward(self, x: Tensor) -> Union[
+    def forward(
+        self, x: Tensor
+    ) -> Union[
         Tensor,
         Tuple[Tensor, Tensor],
         Tuple[Tensor, Tensor, Tensor],
@@ -976,7 +926,9 @@ class SingleNeckVAE(nn.Module):
         self.extract_z: bool = extract_z
         self.extract_mv: bool = extract_mv
 
-    def forward(self, x: Tensor) -> Union[
+    def forward(
+        self, x: Tensor
+    ) -> Union[
         Tensor,
         Tuple[Tensor, Tensor],
         Tuple[Tensor, Tensor, Tensor],
@@ -1065,11 +1017,7 @@ class Concatenate(nn.Module):
         self.flatten: bool = flatten
 
     def forward(self, tensors: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]]):
-        tensors = (
-            [tensor.flatten(start_dim=1) for tensor in tensors]
-            if self.flatten
-            else tensors
-        )
+        tensors = [tensor.flatten(start_dim=1) for tensor in tensors] if self.flatten else tensors
         return torch.cat(tensors, dim=self.dim)
 
 
@@ -1079,9 +1027,7 @@ class DuplexLinearNeck(nn.Module):
         self.x_to_mu: nn.Linear = nn.Linear(in_dim, latent_dim)
         self.x_to_log_var: nn.Linear = nn.Linear(in_dim, latent_dim)
 
-    def forward(
-        self, xc: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]]
-    ) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, xc: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]]) -> Tuple[torch.Tensor, torch.Tensor]:
         cxc: torch.Tensor = torch.cat(xc, dim=1)
         return self.x_to_mu(cxc), self.x_to_log_var(cxc)
 
@@ -1091,9 +1037,7 @@ class SharedDuplexLinearNeck(nn.Module):
         super().__init__()
         self.shared_layer: nn.Linear = nn.Linear(in_dim, 2 * latent_dim)
 
-    def forward(
-        self, xc: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]]
-    ) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, xc: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]]) -> Tuple[torch.Tensor, torch.Tensor]:
         cxc: torch.Tensor = torch.cat(xc, dim=1)
         # noinspection PyTypeChecker
         return torch.chunk(self.shared_layer(cxc), 2, dim=1)

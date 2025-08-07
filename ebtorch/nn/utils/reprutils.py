@@ -138,9 +138,7 @@ def gather_model_repr(
 ) -> Tuple[Tensor, List[Tensor]]:
     representation: List[Tensor] = []
 
-    handles: List[RemovableHandle] = store_repr_autohook(
-        model, representation, xin.device, layers, preserve_graph
-    )
+    handles: List[RemovableHandle] = store_repr_autohook(model, representation, xin.device, layers, preserve_graph)
 
     xout: Tensor = model(xin)
 

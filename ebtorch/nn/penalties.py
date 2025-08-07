@@ -78,8 +78,7 @@ def multilasso(
     # Preprocess params and decouple lists
     if reg_oneminus:
         params: List[Tensor] = [
-            _bool_one_zero(reg_oneminus) + _bool_one_minusone(not reg_oneminus) * param
-            for param in params
+            _bool_one_zero(reg_oneminus) + _bool_one_minusone(not reg_oneminus) * param for param in params
         ]
     params: List[Tensor] = [param.flatten() for param in params]
 
@@ -88,10 +87,7 @@ def multilasso(
 
     # Compute Group Lasso penalty
     gpen: Tensor = torch.tensor(
-        [
-            (param.norm(p=p_ridge) * mpow(param.numel(), (1 - 1 / p_ridge)))
-            for param in params
-        ],
+        [(param.norm(p=p_ridge) * mpow(param.numel(), (1 - 1 / p_ridge))) for param in params],
         device=lpen.device,
     ).norm(p=p_lasso)
 
@@ -162,8 +158,7 @@ def reco_reg_split(
 
     reco: Tensor = reco_fx(x_pred, x_true, reduction=reduction)
     spar: Tensor = sum(  # type: ignore
-        lam * torch.linalg.vector_norm(sparsifiand, ord=lpow)
-        for lam, lpow in zip(lambdas, lpows)
+        lam * torch.linalg.vector_norm(sparsifiand, ord=lpow) for lam, lpow in zip(lambdas, lpows)
     )
     loss: Tensor = reco + spar
 
@@ -205,14 +200,8 @@ def beta_gaussian_kldiv(mu: Tensor, sigma: Tensor, beta: float = 1.0) -> Tensor:
 @torch.jit.script
 def var_of_lap(img: torch.Tensor) -> torch.Tensor:
     lap_kernel = (
-        torch.tensor(
-            [[0.0, 1.0, 0.0], [1.0, -4.0, 1.0], [0.0, 1.0, 0.0]], device=img.device
-        )
+        torch.tensor([[0.0, 1.0, 0.0], [1.0, -4.0, 1.0], [0.0, 1.0, 0.0]], device=img.device)
         .expand(img.shape[-3], 3, 3)
         .unsqueeze(1)
     )
-    return (
-        torch.nn.functional.conv2d(img, lap_kernel, groups=img.shape[-3])
-        .var(dim=(-2, -1))
-        .sum(-1)
-    )
+    return torch.nn.functional.conv2d(img, lap_kernel, groups=img.shape[-3]).var(dim=(-2, -1)).sum(-1)

@@ -67,11 +67,7 @@ def auto_comb(n: int, k: int, max_exact_n: int = 66) -> Union[int, float]:
     else:
         lognf: float = n * math.log(n) - n + 0.5 * math.log(2 * math.pi * n)
         logkf = k * math.log(k) - k + 0.5 * math.log(2 * math.pi * k) if k > 1 else 0
-        lognkf = (
-            (n - k) * math.log(n - k) - (n - k) + 0.5 * math.log(2 * math.pi * (n - k))
-            if (n - k) > 1
-            else 0
-        )
+        lognkf = (n - k) * math.log(n - k) - (n - k) + 0.5 * math.log(2 * math.pi * (n - k)) if (n - k) > 1 else 0
         return math.exp(lognf - logkf - lognkf)
 
 

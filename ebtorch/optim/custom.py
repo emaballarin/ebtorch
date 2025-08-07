@@ -438,9 +438,7 @@ def warmed_up_annealer(
 warmed_up_linneal = warmed_up_annealer
 
 
-def make_beta_scheduler(
-    target: float, lag_ratio: float, wu_ratio: float
-) -> Callable[[int, int], float]:
+def make_beta_scheduler(target: float, lag_ratio: float, wu_ratio: float) -> Callable[[int, int], float]:
     def beta_scheduler(step: int, total: int) -> float:
         if step < (lag_steps := ceil(total * lag_ratio)):
             return 0.0

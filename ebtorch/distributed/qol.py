@@ -19,9 +19,7 @@ from torch import Tensor
 __all__ = ["reduce_accumulate_keepalive"]
 
 
-def reduce_accumulate_keepalive(
-    reduction_tensor: Tensor, accumulator: Union[int, float]
-):
+def reduce_accumulate_keepalive(reduction_tensor: Tensor, accumulator: Union[int, float]):
     dist.barrier()
     dist.all_reduce(reduction_tensor, op=dist.ReduceOp.SUM)
     dist.barrier()

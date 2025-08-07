@@ -87,15 +87,9 @@ class AdverApply:
 
         # Clean fraction
         if _perturbed_size < _batch_size:
-            _tensor_list_xclean.append(
-                x[0][0 : -_perturbed_size + int(_perturbed_size == 0) * _batch_size]
-            )
-            _tensor_list_yclean.append(
-                x[1][0 : -_perturbed_size + int(_perturbed_size == 0) * _batch_size]
-            )
-            _tensor_list_xpertu.append(
-                x[0][0 : -_perturbed_size + int(_perturbed_size == 0) * _batch_size]
-            )
+            _tensor_list_xclean.append(x[0][0 : -_perturbed_size + int(_perturbed_size == 0) * _batch_size])
+            _tensor_list_yclean.append(x[1][0 : -_perturbed_size + int(_perturbed_size == 0) * _batch_size])
+            _tensor_list_xpertu.append(x[0][0 : -_perturbed_size + int(_perturbed_size == 0) * _batch_size])
 
         # Perturbed fraction
         if _perturbed_size > 0:

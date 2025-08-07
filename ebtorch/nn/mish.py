@@ -113,9 +113,7 @@ def mishlayer_init(mlayer, variance: Union[float, int] = 1.0):
         if hasattr(mlayer, "in_channels"):
             filters = mlayer.in_channels
 
-        mlayer.weight.data = _initialize_weights(
-            mlayer.weight, _variance=variance, _filters=filters
-        )
+        mlayer.weight.data = _initialize_weights(mlayer.weight, _variance=variance, _filters=filters)
 
     if hasattr(mlayer, "bias") and mlayer.bias is not None:
         mlayer.bias.data = _initialize_bias(mlayer.bias, _variance=variance)

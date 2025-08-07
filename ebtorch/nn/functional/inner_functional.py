@@ -69,16 +69,12 @@ def field_transform(
 ) -> Tensor:
     if div_not_mul:
         return torch.add(
-            input=torch.div(
-                input=torch.add(input=x_input, other=pre_sum), other=mult_div
-            ),
+            input=torch.div(input=torch.add(input=x_input, other=pre_sum), other=mult_div),
             other=post_sum,
         )
     else:
         return torch.add(
-            input=torch.mul(
-                input=torch.add(input=x_input, other=pre_sum), other=mult_div
-            ),
+            input=torch.mul(input=torch.add(input=x_input, other=pre_sum), other=mult_div),
             other=post_sum,
         )
 
@@ -146,9 +142,7 @@ def oldtranspose(x: Tensor) -> Tensor:
 
 def silhouette_score(feats: Tensor, labels: Tensor) -> Union[float, Tensor]:  # NOSONAR
     if feats.shape[0] != labels.shape[0]:
-        raise ValueError(
-            f"`feats` (shape {feats.shape}) and `labels` (shape {labels.shape}) must have same length"
-        )
+        raise ValueError(f"`feats` (shape {feats.shape}) and `labels` (shape {labels.shape}) must have same length")
     device, dtype = feats.device, feats.dtype
     unique_labels: Union[Tensor, Tuple[Tensor, ...]] = torch.unique(labels)  # NOSONAR
     num_samples: int = feats.shape[0]
@@ -160,27 +154,17 @@ def silhouette_score(feats: Tensor, labels: Tensor) -> Union[float, Tensor]:  # 
         num_elements: int = len(curr_cluster)
         if num_elements > 1:
             intra_cluster_dists: Tensor = torch.cdist(curr_cluster, curr_cluster)
-            mean_intra_dists: Tensor = torch.sum(intra_cluster_dists, dim=1) / (
-                num_elements - 1
-            )
+            mean_intra_dists: Tensor = torch.sum(intra_cluster_dists, dim=1) / (num_elements - 1)
             dists_to_other_clusters: List[Tensor] = []
             for other_l in unique_labels:
                 if other_l != l_label:
                     other_cluster: Tensor = feats[labels == other_l]
-                    inter_cluster_dists: Tensor = torch.cdist(
-                        curr_cluster, other_cluster
-                    )
-                    mean_inter_dists: Tensor = torch.sum(inter_cluster_dists, dim=1) / (
-                        len(other_cluster)
-                    )
+                    inter_cluster_dists: Tensor = torch.cdist(curr_cluster, other_cluster)
+                    mean_inter_dists: Tensor = torch.sum(inter_cluster_dists, dim=1) / (len(other_cluster))
                     dists_to_other_clusters.append(mean_inter_dists)
-            dists_to_other_clusters_t: Tensor = torch.stack(
-                dists_to_other_clusters, dim=1
-            )
+            dists_to_other_clusters_t: Tensor = torch.stack(dists_to_other_clusters, dim=1)
             min_dists: Tensor = torch.min(dists_to_other_clusters_t, dim=1)[0]
-            curr_scores: Tensor = (min_dists - mean_intra_dists) / (
-                torch.maximum(min_dists, mean_intra_dists)
-            )
+            curr_scores: Tensor = (min_dists - mean_intra_dists) / (torch.maximum(min_dists, mean_intra_dists))
         else:
             curr_scores: Tensor = torch.tensor([0], device=device, dtype=dtype)
 
@@ -194,9 +178,7 @@ def silhouette_score(feats: Tensor, labels: Tensor) -> Union[float, Tensor]:  # 
     return torch.mean(scores_t)
 
 
-def cummatmul(
-    input_list: Union[List[Tensor], Tensor], tensorize: Optional[bool] = None
-) -> Union[List[Tensor], Tensor]:
+def cummatmul(input_list: Union[List[Tensor], Tensor], tensorize: Optional[bool] = None) -> Union[List[Tensor], Tensor]:
     tensorize = isinstance(input_list, Tensor) if tensorize is None else tensorize
     cmm_list: List[Tensor] = [input_list[0]]
     mat: Tensor

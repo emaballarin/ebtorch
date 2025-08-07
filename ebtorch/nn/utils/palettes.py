@@ -81,9 +81,7 @@ petroff_2021_cmap = LinearSegmentedColormap.from_list(
     name="petroff_2021", colors=petroff_2021_color, N=len(petroff_2021_color)
 )
 
-tableau10_cmap = LinearSegmentedColormap.from_list(
-    name="tableau10", colors=tableau10_color, N=len(tableau10_color)
-)
+tableau10_cmap = LinearSegmentedColormap.from_list(name="tableau10", colors=tableau10_color, N=len(tableau10_color))
 # ──────────────────────────────────────────────────────────────────────────────
 
 

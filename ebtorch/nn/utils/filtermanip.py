@@ -45,18 +45,11 @@ def extract_conv_filters(layer: nn.Module) -> torch.Tensor:
     if conv_dim == 1:
         weights = weights.reshape(weights.shape[0], -1, weights.shape[-1])
     else:  # conv_dim == 2:
-        weights = weights.reshape(
-            weights.shape[0], -1, weights.shape[-2], weights.shape[-1]
-        )
+        weights = weights.reshape(weights.shape[0], -1, weights.shape[-2], weights.shape[-1])
 
     return weights
 
 
 def show_filters(filters: torch.Tensor) -> None:
     plt.axis("off")
-    plt.imshow(
-        torchvision.utils.make_grid(filters, padding=1, normalize=True)
-        .permute(1, 2, 0)
-        .cpu()
-        .numpy()
-    )
+    plt.imshow(torchvision.utils.make_grid(filters, padding=1, normalize=True).permute(1, 2, 0).cpu().numpy())

@@ -145,9 +145,7 @@ class Lookaround(Optimizer):
 
             m_str = "momentum_buffer_" + str(head)
 
-            r = (self.step_n % (group["frequence"] * group["head_num"])) % group[
-                "head_num"
-            ]
+            r = (self.step_n % (group["frequence"] * group["head_num"])) % group["head_num"]
 
             for p in group["params"]:
                 if p.grad is not None:
@@ -173,24 +171,15 @@ class Lookaround(Optimizer):
                 self.state[p][m_str] = momentum_buffer
             for i, p in enumerate(group["params"]):
                 self.net_head[r][i].data = group["params"][i].data
-            if (self.step_n % (group["frequence"] * group["head_num"])) + 1 == (
-                group["frequence"] * group["head_num"]
-            ):
+            if (self.step_n % (group["frequence"] * group["head_num"])) + 1 == (group["frequence"] * group["head_num"]):
                 for i, p in enumerate(group["params"]):
-                    self.net_head[0][i][:] = (
-                        1 / group["head_num"] * self.net_head[0][i][:]
-                    )
+                    self.net_head[0][i][:] = 1 / group["head_num"] * self.net_head[0][i][:]
                     for j in range(1, group["head_num"]):
-                        self.net_head[0][i][:] = (
-                            self.net_head[0][i][:]
-                            + 1 / group["head_num"] * self.net_head[j][i][:]
-                        )
+                        self.net_head[0][i][:] = self.net_head[0][i][:] + 1 / group["head_num"] * self.net_head[j][i][:]
                     for j in range(1, group["head_num"]):
                         self.net_head[j][i][:] = self.net_head[0][i][:]
             for i, p in enumerate(group["params"]):
-                group["params"][i].data = self.net_head[(r + 1) % group["head_num"]][
-                    i
-                ].data
+                group["params"][i].data = self.net_head[(r + 1) % group["head_num"]][i].data
 
         self.step_n += 1
         return loss

@@ -29,9 +29,7 @@ __all__ = ["SAM"]
 
 
 class SAM(torch.optim.Optimizer):
-    def __init__(
-        self, params, base_optimizer, rho=0.05, alpha=0.0, adaptive=False, **kwargs
-    ):
+    def __init__(self, params, base_optimizer, rho=0.05, alpha=0.0, adaptive=False, **kwargs):
         assert rho >= 0.0, f"Invalid rho, should be non-negative: {rho}"
         assert alpha >= 0.0, f"Invalid alpha, should be non-negative: {alpha}"
 
@@ -41,9 +39,7 @@ class SAM(torch.optim.Optimizer):
         self.base_optimizer = base_optimizer(self.param_groups, **kwargs)
         self.param_groups = self.base_optimizer.param_groups
         self.defaults.update(self.base_optimizer.defaults)
-        self.minimize_surrogate_gap = any(
-            group["alpha"] > 0.0 for group in self.param_groups
-        )
+        self.minimize_surrogate_gap = any(group["alpha"] > 0.0 for group in self.param_groups)
 
     @torch.no_grad()
     def first_step(self, zero_grad=False):
@@ -57,11 +53,7 @@ class SAM(torch.optim.Optimizer):
                 self.state[p]["old_p"] = p.data.clone()
                 if self.minimize_surrogate_gap:
                     self.state[p]["old_g"] = p.grad.data.clone()
-                e_w = (
-                    (torch.pow(p, 2) if group["adaptive"] else 1.0)
-                    * p.grad
-                    * scale.to(p)
-                )
+                e_w = (torch.pow(p, 2) if group["adaptive"] else 1.0) * p.grad * scale.to(p)
                 p.add_(e_w)  # climb to the local maximum "w + e(w)"
 
         if zero_grad:
@@ -85,12 +77,8 @@ class SAM(torch.optim.Optimizer):
 
     @torch.no_grad()
     def step(self, closure=None):
-        assert (
-            closure is not None
-        ), "Sharpness Aware Minimization requires closure, but it was not provided"
-        closure = torch.enable_grad()(
-            closure
-        )  # the closure should do a full forward-backward pass
+        assert closure is not None, "Sharpness Aware Minimization requires closure, but it was not provided"
+        closure = torch.enable_grad()(closure)  # the closure should do a full forward-backward pass
 
         self.first_step(zero_grad=True)
         closure()
@@ -121,16 +109,12 @@ class SAM(torch.optim.Optimizer):
             0
         ].device  # put everything on the same device, in case of model parallelism
         norm = torch.norm(
-            torch.stack(
-                [
-                    ((torch.abs(p) if group["adaptive"] else 1.0) * p.grad)
-                    .norm(p=2)
-                    .to(shared_device)
-                    for group in self.param_groups
-                    for p in group["params"]
-                    if p.grad is not None
-                ]
-            ),
+            torch.stack([
+                ((torch.abs(p) if group["adaptive"] else 1.0) * p.grad).norm(p=2).to(shared_device)
+                for group in self.param_groups
+                for p in group["params"]
+                if p.grad is not None
+            ]),
             p=2,
             dim=None,
         )

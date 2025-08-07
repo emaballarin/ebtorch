@@ -102,12 +102,10 @@ def data_prep_dispatcher_3ch(
         post_function: thnn.Module = thnn.Identity()
     data_prep: thnn.Module = thnn.Sequential(
         ebthnn.FieldTransform(
-            pre_sum=(not inverse)
-            * th.tensor([[[-means[0]]], [[-means[1]]], [[-means[2]]]]).to(device),
+            pre_sum=(not inverse) * th.tensor([[[-means[0]]], [[-means[1]]], [[-means[2]]]]).to(device),
             mult_div=th.tensor([[[stds[0]]], [[stds[1]]], [[stds[2]]]]).to(device),
             div_not_mul=not inverse,
-            post_sum=inverse
-            * th.tensor([[[means[0]]], [[means[1]]], [[means[2]]]]).to(device),
+            post_sum=inverse * th.tensor([[[means[0]]], [[means[1]]], [[means[2]]]]).to(device),
         ),
         deepcopy(post_function),
     ).to(device)

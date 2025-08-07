@@ -26,9 +26,7 @@ __all__ = ["Mixup", "FastCollateMixup"]
 
 def _one_hot(x, num_classes, on_value=1.0, off_value=0.0):
     x = x.long().view(-1, 1)
-    return torch.full((x.size()[0], num_classes), off_value, device=x.device).scatter_(
-        1, x, on_value
-    )
+    return torch.full((x.size()[0], num_classes), off_value, device=x.device).scatter_(1, x, on_value)
 
 
 def _mixup_target(target, num_classes, lam=1.0, smoothing=0.0):
@@ -77,12 +75,8 @@ def _rand_bbox_minmax(img_shape, minmax, count=None):
     """
     assert len(minmax) == 2
     img_h, img_w = img_shape[-2:]
-    cut_h = np.random.randint(
-        int(img_h * minmax[0]), int(img_h * minmax[1]), size=count
-    )
-    cut_w = np.random.randint(
-        int(img_w * minmax[0]), int(img_w * minmax[1]), size=count
-    )
+    cut_h = np.random.randint(int(img_h * minmax[0]), int(img_h * minmax[1]), size=count)
+    cut_w = np.random.randint(int(img_w * minmax[0]), int(img_w * minmax[1]), size=count)
     yl = np.random.randint(0, img_h - cut_h, size=count)
     xl = np.random.randint(0, img_w - cut_w, size=count)
     yu = yl + cut_h
@@ -90,9 +84,7 @@ def _rand_bbox_minmax(img_shape, minmax, count=None):
     return yl, yu, xl, xu
 
 
-def _cutmix_bbox_and_lam(
-    img_shape, lam, ratio_minmax=None, correct_lam=True, count=None
-):
+def _cutmix_bbox_and_lam(img_shape, lam, ratio_minmax=None, correct_lam=True, count=None):
     """Generate bbox and apply lambda correction."""
     if ratio_minmax is not None:
         yl, yu, xl, xu = _rand_bbox_minmax(img_shape, ratio_minmax, count=count)
@@ -143,12 +135,8 @@ class Mixup:
         self.label_smoothing = label_smoothing
         self.num_classes = num_classes
         self.mode = mode
-        self.correct_lam = (
-            correct_lam  # correct lambda based on clipped area for cutmix
-        )
-        self.mixup_enabled = (
-            True  # set to false to disable mixing (intended tp be set by train loop)
-        )
+        self.correct_lam = correct_lam  # correct lambda based on clipped area for cutmix
+        self.mixup_enabled = True  # set to false to disable mixing (intended tp be set by train loop)
 
     def _params_per_elem(self, batch_size):
         lam = np.ones(batch_size, dtype=np.float32)
@@ -158,24 +146,16 @@ class Mixup:
                 use_cutmix = np.random.rand(batch_size) < self.switch_prob
                 lam_mix = np.where(
                     use_cutmix,
-                    np.random.beta(
-                        self.cutmix_alpha, self.cutmix_alpha, size=batch_size
-                    ),
+                    np.random.beta(self.cutmix_alpha, self.cutmix_alpha, size=batch_size),
                     np.random.beta(self.mixup_alpha, self.mixup_alpha, size=batch_size),
                 )
             elif self.mixup_alpha > 0.0:
-                lam_mix = np.random.beta(
-                    self.mixup_alpha, self.mixup_alpha, size=batch_size
-                )
+                lam_mix = np.random.beta(self.mixup_alpha, self.mixup_alpha, size=batch_size)
             elif self.cutmix_alpha > 0.0:
                 use_cutmix = np.ones(batch_size, dtype=bool)
-                lam_mix = np.random.beta(
-                    self.cutmix_alpha, self.cutmix_alpha, size=batch_size
-                )
+                lam_mix = np.random.beta(self.cutmix_alpha, self.cutmix_alpha, size=batch_size)
             else:
-                assert (
-                    False
-                ), "One of mixup_alpha > 0., cutmix_alpha > 0., cutmix_minmax not None should be true."
+                assert False, "One of mixup_alpha > 0., cutmix_alpha > 0., cutmix_minmax not None should be true."
             lam = np.where(
                 np.random.rand(batch_size) < self.mix_prob,
                 lam_mix.astype(np.float32),
@@ -200,9 +180,7 @@ class Mixup:
                 use_cutmix = True
                 lam_mix = np.random.beta(self.cutmix_alpha, self.cutmix_alpha)
             else:
-                assert (
-                    False
-                ), "One of mixup_alpha > 0., cutmix_alpha > 0., cutmix_minmax not None should be true."
+                assert False, "One of mixup_alpha > 0., cutmix_alpha > 0., cutmix_minmax not None should be true."
             lam = float(lam_mix)
         return lam, use_cutmix
 
@@ -308,9 +286,7 @@ class FastCollateMixup(Mixup):
                     mixed[:, yl:yh, xl:xh] = batch[j][0][:, yl:yh, xl:xh]
                     lam_batch[i] = lam
                 else:
-                    mixed = mixed.astype(np.float32) * lam + batch[j][0].astype(
-                        np.float32
-                    ) * (1 - lam)
+                    mixed = mixed.astype(np.float32) * lam + batch[j][0].astype(np.float32) * (1 - lam)
                     np.rint(mixed, out=mixed)
             output[i] += torch.from_numpy(mixed.astype(np.uint8))
         if half:
@@ -339,12 +315,8 @@ class FastCollateMixup(Mixup):
                     mixed_j[:, yl:yh, xl:xh] = patch_i
                     lam_batch[i] = lam
                 else:
-                    mixed_temp = mixed_i.astype(np.float32) * lam + mixed_j.astype(
-                        np.float32
-                    ) * (1 - lam)
-                    mixed_j = mixed_j.astype(np.float32) * lam + mixed_i.astype(
-                        np.float32
-                    ) * (1 - lam)
+                    mixed_temp = mixed_i.astype(np.float32) * lam + mixed_j.astype(np.float32) * (1 - lam)
+                    mixed_j = mixed_j.astype(np.float32) * lam + mixed_i.astype(np.float32) * (1 - lam)
                     mixed_i = mixed_temp
                     np.rint(mixed_j, out=mixed_j)
                     np.rint(mixed_i, out=mixed_i)
@@ -368,14 +340,10 @@ class FastCollateMixup(Mixup):
             mixed = batch[i][0]
             if lam != 1.0:
                 if use_cutmix:
-                    mixed = (
-                        mixed.copy()
-                    )  # don't want to modify the original while iterating
+                    mixed = mixed.copy()  # don't want to modify the original while iterating
                     mixed[:, yl:yh, xl:xh] = batch[j][0][:, yl:yh, xl:xh]
                 else:
-                    mixed = mixed.astype(np.float32) * lam + batch[j][0].astype(
-                        np.float32
-                    ) * (1 - lam)
+                    mixed = mixed.astype(np.float32) * lam + batch[j][0].astype(np.float32) * (1 - lam)
                     np.rint(mixed, out=mixed)
             output[i] += torch.from_numpy(mixed.astype(np.uint8))
         return lam

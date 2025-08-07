@@ -177,12 +177,8 @@ class Adan(Optimizer):
                 exp_avg_diff.mul_(beta2).add_(diff, alpha=1 - beta2)  # diff_t
                 exp_avg_sq.mul_(beta3).addcmul_(update, update, value=1 - beta3)  # n_t
 
-                denom = (exp_avg_sq.sqrt() / math.sqrt(bias_correction3)).add_(
-                    group["eps"]
-                )
-                update = (
-                    exp_avg / bias_correction1 + beta2 * exp_avg_diff / bias_correction2
-                ).div_(denom)
+                denom = (exp_avg_sq.sqrt() / math.sqrt(bias_correction3)).add_(group["eps"])
+                update = (exp_avg / bias_correction1 + beta2 * exp_avg_diff / bias_correction2).div_(denom)
 
                 if group["no_prox"]:
                     p.data.mul_(1 - group["lr"] * group["weight_decay"])

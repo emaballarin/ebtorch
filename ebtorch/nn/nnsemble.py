@@ -61,8 +61,7 @@ def _warn_empty_models() -> None:
 
 def _warn_swa_aggregation() -> None:
     warnings.warn(
-        "swa_ensemble is True, but aggregation is not None."
-        "Aggregation will be ignored.",
+        "swa_ensemble is True, but aggregation is not None.Aggregation will be ignored.",
         UserWarning,
     )
 
@@ -72,9 +71,7 @@ class NNEnsemble(thnn.Module):
     def __init__(
         self: T,
         models: Optional[Iterable[thnn.Module]] = None,
-        aggregation: Optional[
-            Union[thnn.Module, Callable[[th.Tensor], th.Tensor]]
-        ] = None,
+        aggregation: Optional[Union[thnn.Module, Callable[[th.Tensor], th.Tensor]]] = None,
         swa_ensemble: bool = False,
     ) -> None:
         super().__init__()
@@ -130,8 +127,7 @@ class NNEnsemble(thnn.Module):
             th.optim.swa_utils.update_bn(self.bn_loader, self.swa_model)
         else:
             warnings.warn(
-                "No batch normalization loader has been provided."
-                "Batch normalization statistics will not be updated.",
+                "No batch normalization loader has been provided.Batch normalization statistics will not be updated.",
                 UserWarning,
             )
 
@@ -143,9 +139,7 @@ class NNEnsemble(thnn.Module):
     def _update_vensemble_nofail(self: T) -> None:
         if not self.models:
             return
-        self.vfmodel, self.vparams, self.vbuffers = combine_state_for_ensemble(
-            self.models
-        )
+        self.vfmodel, self.vparams, self.vbuffers = combine_state_for_ensemble(self.models)
         self.vensemble = vmap(func=self.vfmodel, in_dims=(0, 0, None))
 
     # Internal methods for both SWA and "pure" ensembles
@@ -157,13 +151,9 @@ class NNEnsemble(thnn.Module):
 
     def _check_ensemble_is_usable(self: T, force_both: bool = False) -> None:
         if (self.swa_ensemble or force_both) and self.swa_model is None:
-            raise RuntimeError(
-                "No SWA model has been created. Did you forget to call update_state()?"
-            )
+            raise RuntimeError("No SWA model has been created. Did you forget to call update_state()?")
         if ((not self.swa_ensemble) or force_both) and self.vensemble is None:
-            raise RuntimeError(
-                "No ensemble has been created. Did you forget to call update_state()?"
-            )
+            raise RuntimeError("No ensemble has been created. Did you forget to call update_state()?")
 
     # Public methods
     def reset_state(self: T) -> T:
@@ -227,16 +217,12 @@ class NNEnsemble(thnn.Module):
             )
         self.bn_loader: Iterable = bn_loader
 
-    def notify_train_eval_changes(
-        self: T, armed: bool = True, hardened: bool = False
-    ) -> T:
+    def notify_train_eval_changes(self: T, armed: bool = True, hardened: bool = False) -> T:
         self.notify_train_eval_changes_is_armed: bool = armed
         self.notify_train_eval_changes_is_hardened: bool = hardened
         return self
 
-    def train(
-        self: T, mode: bool = True, override_safetynet: bool = False
-    ) -> thnn.Module:
+    def train(self: T, mode: bool = True, override_safetynet: bool = False) -> thnn.Module:
         if self.notify_train_eval_changes_is_armed and self.training != mode:
             if self.notify_train_eval_changes_is_hardened:
                 raise RuntimeError(
@@ -244,8 +230,7 @@ class NNEnsemble(thnn.Module):
                     "but denied since the model has been hardened."
                 )
             warnings.warn(
-                f"Change of training mode from {self.training} to {mode} detected."
-                "Allowing it.",
+                f"Change of training mode from {self.training} to {mode} detected.Allowing it.",
                 UserWarning,
             )
         if self.swa_ensemble and mode:

@@ -30,9 +30,7 @@ __all__ = [
 ]
 
 
-def lattice_edges(
-    image_height: int, image_width: int
-) -> Tuple[Iterable[int], Iterable[int]]:
+def lattice_edges(image_height: int, image_width: int) -> Tuple[Iterable[int], Iterable[int]]:
     """The set of edges in a 2D 4-connected graph.
 
     The edges in the network connect each vertex to its four adjacent vertices.
@@ -180,9 +178,7 @@ class SolvePoisson(nn.Module):
         return (
             torch.linalg.solve(
                 zmat + 1,
-                input_currents.double().reshape(
-                    n_batches, image_width * image_height, 1
-                ),
+                input_currents.double().reshape(n_batches, image_width * image_height, 1),
             )
             .reshape(input_currents.shape)
             .float()
@@ -209,12 +205,9 @@ class SolvePoissonTensor(nn.Module):
     def __init__(self, in_planes: int, image_height: int, image_width: int):
         super().__init__()
 
-        self.solvers = nn.ModuleList(
-            [
-                SolvePoisson(torch.rand(image_height, image_width, dtype=torch.float64))
-                for _ in range(in_planes)
-            ]
-        )
+        self.solvers = nn.ModuleList([
+            SolvePoisson(torch.rand(image_height, image_width, dtype=torch.float64)) for _ in range(in_planes)
+        ])
         self.weights = nn.Parameter(torch.ones(in_planes))
         self.bias = nn.Parameter(torch.tensor(0.0))
 
@@ -223,12 +216,7 @@ class SolvePoissonTensor(nn.Module):
         assert in_planes == len(self.solvers)
 
         # ys has shape (in_planes, num_batches, height, width)
-        ys = torch.stack(
-            [
-                self.weights[i] * self.solvers[i](input_currents[:, i, :, :])
-                for i in range(in_planes)
-            ]
-        )
+        ys = torch.stack([self.weights[i] * self.solvers[i](input_currents[:, i, :, :]) for i in range(in_planes)])
 
         return self.bias + ys.sum(axis=0)
 
@@ -239,21 +227,16 @@ class MultiSolvePoissonTensor(nn.Module):
     Multiple replicas of SolvePoissonTensor, stacked to create a multi-channel image.
     """
 
-    def __init__(
-        self, in_planes: int, image_height: int, image_width: int, out_planes: int
-    ):
+    def __init__(self, in_planes: int, image_height: int, image_width: int, out_planes: int):
         super().__init__()
 
         self.tensor_solvers = nn.ModuleList(
-            SolvePoissonTensor(in_planes, image_height, image_width)
-            for _ in range(out_planes)
+            SolvePoissonTensor(in_planes, image_height, image_width) for _ in range(out_planes)
         )
 
     def forward(self, input_currents: torch.Tensor) -> torch.Tensor:
         # r is (out_planes, num_batches, height, width)
-        r = torch.stack(
-            [tensor_solver(input_currents) for tensor_solver in self.tensor_solvers]
-        )
+        r = torch.stack([tensor_solver(input_currents) for tensor_solver in self.tensor_solvers])
         # Convert to (num_batches, out_planes, height, width)
         return r.transpose(0, 1)
 
@@ -268,13 +251,9 @@ class PoissonBasicBlock(nn.Module):
         activation_fx: Callable[[torch.Tensor], torch.Tensor] = F.relu,
     ):
         super().__init__()
-        self.solver1 = MultiSolvePoissonTensor(
-            in_planes, image_height, image_width, out_planes
-        )
+        self.solver1 = MultiSolvePoissonTensor(in_planes, image_height, image_width, out_planes)
         self.bn1 = nn.BatchNorm2d(out_planes)
-        self.solver2 = MultiSolvePoissonTensor(
-            out_planes, image_height, image_width, out_planes
-        )
+        self.solver2 = MultiSolvePoissonTensor(out_planes, image_height, image_width, out_planes)
         self.bn2 = nn.BatchNorm2d(out_planes)
         self.activation_fx = deepcopy(activation_fx)
 
@@ -329,9 +308,7 @@ class PoissonNetCifar(nn.Module):
             out_planes=2,
         )
 
-        self.group1_to_group2 = PoissonBasicBlock(
-            in_planes=2, image_height=8, image_width=8, out_planes=4
-        )
+        self.group1_to_group2 = PoissonBasicBlock(in_planes=2, image_height=8, image_width=8, out_planes=4)
 
         self.group2 = _make_copies(
             1,
@@ -342,9 +319,7 @@ class PoissonNetCifar(nn.Module):
             out_planes=4,
         )
 
-        self.group2_to_group3 = PoissonBasicBlock(
-            in_planes=4, image_height=4, image_width=4, out_planes=8
-        )
+        self.group2_to_group3 = PoissonBasicBlock(in_planes=4, image_height=4, image_width=4, out_planes=8)
 
         self.group3 = _make_copies(
             1,
