@@ -251,6 +251,7 @@ def _safetensors_model_saver(model: nn.Module, filepath: Path) -> None:
 
 def torch_set_hiperf_precision(newapi: bool = False, aggressive: bool = False, quiet: bool = False) -> None:
     with suppress_std(which="all" if quiet else "none"):
+        th.backends.cudnn.benchmark = True
         if newapi:
             th.backends.fp32_precision = "tf32"  # type: ignore
             th.backends.cudnn.fp32_precision = "tf32"  # type: ignore
