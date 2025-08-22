@@ -52,5 +52,6 @@ gitall: check-git-status
 lint: precra
 fmt: format
 
-gitpre: clean format precau precra clean
-gitpush: clean format precau precra clean gitall
+gitpre: format precau precra clean
+gitpush: format precau precra clean gitall
+clfmt: format clean

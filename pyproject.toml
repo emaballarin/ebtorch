@@ -25,7 +25,7 @@
         "safe_assert>=0.5",
         "safetensors>=0.5.3",
         "setuptools>=75.8.2",
-        "thrmt>=0.0.6",
+        "thrmt>=0.0.15",
         "torch-lr-finder>=0.2.1",
         "torch>=2.5",
         "torchattacks>=3.5.1",
@@ -39,7 +39,7 @@
     name = "ebtorch"
     readme = "README.md"
     requires-python = ">=3.10"
-    version = "0.34.5"
+    version = "0.34.6"
 
 [project.urls]
     Homepage = "https://github.com/emaballarin/ebtorch"
